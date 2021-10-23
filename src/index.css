@@ -1,0 +1,117 @@
+body {
+    background-color: honeydew;
+    margin: 1em auto;
+    width: 90%;
+}
+fieldset {
+    background-color: cornsilk;
+}
+select, table {
+    text-align: center;
+}
+table {
+    background-color: aliceblue;
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 100%;
+}
+caption {
+    caption-side: bottom;
+    margin-top: 0.5em;
+}
+th, td {
+    border: black solid thin;
+}
+
+.config,
+.decorate {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    row-gap: 1em;
+    justify-items: center;
+}
+.config > div,
+.decorate > div,
+.decorate > button {
+    grid-column-start: span 2;
+}
+
+.inspect,
+.grid,
+.stats {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    row-gap: 1em;
+}
+.grid-outer {
+    background-color: white;
+    display: inline-block;
+    position: relative;
+    width: 100%;
+}
+.grid-outer:after {
+    content: "";
+    display: block;
+    margin-top: 100%;
+}
+.grid-inner {
+    border: black solid thin;
+    display: grid;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    position: absolute;
+}
+.grid-cell {
+    border-width: thin;
+}
+.grid-legend {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    row-gap: 0.5em;
+    column-gap: 1em;
+}
+.grid-legend > div {
+    display: flex;
+    flex-flow: row nowrap;
+    column-gap: 0.5em;
+}
+.box {
+    border: black solid thin;
+    width: 1em;
+    height: 1em;
+}
+.grid-control {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    column-gap: 1em;
+}
+
+.my-house {
+    background-color: #ffb3da;
+}
+.building {
+    background-color: #d8b3ff;
+}
+.decor {
+    background-color: #ffd8b3;
+}
+.road-in-network {
+    background-color: #daffb3;
+}
+.road-out-network {
+    background-color: #b3daff;
+}
+
+@media screen and (min-width: 800px) {
+    #root {
+        display: grid;
+        grid-template-rows: repeat(2, auto);
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
