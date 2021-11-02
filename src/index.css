@@ -6,6 +6,9 @@ body {
 fieldset {
     background-color: cornsilk;
 }
+legend {
+    text-transform: capitalize;
+}
 select, table {
     text-align: center;
 }
@@ -92,20 +95,20 @@ th, td {
     column-gap: 1em;
 }
 
-.my-house {
-    background-color: #ffb3da;
-}
-.building {
-    background-color: #d8b3ff;
-}
-.decor {
-    background-color: #ffd8b3;
+.road-out-network {
+    background-color: #b3daff;
 }
 .road-in-network {
     background-color: #daffb3;
 }
-.road-out-network {
-    background-color: #b3daff;
+.decor {
+    background-color: #ffd8b3;
+}
+.building {
+    background-color: #d8b3ff;
+}
+.my-house {
+    background-color: #ffb3da;
 }
 
 @media screen and (min-width: 800px) {

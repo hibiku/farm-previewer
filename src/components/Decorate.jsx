@@ -1,22 +1,20 @@
-import { For } from "solid-js";
 import { useState } from "../StateProvider.jsx";
-import { objectTypes, objectData, objectDisplayTypes } from "../data.js";
+import { objects } from "../data.js";
 
 function DecorateType() {
-    const [state, { setDecorate }] = useState();
-    const handleChange = (event) => {
-        const type = event.currentTarget.value;
-        setDecorate(type, objectData[type].limits[state.config.level].min);
-    };
+    const [state, { onDecorateTypeChange }] = useState();
+    const decorateTypes = Object.keys(objects).filter(type => {
+        return type !== "free";
+    });
     return (
         <>
-            <label for="farm-object-type">Type</label>
+            <label for="decorate-type">Type</label>
             <select
-                id="farm-object-type"
-                value={state.mode.decorate.type}
-                onChange={handleChange}>
-                <For each={objectTypes}>{
-                    (type) => <option value={type}>{objectDisplayTypes[type]}</option>
+                id="decorate-type"
+                value={state.decorate.type}
+                onChange={onDecorateTypeChange}>
+                <For each={decorateTypes}>{
+                    type => <option value={type}>{type.charAt(0).toUpperCase() + type.slice(1)}</option>
                 }</For>
             </select>
         </>
@@ -24,26 +22,26 @@ function DecorateType() {
 }
 
 function DecorateName() {
-    const [state, { setDecorate }] = useState();
-    const handleChange = (event) => {
-        setDecorate(state.mode.decorate.type, event.currentTarget.value);
+    const [state, { onDecorateNameChange }] = useState();
+    const names = () => {
+        const { names, data } = objects[state.decorate.type];
+        return names.filter(name => !data[name].fixed);
+    };
+    const disabled = name => {
+        return state.config.level < objects[state.decorate.type].data[name].level
     };
     return (
         <Show
-            when={state.mode.decorate.type !== "road"}>
+            when={state.decorate.type !== "road"}>
             <>
-                <label for="farm-object-name">Name</label>
+                <label for="decorate-name">Name</label>
                 <select
-                    id="farm-object-name"
-                    value={state.mode.decorate.name}
-                    onChange={handleChange}>
-                    <For each={objectData[state.mode.decorate.type].names}>{
-                        (name, index) => <option
-                            disabled={
-                                index() < objectData[state.mode.decorate.type].names.indexOf(objectData[state.mode.decorate.type].limits[state.config.level].min) ||
-                                index() > objectData[state.mode.decorate.type].names.indexOf(objectData[state.mode.decorate.type].limits[state.config.level].max)
-                            }
-                            value={name}>{name}</option>
+                    id="decorate-name"
+                    disabled={!state.decorate.name}
+                    value={state.decorate.name}
+                    onChange={onDecorateNameChange}>
+                    <For each={names()}>{
+                        name => <option disabled={disabled(name)} value={name}>{name}</option>
                     }</For>
                 </select>
             </>
@@ -52,42 +50,16 @@ function DecorateName() {
 }
 
 function Autofill() {
-    const [state, { setGrid }] = useState();
-    const handleChange = () => {
-        const useAutofill = state.config.useAutofill;
-        if (useAutofill) {
-            setGrid({
-                ...state.config,
-                useAutofill: !useAutofill
-            }, (_, index) => {
-                const cell = state.cells[index];
-                if (cell.type === "road") {
-                    return { ...cell, type: "", name: "" };
-                }
-                return { ...cell };
-            });
-        } else {
-            setGrid({
-                ...state.config,
-                useAutofill: !useAutofill
-            }, (_, index) => {
-                const cell = state.cells[index];
-                if (!cell.type) {
-                    return { ...cell, type: "road", name: "" };
-                }
-                return { ...cell };
-            });
-        }
-    };
+    const [state, { onAutofillChange }] = useState();
     return (
         <div>
             <input
                 type="checkbox"
-                id="farm-autofill"
+                id="autofill"
                 checked={state.config.useAutofill}
-                onChange={handleChange}
+                onChange={onAutofillChange}
             ></input>
-            <label for="farm-autofill">Autofill roads</label>
+            <label for="autofill">Autofill roads</label>
         </div>
     );
 }

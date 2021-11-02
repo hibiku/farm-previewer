@@ -43,346 +43,101 @@ export const mobCapLimits = {
     40: { min: 18, max: 28 }
 };
 
-export const objectTypes = ["building", "decor", "road"];
-export const objectDisplayTypes = {
-    [""]: "Free cell",
-    myHouse: "My House",
-    building: "Building",
-    decor: "Decor",
-    road: "Road"
-};
-export const objectData = {
-    myHouse: {
+export const objects = {
+    free: {
         names: [""],
-        props: {
-            [""]: {
-                level: 1, order: 5, space: 25, waru: 0, banked: 0, decor: 0, limit: 1
-            }
+        limits: {
+            1: { min: "", max: "" },
+            2: { min: "", max: "" },
+            3: { min: "", max: "" },
+            4: { min: "", max: "" },
+            5: { min: "", max: "" },
+            6: { min: "", max: "" },
+            7: { min: "", max: "" },
+            8: { min: "", max: "" },
+            9: { min: "", max: "" },
+            10: { min: "", max: "" },
+            11: { min: "", max: "" },
+            12: { min: "", max: "" },
+            13: { min: "", max: "" },
+            14: { min: "", max: "" },
+            15: { min: "", max: "" },
+            16: { min: "", max: "" },
+            17: { min: "", max: "" },
+            18: { min: "", max: "" },
+            19: { min: "", max: "" },
+            20: { min: "", max: "" },
+            21: { min: "", max: "" },
+            22: { min: "", max: "" },
+            23: { min: "", max: "" },
+            24: { min: "", max: "" },
+            25: { min: "", max: "" },
+            26: { min: "", max: "" },
+            27: { min: "", max: "" },
+            28: { min: "", max: "" },
+            29: { min: "", max: "" },
+            30: { min: "", max: "" },
+            31: { min: "", max: "" },
+            32: { min: "", max: "" },
+            33: { min: "", max: "" },
+            34: { min: "", max: "" },
+            35: { min: "", max: "" },
+            36: { min: "", max: "" },
+            37: { min: "", max: "" },
+            38: { min: "", max: "" },
+            39: { min: "", max: "" },
+            40: { min: "", max: "" }
+        },
+        data: {
+            [""]: { level: 1, order: 1, units: 0, waru: 0, banked: 0, decor: 0, limit: 0, fixed: false }
         }
     },
-    building: {
-        names: [
-            "Green Mushroom Hut", "Henesys Homestead", "Orange Mushroom House",
-            "Monster Barn", "Sturdy Straw House", "Red Mushroom Manor",
-            "Rien Hot Springs", "Mu Lung Barber Shop", "Tip-Top Balloon Shop",
-            "Floatland Manor", "Healthy Hospital", "Monster Manor",
-            "Mr. Teddy X", "Ms. Teddy X", "Yellow Submarine",
-            "Refreshing Oasis", "Yeti Super Stage", "Nautilus Harbor",
-            "Shinsoo's Nest", "Ludibrium Toy House", "Orbis Flying Garden",
-            "Ereve Fountain Garden", "Aqua Road Castle", "Zakum's Cave",
-            "Windmill", "Chopper Chalet", "Drip Brew Coffee House",
-            "Red Brick Abode", "Lofty Brick House", "Purple Bathhouse",
-            "Blue Bathhouse", "Big Apple Fruit Shop", "Octo-Pot Seafood",
-            "Henesys Bowman Guild", "Rudi Beauty Salon", "Santa's Gift Shop",
-            "Ghastly Ghost Gables", "Grand Gourd Gables", "Blossom House",
-            "Tip Top Chop Shop", "Pink Angel Place", "Full Moon Song Pyun Shop",
-            "Gingerbread Gables", "Rien's Tonic Shop", "Blue Mushroom Mansion",
-            "Mushroom Tower", "Ariant Fabrics (I)", "Hanok House",
-            "Fantasy Park Viking", "Alchemist's Abode", "Five-Slime Hotel",
-            "Creamy Cake Chateau", "Florina Lighthouse", "Leafre Airship",
-            "Fish Shop", "Mushking Empire Outpost", "Nova Safehouse",
-            "Elluel House", "Ariant Fabrics (II)", "Happy Homestead",
-            "Melody Manor", "Aqua Roadhouse", "Fun Factory",
-            "Ariant Castle", "Shaved Ice Chateau", "Magatia Workshop",
-            "Santa's Special Shop", "Farmer's House", "Tick Tock Townhouse",
-            "Mu Lung Dojo", "Icy Treat Retreat (I)", "Beatdown Shop",
-            "Very Berry Vineyard", "Chryse Coliseum", "Omega Sector",
-            "Tip-Top Toy Shop", "Edelstein Air Field", "Big Top Tenement",
-            "Big Bowl Noodles", "Lumiere", "Icy Treat Retreat (II)",
-            "Wholesome Milk Farm", "The Secret Garden"
-        ],
+    road: {
+        names: [""],
         limits: {
-            1: { min: "Green Mushroom Hut", max: "Green Mushroom Hut" },
-            2: { min: "Green Mushroom Hut", max: "Orange Mushroom House" },
-            3: { min: "Green Mushroom Hut", max: "Zakum's Cave" },
-            4: { min: "Green Mushroom Hut", max: "Windmill" },
-            5: { min: "Green Mushroom Hut", max: "Drip Brew Coffee House" },
-            6: { min: "Green Mushroom Hut", max: "Red Brick Abode" },
-            7: { min: "Green Mushroom Hut", max: "Lofty Brick House" },
-            8: { min: "Green Mushroom Hut", max: "Purple Bathhouse" },
-            9: { min: "Green Mushroom Hut", max: "Blue Bathhouse" },
-            10: { min: "Green Mushroom Hut", max: "Grand Gourd Gables" },
-            11: { min: "Green Mushroom Hut", max: "Tip Top Chop Shop" },
-            12: { min: "Green Mushroom Hut", max: "Full Moon Song Pyun Shop" },
-            13: { min: "Green Mushroom Hut", max: "Rien's Tonic Shop" },
-            14: { min: "Green Mushroom Hut", max: "Mushroom Tower" },
-            15: { min: "Green Mushroom Hut", max: "Leafre Airship" },
-            16: { min: "Green Mushroom Hut", max: "Mushking Empire Outpost" },
-            17: { min: "Green Mushroom Hut", max: "Nova Safehouse" },
-            18: { min: "Green Mushroom Hut", max: "Ariant Fabrics (I)" },
-            19: { min: "Green Mushroom Hut", max: "Happy Homestead" },
-            20: { min: "Green Mushroom Hut", max: "Magatia Workshop" },
-            21: { min: "Green Mushroom Hut", max: "Farmer's House" },
-            22: { min: "Green Mushroom Hut", max: "Tick Tock Townhouse" },
-            23: { min: "Green Mushroom Hut", max: "Mu Lung Dojo" },
-            24: { min: "Green Mushroom Hut", max: "Icy Treat Retreat (I)" },
-            25: { min: "Green Mushroom Hut", max: "Omega Sector" },
-            26: { min: "Green Mushroom Hut", max: "Tip-Top Toy Shop" },
-            27: { min: "Green Mushroom Hut", max: "Edelstein Air Field" },
-            28: { min: "Green Mushroom Hut", max: "Big Top Tenement" },
-            29: { min: "Green Mushroom Hut", max: "Big Bowl Noodles" },
-            30: { min: "Green Mushroom Hut", max: "Icy Treat Retreat (II)" },
-            31: { min: "Green Mushroom Hut", max: "Icy Treat Retreat (II)" },
-            32: { min: "Green Mushroom Hut", max: "Icy Treat Retreat (II)" },
-            33: { min: "Green Mushroom Hut", max: "Icy Treat Retreat (II)" },
-            34: { min: "Green Mushroom Hut", max: "Icy Treat Retreat (II)" },
-            35: { min: "Green Mushroom Hut", max: "The Secret Garden" },
-            36: { min: "Green Mushroom Hut", max: "The Secret Garden" },
-            37: { min: "Green Mushroom Hut", max: "The Secret Garden" },
-            38: { min: "Green Mushroom Hut", max: "The Secret Garden" },
-            39: { min: "Green Mushroom Hut", max: "The Secret Garden" },
-            40: { min: "Green Mushroom Hut", max: "The Secret Garden" }
+            1: { min: "", max: "" },
+            2: { min: "", max: "" },
+            3: { min: "", max: "" },
+            4: { min: "", max: "" },
+            5: { min: "", max: "" },
+            6: { min: "", max: "" },
+            7: { min: "", max: "" },
+            8: { min: "", max: "" },
+            9: { min: "", max: "" },
+            10: { min: "", max: "" },
+            11: { min: "", max: "" },
+            12: { min: "", max: "" },
+            13: { min: "", max: "" },
+            14: { min: "", max: "" },
+            15: { min: "", max: "" },
+            16: { min: "", max: "" },
+            17: { min: "", max: "" },
+            18: { min: "", max: "" },
+            19: { min: "", max: "" },
+            20: { min: "", max: "" },
+            21: { min: "", max: "" },
+            22: { min: "", max: "" },
+            23: { min: "", max: "" },
+            24: { min: "", max: "" },
+            25: { min: "", max: "" },
+            26: { min: "", max: "" },
+            27: { min: "", max: "" },
+            28: { min: "", max: "" },
+            29: { min: "", max: "" },
+            30: { min: "", max: "" },
+            31: { min: "", max: "" },
+            32: { min: "", max: "" },
+            33: { min: "", max: "" },
+            34: { min: "", max: "" },
+            35: { min: "", max: "" },
+            36: { min: "", max: "" },
+            37: { min: "", max: "" },
+            38: { min: "", max: "" },
+            39: { min: "", max: "" },
+            40: { min: "", max: "" }
         },
-        props: {
-            ["Green Mushroom Hut"]: {
-                level: 1, order: 2, space: 4, waru: 2, banked: 50, decor: 5, limit: 99
-            },
-            ["Henesys Homestead"]: {
-                level: 2, order: 2, space: 4, waru: 7, banked: 80, decor: 30, limit: 99
-            },
-            ["Orange Mushroom House"]: {
-                level: 2, order: 2, space: 4, waru: 3, banked: 60, decor: 5, limit: 99
-            },
-            ["Monster Barn"]: {
-                level: 3, order: 2, space: 4, waru: 0, banked: 0, decor: 0, limit: 1
-            },
-            ["Sturdy Straw House"]: {
-                level: 3, order: 2, space: 4, waru: 5, banked: 50, decor: 10, limit: 99
-            },
-            ["Red Mushroom Manor"]: {
-                level: 3, order: 2, space: 4, waru: 6, banked: 100, decor: 10, limit: 99
-            },
-            ["Rien Hot Springs"]: {
-                level: 3, order: 2, space: 4, waru: 25, banked: 2200, decor: 200, limit: 198
-            },
-            ["Mu Lung Barber Shop"]: {
-                level: 3, order: 2, space: 4, waru: 27, banked: 1800, decor: 200, limit: 198
-            },
-            ["Tip-Top Balloon Shop"]: {
-                level: 3, order: 2, space: 4, waru: 35, banked: 3000, decor: 400, limit: 198
-            },
-            ["Floatland Manor"]: {
-                level: 3, order: 3, space: 9, waru: 23, banked: 2000, decor: 150, limit: 198
-            },
-            ["Healthy Hospital"]: {
-                level: 3, order: 3, space: 9, waru: 44, banked: 3500, decor: 250, limit: 198
-            },
-            ["Monster Manor"]: {
-                level: 3, order: 3, space: 9, waru: 42, banked: 5000, decor: 400, limit: 198
-            },
-            ["Mr. Teddy X"]: {
-                level: 3, order: 3, space: 9, waru: 48, banked: 4500, decor: 500, limit: 198
-            },
-            ["Ms. Teddy X"]: {
-                level: 3, order: 3, space: 9, waru: 52, banked: 3500, decor: 500, limit: 198
-            },
-            ["Yellow Submarine"]: {
-                level: 3, order: 4, space: 16, waru: 72, banked: 7000, decor: 900, limit: 198
-            },
-            ["Refreshing Oasis"]: {
-                level: 3, order: 4, space: 16, waru: 76, banked: 6000, decor: 1000, limit: 198
-            },
-            ["Yeti Super Stage"]: {
-                level: 3, order: 4, space: 16, waru: 82, banked: 5000, decor: 700, limit: 198
-            },
-            ["Nautilus Harbor"]: {
-                level: 3, order: 4, space: 16, waru: 91, banked: 5000, decor: 1500, limit: 198
-            },
-            ["Shinsoo's Nest"]: {
-                level: 3, order: 4, space: 16, waru: 87, banked: 7000, decor: 2000, limit: 198
-            },
-            ["Ludibrium Toy House"]: {
-                level: 3, order: 4, space: 16, waru: 183, banked: 2000, decor: 4000, limit: 198
-            },
-            ["Orbis Flying Garden"]: {
-                level: 3, order: 4, space: 16, waru: 105, banked: 5000, decor: 1500, limit: 198
-            },
-            ["Ereve Fountain Garden"]: {
-                level: 3, order: 4, space: 16, waru: 70, banked: 4500, decor: 500, limit: 198
-            },
-            ["Aqua Road Castle"]: {
-                level: 3, order: 4, space: 16, waru: 91, banked: 4000, decor: 1200, limit: 198
-            },
-            ["Zakum's Cave"]: {
-                level: 3, order: 4, space: 16, waru: 60, banked: 12000, decor: 500, limit: 198
-            },
-            ["Windmill"]: {
-                level: 4, order: 2, space: 4, waru: 10, banked: 70, decor: 20, limit: 99
-            },
-            ["Chopper Chalet"]: {
-                level: 5, order: 2, space: 4, waru: 8, banked: 120, decor: 10, limit: 99
-            },
-            ["Drip Brew Coffee House"]: {
-                level: 5, order: 3, space: 9, waru: 10, banked: 170, decor: 10, limit: 99
-            },
-            ["Red Brick Abode"]: {
-                level: 6, order: 2, space: 4, waru: 10, banked: 100, decor: 15, limit: 99
-            },
-            ["Lofty Brick House"]: {
-                level: 7, order: 2, space: 4, waru: 8, banked: 110, decor: 30, limit: 99
-            },
-            ["Purple Bathhouse"]: {
-                level: 8, order: 2, space: 4, waru: 9, banked: 110, decor: 20, limit: 99
-            },
-            ["Blue Bathhouse"]: {
-                level: 9, order: 2, space: 4, waru: 12, banked: 100, decor: 15, limit: 99
-            },
-            ["Big Apple Fruit Shop"]: {
-                level: 10, order: 2, space: 4, waru: 10, banked: 160, decor: 30, limit: 99
-            },
-            ["Octo-Pot Seafood"]: {
-                level: 10, order: 2, space: 4, waru: 13, banked: 140, decor: 5, limit: 99
-            },
-            ["Henesys Bowman Guild"]: {
-                level: 10, order: 3, space: 9, waru: 15, banked: 350, decor: 5, limit: 99
-            },
-            ["Rudi Beauty Salon"]: {
-                level: 10, order: 3, space: 9, waru: 14, banked: 250, decor: 70, limit: 99
-            },
-            ["Santa's Gift Shop"]: {
-                level: 10, order: 3, space: 9, waru: 16, banked: 200, decor: 30, limit: 99
-            },
-            ["Ghastly Ghost Gables"]: {
-                level: 10, order: 4, space: 16, waru: 45, banked: 3000, decor: 500, limit: 198
-            },
-            ["Grand Gourd Gables"]: {
-                level: 10, order: 4, space: 16, waru: 43, banked: 5000, decor: 350, limit: 198
-            },
-            ["Blossom House"]: {
-                level: 11 , order: 2, space: 4, waru: 12, banked: 180, decor: 25, limit: 99
-            },
-            ["Tip Top Chop Shop"]: {
-                level: 11, order: 2, space: 4, waru: 11, banked: 190, decor: 25, limit: 99
-            },
-            ["Pink Angel Place"]: {
-                level: 12, order: 2, space: 4, waru: 10, banked: 210, decor: 30, limit: 99
-            },
-            ["Full Moon Song Pyun Shop"]: {
-                level: 12, order: 3, space: 9, waru: 12, banked: 250, decor: 30, limit: 99
-            },
-            ["Gingerbread Gables"]: {
-                level: 13, order: 2, space: 4, waru: 14, banked: 200, decor: 20, limit: 99
-            },
-            ["Rien's Tonic Shop"]: {
-                level: 13, order: 2, space: 4, waru: 15, banked: 210, decor: 20, limit: 99
-            },
-            ["Blue Mushroom Mansion"]: {
-                level: 14, order: 2, space: 4, waru: 12, banked: 240, decor: 10, limit: 99
-            },
-            ["Mushroom Tower"]: {
-                level: 14, order: 4, space: 16, waru: 12, banked: 300, decor: 10, limit: 99
-            },
-            ["Ariant Fabrics (I)"]: {
-                level: 15, order: 2, space: 4, waru: 12, banked: 360, decor: 5, limit: 99
-            },
-            ["Hanok House"]: {
-                level: 15, order: 2, space: 4, waru: 17, banked: 300, decor: 50, limit: 99
-            },
-            ["Fantasy Park Viking"]: {
-                level: 15, order: 3, space: 9, waru: 18, banked: 600, decor: 10, limit: 99
-            },
-            ["Alchemist's Abode"]: {
-                level: 15, order: 3, space: 9, waru: 20, banked: 300, decor: 15, limit: 99
-            },
-            ["Five-Slime Hotel"]: {
-                level: 15, order: 3, space: 9, waru: 18, banked: 400, decor: 25, limit: 99
-            },
-            ["Creamy Cake Chateau"]: {
-                level: 15, order: 3, space: 9, waru: 20, banked: 360, decor: 35, limit: 99
-            },
-            ["Florina Lighthouse"]: {
-                level: 15, order: 3, space: 9, waru: 15, banked: 250, decor: 15, limit: 99
-            },
-            ["Leafre Airship"]: {
-                level: 15, order: 4, space: 16, waru: 50, banked: 4000, decor: 500, limit: 198
-            },
-            ["Fish Shop"]: {
-                level: 16, order: 2, space: 4, waru: 15, banked: 550, decor: 10, limit: 99
-            },
-            ["Mushking Empire Outpost"]: {
-                level: 16, order: 3, space: 9, waru: 16, banked: 700, decor: 10, limit: 99
-            },
-            ["Nova Safehouse"]: {
-                level: 17, order: 2, space: 4, waru: 18, banked: 300, decor: 20, limit: 99
-            },
-            ["Elluel House"]: {
-                level: 18, order: 2, space: 4, waru: 15, banked: 330, decor: 40, limit: 99
-            },
-            ["Ariant Fabrics (II)"]: {
-                level: 18, order: 2, space: 4, waru: 16, banked: 300, decor: 40, limit: 99
-            },
-            ["Happy Homestead"]: {
-                level: 19, order: 2, space: 4, waru: 20, banked: 340, decor: 20, limit: 99
-            },
-            ["Melody Manor"]: {
-                level: 20, order: 2, space: 4, waru: 17, banked: 300, decor: 50, limit: 99
-            },
-            ["Aqua Roadhouse"]: {
-                level: 20, order: 3, space: 9, waru: 25, banked: 550, decor: 50, limit: 99
-            },
-            ["Fun Factory"]: {
-                level: 20, order: 3, space: 9, waru: 20, banked: 400, decor: 40, limit: 99
-            },
-            ["Ariant Castle"]: {
-                level: 20, order: 4, space: 16, waru: 28, banked: 500, decor: 50, limit: 99
-            },
-            ["Shaved Ice Chateau"]: {
-                level: 20, order: 4, space: 16, waru: 25, banked: 500, decor: 45, limit: 99
-            },
-            ["Magatia Workshop"]: {
-                level: 20, order: 4, space: 16, waru: 70, banked: 2000, decor: 100, limit: 198
-            },
-            ["Santa's Special Shop"]: {
-                level: 21, order: 2, space: 4, waru: 22, banked: 450, decor: 40, limit: 99
-            },
-            ["Farmer's House"]: {
-                level: 21, order: 2, space: 4, waru: 21, banked: 460, decor: 40, limit: 99
-            },
-            ["Tick Tock Townhouse"]: {
-                level: 22, order: 2, space: 4, waru: 25, banked: 400, decor: 35, limit: 99
-            },
-            ["Mu Lung Dojo"]: {
-                level: 23, order: 2, space: 4, waru: 23, banked: 450, decor: 35, limit: 99
-            },
-            ["Icy Treat Retreat (I)"]: {
-                level: 24, order: 2, space: 4, waru: 20, banked: 500, decor: 40, limit: 99
-            },
-            ["Beatdown Shop"]: {
-                level: 25, order: 3, space: 9, waru: 30, banked: 750, decor: 30, limit: 99
-            },
-            ["Very Berry Vineyard"]: {
-                level: 25, order: 3, space: 9, waru: 25, banked: 600, decor: 40, limit: 99
-            },
-            ["Chryse Coliseum"]: {
-                level: 25, order: 3, space: 9, waru: 30, banked: 750, decor: 55, limit: 99
-            },
-            ["Omega Sector"]: {
-                level: 25, order: 4, space: 16, waru: 45, banked: 900, decor: 60, limit: 99
-            },
-            ["Tip-Top Toy Shop"]: {
-                level: 26, order: 2, space: 4, waru: 22, banked: 500, decor: 50, limit: 99
-            },
-            ["Edelstein Air Field"]: {
-                level: 27, order: 3, space: 9, waru: 33, banked: 800, decor: 20, limit: 99
-            },
-            ["Big Top Tenement"]: {
-                level: 28, order: 2, space: 4, waru: 28, banked: 500, decor: 30, limit: 99
-            },
-            ["Big Bowl Noodles"]: {
-                level: 29, order: 2, space: 4, waru: 30, banked: 450, decor: 40, limit: 99
-            },
-            ["Lumiere"]: {
-                level: 30, order: 3, space: 9, waru: 35, banked: 900, decor: 30, limit: 99
-            },
-            ["Icy Treat Retreat (II)"]: {
-                level: 30, order: 3, space: 9, waru: 32, banked: 700, decor: 40, limit: 99
-            },
-            ["Wholesome Milk Farm"]: {
-                level: 35, order: 2, space: 4, waru: 40, banked: 700, decor: 50, limit: 99
-            },
-            ["The Secret Garden"]: {
-                level: 35, order: 4, space: 16, waru: 82, banked: 6000, decor: 1500, limit: 99
-            }
+        data: {
+            [""]: { level: 1, order: 1, units: 0, waru: 0, banked: 0, decor: 0, limit: 0, fixed: false }
         }
     },
     decor: {
@@ -466,212 +221,453 @@ export const objectData = {
             39: { min: "Lil Pine Tree", max: "Snow Crystal Core" },
             40: { min: "Lil Pine Tree", max: "Snow Crystal Core" }
         },
-        props: {
-            ["Lil Pine Tree"]: { level: 2, order: 1, space: 1, waru: 0, banked: 0, decor: 8, limit: 99 },
-            ["Pine Tree"]: { level: 3, order: 1, space: 1, waru: 0, banked: 0, decor: 12, limit: 99 },
-            ["Orange Mini Mushroom"]: { level: 3, order: 1, space: 1, waru: 0, banked: 0, decor: 9, limit: 99 },
-            ["Heartfelt Garden"]: { level: 3, order: 1, space: 1, waru: 0, banked: 0, decor: 1000, limit: 198 },
-            ["Floral Archway"]: { level: 3, order: 1, space: 1, waru: 0, banked: 0, decor: 1500, limit: 198 },
-            ["Winged Archway"]: { level: 3, order: 1, space: 1, waru: 0, banked: 0, decor: 2000, limit: 198 },
-            ["Rice Candy Set"]: { level: 3, order: 1, space: 1, waru: 0, banked: 0, decor: 2700, limit: 198 },
-            ["Sky-High Flower"]: { level: 3, order: 1, space: 1, waru: 0, banked: 0, decor: 1000, limit: 198 },
-            ["Stone Lantern"]: { level: 3, order: 1, space: 1, waru: 0, banked: 0, decor: 1500, limit: 198 },
-            ["Buddy Bloom"]: { level: 3, order: 1, space: 1, waru: 0, banked: 0, decor: 2000, limit: 198 },
-            ["Big Bass"]: { level: 3, order: 1, space: 1, waru: 0, banked: 0, decor: 2700, limit: 198 },
-            ["Cannon"]: { level: 3, order: 1, space: 1, waru: 0, banked: 0, decor: 3200, limit: 198 },
-            ["Nestled Egg"]: { level: 3, order: 2, space: 4, waru: 0, banked: 0, decor: 3500, limit: 198 },
-            ["Snowman Mask"]: { level: 3, order: 2, space: 4, waru: 0, banked: 0, decor: 4200, limit: 198 },
-            ["Fishin' Pepe"]: { level: 3, order: 3, space: 9, waru: 0, banked: 0, decor: 4600, limit: 198 },
-            ["Christmas Tree"]: { level: 3, order: 2, space: 4, waru: 0, banked: 0, decor: 4800, limit: 198 },
-            ["Aran's Legacy"]: { level: 3, order: 2, space: 4, waru: 0, banked: 0, decor: 6000, limit: 198 },
-            ["Mount Monsmore"]: { level: 3, order: 4, space: 16, waru: 0, banked: 0, decor: 13000, limit: 198 },
-            ["Elluel Rune Tree"]: { level: 3, order: 4, space: 16, waru: 0, banked: 0, decor: 13000, limit: 198 },
-            ["White Cube"]: { level: 4, order: 1, space: 1, waru: 0, banked: 0, decor: 15, limit: 99 },
-            ["Red Cube"]: { level: 4, order: 1, space: 1, waru: 0, banked: 0, decor: 15, limit: 99 },
-            ["Green Cube"]: { level: 4, order: 1, space: 1, waru: 0, banked: 0, decor: 15, limit: 99 },
-            ["Orange Cube"]: { level: 4, order: 1, space: 1, waru: 0, banked: 0, decor: 15, limit: 99 },
-            ["Blue Cube"]: { level: 4, order: 1, space: 1, waru: 0, banked: 0, decor: 15, limit: 99 },
-            ["Black Cube"]: { level: 4, order: 1, space: 1, waru: 0, banked: 0, decor: 15, limit: 99 },
-            ["Big Pine Tree"]: { level: 5, order: 1, space: 1, waru: 0, banked: 0, decor: 23, limit: 99 },
-            ["Fallen Log"]: { level: 5, order: 1, space: 1, waru: 0, banked: 0, decor: 21, limit: 99 },
-            ["Torch"]: { level: 5, order: 1, space: 1, waru: 0, banked: 0, decor: 27, limit: 99 },
-            ["Oak Barrel"]: { level: 6, order: 1, space: 1, waru: 0, banked: 0, decor: 36, limit: 99 },
-            ["Tiny Round Tree"]: { level: 6, order: 1, space: 1, waru: 0, banked: 0, decor: 45, limit: 99 },
-            ["Haystack"]: { level: 6, order: 1, space: 1, waru: 0, banked: 0, decor: 30, limit: 99 },
-            ["Round Tree"]: { level: 7, order: 1, space: 1, waru: 0, banked: 0, decor: 53, limit: 99 },
-            ["Trash Box"]: { level: 7, order: 1, space: 1, waru: 0, banked: 0, decor: 53, limit: 99 },
-            ["Wooden Timepost"]: { level: 7, order: 1, space: 1, waru: 0, banked: 0, decor: 60, limit: 99 },
-            ["Tiny Sign"]: { level: 8, order: 1, space: 1, waru: 0, banked: 0, decor: 68, limit: 99 },
-            ["Mini Flowerpot"]: { level: 8, order: 1, space: 1, waru: 0, banked: 0, decor: 72, limit: 99 },
-            ["Little Scoop Tree"]: { level: 8, order: 1, space: 1, waru: 0, banked: 0, decor: 69, limit: 99 },
-            ["Simple Swing"]: { level: 9, order: 1, space: 1, waru: 0, banked: 0, decor: 75, limit: 99 },
-            ["Log Bench"]: { level: 9, order: 1, space: 1, waru: 0, banked: 0, decor: 68, limit: 99 },
-            ["Big Scoop Tree"]: { level: 9, order: 1, space: 1, waru: 0, banked: 0, decor: 78, limit: 99 },
-            ["Buncha Barrels"]: { level: 10, order: 1, space: 1, waru: 0, banked: 0, decor: 87, limit: 99 },
-            ["Plain Sign"]: { level: 10, order: 1, space: 1, waru: 0, banked: 0, decor: 93, limit: 99 },
-            ["Lil Evergreen"]: { level: 10, order: 1, space: 1, waru: 0, banked: 0, decor: 105, limit: 99 },
-            ["Rock"]: { level: 10, order: 1, space: 1, waru: 0, banked: 0, decor: 75, limit: 99 },
-            ["Flat Rock"]: { level: 10, order: 1, space: 1, waru: 0, banked: 0, decor: 75, limit: 99 },
-            ["Pointy Rock"]: { level: 10, order: 1, space: 1, waru: 0, banked: 0, decor: 90, limit: 99 },
-            ["Craggy Rock"]: { level: 10, order: 1, space: 1, waru: 0, banked: 0, decor: 98, limit: 99 },
-            ["Towering Rock"]: { level: 10, order: 1, space: 1, waru: 0, banked: 0, decor: 113, limit: 99 },
-            ["Banana Shake"]: { level: 10, order: 1, space: 1, waru: 0, banked: 0, decor: 98, limit: 99 },
-            ["Mythic Monsterland"]: { level: 10, order: 4, space: 16, waru: 0, banked: 0, decor: 13500, limit: 198 },
-            ["Time Twister"]: { level: 10, order: 4, space: 16, waru: 0, banked: 0, decor: 9400, limit: 198 },
-            ["Yeti's Hideout"]: { level: 10, order: 4, space: 16, waru: 0, banked: 0, decor: 11000, limit: 198 },
-            ["Green Nature"]: { level: 10, order: 4, space: 16, waru: 0, banked: 0, decor: 10200, limit: 198 },
-            ["Flying Whale"]: { level: 10, order: 4, space: 16, waru: 0, banked: 0, decor: 17000, limit: 198 },
-            ["Stone Trash Can"]: { level: 11, order: 1, space: 1, waru: 0, banked: 0, decor: 75, limit: 99 },
-            ["Triple Mushroom"]: { level: 11, order: 1, space: 1, waru: 0, banked: 0, decor: 90, limit: 99 },
-            ["Round Topiary Tree"]: { level: 11, order: 1, space: 1, waru: 0, banked: 0, decor: 98, limit: 99 },
-            ["Fresh Milk"]: { level: 11, order: 1, space: 1, waru: 0, banked: 0, decor: 98, limit: 99 },
-            ["Big Evergreen"]: { level: 12, order: 1, space: 1, waru: 0, banked: 0, decor: 113, limit: 99 },
-            ["Haycart"]: { level: 12, order: 1, space: 1, waru: 0, banked: 0, decor: 120, limit: 99 },
-            ["Aged Cheese"]: { level: 12, order: 2, space: 4, waru: 0, banked: 0, decor: 480, limit: 99 },
-            ["Broad Sign"]: { level: 13, order: 1, space: 1, waru: 0, banked: 0, decor: 143, limit: 99 },
-            ["Streetlight"]: { level: 13, order: 1, space: 1, waru: 0, banked: 0, decor: 143, limit: 99 },
-            ["Grape Vat"]: { level: 13, order: 2, space: 4, waru: 0, banked: 0, decor: 600, limit: 99 },
-            ["Itty Bitty Puddle"]: { level: 14, order: 2, space: 4, waru: 0, banked: 0, decor: 180, limit: 99 },
-            ["Orange Bin"]: { level: 14, order: 1, space: 1, waru: 0, banked: 0, decor: 135, limit: 99 },
-            ["Green Bin"]: { level: 14, order: 1, space: 1, waru: 0, banked: 0, decor: 135, limit: 99 },
-            ["Purple Bin"]: { level: 14, order: 1, space: 1, waru: 0, banked: 0, decor: 135, limit: 99 },
-            ["Purple Mini Mushroom"]: { level: 15, order: 1, space: 1, waru: 0, banked: 0, decor: 165, limit: 99 },
-            ["Classic Wooden Horse"]: { level: 15, order: 1, space: 1, waru: 0, banked: 0, decor: 165, limit: 99 },
-            ["Fine Grape Juice"]: { level: 15, order: 2, space: 4, waru: 0, banked: 0, decor: 750, limit: 99 },
-            ["Big Round Topiary"]: { level: 16, order: 1, space: 1, waru: 0, banked: 0, decor: 180, limit: 99 },
-            ["White Bench"]: { level: 16, order: 1, space: 1, waru: 0, banked: 0, decor: 180, limit: 99 },
-            ["Double Cubist Tree"]: { level: 17, order: 1, space: 1, waru: 0, banked: 0, decor: 195, limit: 99 },
-            ["White Signpost"]: { level: 17, order: 1, space: 1, waru: 0, banked: 0, decor: 210, limit: 99 },
-            ["Blooming Shrub"]: { level: 18, order: 1, space: 1, waru: 0, banked: 0, decor: 225, limit: 99 },
-            ["Round Flowerpot"]: { level: 18, order: 1, space: 1, waru: 0, banked: 0, decor: 248, limit: 99 },
-            ["Big Mushroom Family"]: { level: 19, order: 1, space: 1, waru: 0, banked: 0, decor: 240, limit: 99 },
-            ["Trash Can"]: { level: 19, order: 1, space: 1, waru: 0, banked: 0, decor: 270, limit: 99 },
-            ["Rickety Clocktower"]: { level: 20, order: 1, space: 1, waru: 0, banked: 0, decor: 300, limit: 99 },
-            ["Triple Cubist Tree"]: { level: 20, order: 1, space: 1, waru: 0, banked: 0, decor: 285, limit: 99 },
-            ["Bushy Gazebo"]: { level: 20, order: 1, space: 1, waru: 0, banked: 0, decor: 315, limit: 99 },
-            ["Rustic Slide"]: { level: 20, order: 1, space: 1, waru: 0, banked: 0, decor: 270, limit: 99 },
-            ["Maple Tree"]: { level: 21, order: 1, space: 1, waru: 0, banked: 0, decor: 330, limit: 99 },
-            ["Willow Tree"]: { level: 21, order: 1, space: 1, waru: 0, banked: 0, decor: 330, limit: 99 },
-            ["Little Flower Garden"]: { level: 22, order: 1, space: 1, waru: 0, banked: 0, decor: 345, limit: 99 },
-            ["Woodsy Well"]: { level: 22, order: 1, space: 1, waru: 0, banked: 0, decor: 353, limit: 99 },
-            ["Lil Star Tree"]: { level: 23, order: 1, space: 1, waru: 0, banked: 0, decor: 338, limit: 99 },
-            ["White Signboard"]: { level: 23, order: 1, space: 1, waru: 0, banked: 0, decor: 360, limit: 99 },
-            ["Station Timepiece"]: { level: 24, order: 1, space: 1, waru: 0, banked: 0, decor: 375, limit: 99 },
-            ["Floral Gazebo"]: { level: 24, order: 1, space: 1, waru: 0, banked: 0, decor: 368, limit: 99 },
-            ["Cannonball Heap"]: { level: 25, order: 1, space: 1, waru: 0, banked: 0, decor: 390, limit: 99 },
-            ["Gardener's Wheelbarrow"]: { level: 25, order: 1, space: 1, waru: 0, banked: 0, decor: 405, limit: 99 },
-            ["Merry-Go-Round"]: { level: 25, order: 3, space: 9, waru: 0, banked: 0, decor: 2500, limit: 99 },
-            ["Star Tree"]: { level: 26, order: 1, space: 1, waru: 0, banked: 0, decor: 420, limit: 99 },
-            ["Fancy Bench"]: { level: 26, order: 1, space: 1, waru: 0, banked: 0, decor: 413, limit: 99 },
-            ["Lil Heart Tree"]: { level: 27, order: 1, space: 1, waru: 0, banked: 0, decor: 435, limit: 99 },
-            ["Heart Tree"]: { level: 27, order: 1, space: 1, waru: 0, banked: 0, decor: 465, limit: 99 },
-            ["Rapunzel's Tower"]: { level: 27, order: 2, space: 4, waru: 0, banked: 0, decor: 2000, limit: 99 },
-            ["Rustic Archway"]: { level: 28, order: 1, space: 1, waru: 0, banked: 0, decor: 473, limit: 99 },
-            ["Shady Table"]: { level: 28, order: 1, space: 1, waru: 0, banked: 0, decor: 480, limit: 99 },
-            ["Pretty Pond"]: { level: 29, order: 3, space: 9, waru: 0, banked: 0, decor: 600, limit: 99 },
-            ["Rockin' Wooden Horse"]: { level: 29, order: 1, space: 1, waru: 0, banked: 0, decor: 510, limit: 99 },
-            ["Fine Fountain"]: { level: 30, order: 1, space: 1, waru: 0, banked: 0, decor: 525, limit: 99 },
-            ["Floral Swing"]: { level: 30, order: 1, space: 1, waru: 0, banked: 0, decor: 540, limit: 99 },
-            ["Snack Shack"]: { level: 30, order: 1, space: 1, waru: 0, banked: 0, decor: 750, limit: 99 },
-            ["Snow Crystal Core"]: { level: 32, order: 3, space: 9, waru: 0, banked: 0, decor: 3000, limit: 99 }
+        data: {
+            ["Lil Pine Tree"]: { level: 2, order: 1, units: 1, waru: 0, banked: 0, decor: 8, limit: 99, fixed: false },
+            ["Pine Tree"]: { level: 3, order: 1, units: 1, waru: 0, banked: 0, decor: 12, limit: 99, fixed: false },
+            ["Orange Mini Mushroom"]: { level: 3, order: 1, units: 1, waru: 0, banked: 0, decor: 9, limit: 99, fixed: false },
+            ["Heartfelt Garden"]: { level: 3, order: 1, units: 1, waru: 0, banked: 0, decor: 1000, limit: 198, fixed: false },
+            ["Floral Archway"]: { level: 3, order: 1, units: 1, waru: 0, banked: 0, decor: 1500, limit: 198, fixed: false },
+            ["Winged Archway"]: { level: 3, order: 1, units: 1, waru: 0, banked: 0, decor: 2000, limit: 198, fixed: false },
+            ["Rice Candy Set"]: { level: 3, order: 1, units: 1, waru: 0, banked: 0, decor: 2700, limit: 198, fixed: false },
+            ["Sky-High Flower"]: { level: 3, order: 1, units: 1, waru: 0, banked: 0, decor: 1000, limit: 198, fixed: false },
+            ["Stone Lantern"]: { level: 3, order: 1, units: 1, waru: 0, banked: 0, decor: 1500, limit: 198, fixed: false },
+            ["Buddy Bloom"]: { level: 3, order: 1, units: 1, waru: 0, banked: 0, decor: 2000, limit: 198, fixed: false },
+            ["Big Bass"]: { level: 3, order: 1, units: 1, waru: 0, banked: 0, decor: 2700, limit: 198, fixed: false },
+            ["Cannon"]: { level: 3, order: 1, units: 1, waru: 0, banked: 0, decor: 3200, limit: 198, fixed: false },
+            ["Nestled Egg"]: { level: 3, order: 2, units: 4, waru: 0, banked: 0, decor: 3500, limit: 198, fixed: false },
+            ["Snowman Mask"]: { level: 3, order: 2, units: 4, waru: 0, banked: 0, decor: 4200, limit: 198, fixed: false },
+            ["Fishin' Pepe"]: { level: 3, order: 3, units: 9, waru: 0, banked: 0, decor: 4600, limit: 198, fixed: false },
+            ["Christmas Tree"]: { level: 3, order: 2, units: 4, waru: 0, banked: 0, decor: 4800, limit: 198, fixed: false },
+            ["Aran's Legacy"]: { level: 3, order: 2, units: 4, waru: 0, banked: 0, decor: 6000, limit: 198, fixed: false },
+            ["Mount Monsmore"]: { level: 3, order: 4, units: 16, waru: 0, banked: 0, decor: 13000, limit: 198, fixed: false },
+            ["Elluel Rune Tree"]: { level: 3, order: 4, units: 16, waru: 0, banked: 0, decor: 13000, limit: 198, fixed: false },
+            ["White Cube"]: { level: 4, order: 1, units: 1, waru: 0, banked: 0, decor: 15, limit: 99, fixed: false },
+            ["Red Cube"]: { level: 4, order: 1, units: 1, waru: 0, banked: 0, decor: 15, limit: 99, fixed: false },
+            ["Green Cube"]: { level: 4, order: 1, units: 1, waru: 0, banked: 0, decor: 15, limit: 99, fixed: false },
+            ["Orange Cube"]: { level: 4, order: 1, units: 1, waru: 0, banked: 0, decor: 15, limit: 99, fixed: false },
+            ["Blue Cube"]: { level: 4, order: 1, units: 1, waru: 0, banked: 0, decor: 15, limit: 99, fixed: false },
+            ["Black Cube"]: { level: 4, order: 1, units: 1, waru: 0, banked: 0, decor: 15, limit: 99, fixed: false },
+            ["Big Pine Tree"]: { level: 5, order: 1, units: 1, waru: 0, banked: 0, decor: 23, limit: 99, fixed: false },
+            ["Fallen Log"]: { level: 5, order: 1, units: 1, waru: 0, banked: 0, decor: 21, limit: 99, fixed: false },
+            ["Torch"]: { level: 5, order: 1, units: 1, waru: 0, banked: 0, decor: 27, limit: 99, fixed: false },
+            ["Oak Barrel"]: { level: 6, order: 1, units: 1, waru: 0, banked: 0, decor: 36, limit: 99, fixed: false },
+            ["Tiny Round Tree"]: { level: 6, order: 1, units: 1, waru: 0, banked: 0, decor: 45, limit: 99, fixed: false },
+            ["Haystack"]: { level: 6, order: 1, units: 1, waru: 0, banked: 0, decor: 30, limit: 99, fixed: false },
+            ["Round Tree"]: { level: 7, order: 1, units: 1, waru: 0, banked: 0, decor: 53, limit: 99, fixed: false },
+            ["Trash Box"]: { level: 7, order: 1, units: 1, waru: 0, banked: 0, decor: 53, limit: 99, fixed: false },
+            ["Wooden Timepost"]: { level: 7, order: 1, units: 1, waru: 0, banked: 0, decor: 60, limit: 99, fixed: false },
+            ["Tiny Sign"]: { level: 8, order: 1, units: 1, waru: 0, banked: 0, decor: 68, limit: 99, fixed: false },
+            ["Mini Flowerpot"]: { level: 8, order: 1, units: 1, waru: 0, banked: 0, decor: 72, limit: 99, fixed: false },
+            ["Little Scoop Tree"]: { level: 8, order: 1, units: 1, waru: 0, banked: 0, decor: 69, limit: 99, fixed: false },
+            ["Simple Swing"]: { level: 9, order: 1, units: 1, waru: 0, banked: 0, decor: 75, limit: 99, fixed: false },
+            ["Log Bench"]: { level: 9, order: 1, units: 1, waru: 0, banked: 0, decor: 68, limit: 99, fixed: false },
+            ["Big Scoop Tree"]: { level: 9, order: 1, units: 1, waru: 0, banked: 0, decor: 78, limit: 99, fixed: false },
+            ["Buncha Barrels"]: { level: 10, order: 1, units: 1, waru: 0, banked: 0, decor: 87, limit: 99, fixed: false },
+            ["Plain Sign"]: { level: 10, order: 1, units: 1, waru: 0, banked: 0, decor: 93, limit: 99, fixed: false },
+            ["Lil Evergreen"]: { level: 10, order: 1, units: 1, waru: 0, banked: 0, decor: 105, limit: 99, fixed: false },
+            ["Rock"]: { level: 10, order: 1, units: 1, waru: 0, banked: 0, decor: 75, limit: 99, fixed: false },
+            ["Flat Rock"]: { level: 10, order: 1, units: 1, waru: 0, banked: 0, decor: 75, limit: 99, fixed: false },
+            ["Pointy Rock"]: { level: 10, order: 1, units: 1, waru: 0, banked: 0, decor: 90, limit: 99, fixed: false },
+            ["Craggy Rock"]: { level: 10, order: 1, units: 1, waru: 0, banked: 0, decor: 98, limit: 99, fixed: false },
+            ["Towering Rock"]: { level: 10, order: 1, units: 1, waru: 0, banked: 0, decor: 113, limit: 99, fixed: false },
+            ["Banana Shake"]: { level: 10, order: 1, units: 1, waru: 0, banked: 0, decor: 98, limit: 99, fixed: false },
+            ["Mythic Monsterland"]: { level: 10, order: 4, units: 16, waru: 0, banked: 0, decor: 13500, limit: 198, fixed: false },
+            ["Time Twister"]: { level: 10, order: 4, units: 16, waru: 0, banked: 0, decor: 9400, limit: 198, fixed: false },
+            ["Yeti's Hideout"]: { level: 10, order: 4, units: 16, waru: 0, banked: 0, decor: 11000, limit: 198, fixed: false },
+            ["Green Nature"]: { level: 10, order: 4, units: 16, waru: 0, banked: 0, decor: 10200, limit: 198, fixed: false },
+            ["Flying Whale"]: { level: 10, order: 4, units: 16, waru: 0, banked: 0, decor: 17000, limit: 198, fixed: false },
+            ["Stone Trash Can"]: { level: 11, order: 1, units: 1, waru: 0, banked: 0, decor: 75, limit: 99, fixed: false },
+            ["Triple Mushroom"]: { level: 11, order: 1, units: 1, waru: 0, banked: 0, decor: 90, limit: 99, fixed: false },
+            ["Round Topiary Tree"]: { level: 11, order: 1, units: 1, waru: 0, banked: 0, decor: 98, limit: 99, fixed: false },
+            ["Fresh Milk"]: { level: 11, order: 1, units: 1, waru: 0, banked: 0, decor: 98, limit: 99, fixed: false },
+            ["Big Evergreen"]: { level: 12, order: 1, units: 1, waru: 0, banked: 0, decor: 113, limit: 99, fixed: false },
+            ["Haycart"]: { level: 12, order: 1, units: 1, waru: 0, banked: 0, decor: 120, limit: 99, fixed: false },
+            ["Aged Cheese"]: { level: 12, order: 2, units: 4, waru: 0, banked: 0, decor: 480, limit: 99, fixed: false },
+            ["Broad Sign"]: { level: 13, order: 1, units: 1, waru: 0, banked: 0, decor: 143, limit: 99, fixed: false },
+            ["Streetlight"]: { level: 13, order: 1, units: 1, waru: 0, banked: 0, decor: 143, limit: 99, fixed: false },
+            ["Grape Vat"]: { level: 13, order: 2, units: 4, waru: 0, banked: 0, decor: 600, limit: 99, fixed: false },
+            ["Itty Bitty Puddle"]: { level: 14, order: 2, units: 4, waru: 0, banked: 0, decor: 180, limit: 99, fixed: false },
+            ["Orange Bin"]: { level: 14, order: 1, units: 1, waru: 0, banked: 0, decor: 135, limit: 99, fixed: false },
+            ["Green Bin"]: { level: 14, order: 1, units: 1, waru: 0, banked: 0, decor: 135, limit: 99, fixed: false },
+            ["Purple Bin"]: { level: 14, order: 1, units: 1, waru: 0, banked: 0, decor: 135, limit: 99, fixed: false },
+            ["Purple Mini Mushroom"]: { level: 15, order: 1, units: 1, waru: 0, banked: 0, decor: 165, limit: 99, fixed: false },
+            ["Classic Wooden Horse"]: { level: 15, order: 1, units: 1, waru: 0, banked: 0, decor: 165, limit: 99, fixed: false },
+            ["Fine Grape Juice"]: { level: 15, order: 2, units: 4, waru: 0, banked: 0, decor: 750, limit: 99, fixed: false },
+            ["Big Round Topiary"]: { level: 16, order: 1, units: 1, waru: 0, banked: 0, decor: 180, limit: 99, fixed: false },
+            ["White Bench"]: { level: 16, order: 1, units: 1, waru: 0, banked: 0, decor: 180, limit: 99, fixed: false },
+            ["Double Cubist Tree"]: { level: 17, order: 1, units: 1, waru: 0, banked: 0, decor: 195, limit: 99, fixed: false },
+            ["White Signpost"]: { level: 17, order: 1, units: 1, waru: 0, banked: 0, decor: 210, limit: 99, fixed: false },
+            ["Blooming Shrub"]: { level: 18, order: 1, units: 1, waru: 0, banked: 0, decor: 225, limit: 99, fixed: false },
+            ["Round Flowerpot"]: { level: 18, order: 1, units: 1, waru: 0, banked: 0, decor: 248, limit: 99, fixed: false },
+            ["Big Mushroom Family"]: { level: 19, order: 1, units: 1, waru: 0, banked: 0, decor: 240, limit: 99, fixed: false },
+            ["Trash Can"]: { level: 19, order: 1, units: 1, waru: 0, banked: 0, decor: 270, limit: 99, fixed: false },
+            ["Rickety Clocktower"]: { level: 20, order: 1, units: 1, waru: 0, banked: 0, decor: 300, limit: 99, fixed: false },
+            ["Triple Cubist Tree"]: { level: 20, order: 1, units: 1, waru: 0, banked: 0, decor: 285, limit: 99, fixed: false },
+            ["Bushy Gazebo"]: { level: 20, order: 1, units: 1, waru: 0, banked: 0, decor: 315, limit: 99, fixed: false },
+            ["Rustic Slide"]: { level: 20, order: 1, units: 1, waru: 0, banked: 0, decor: 270, limit: 99, fixed: false },
+            ["Maple Tree"]: { level: 21, order: 1, units: 1, waru: 0, banked: 0, decor: 330, limit: 99, fixed: false },
+            ["Willow Tree"]: { level: 21, order: 1, units: 1, waru: 0, banked: 0, decor: 330, limit: 99, fixed: false },
+            ["Little Flower Garden"]: { level: 22, order: 1, units: 1, waru: 0, banked: 0, decor: 345, limit: 99, fixed: false },
+            ["Woodsy Well"]: { level: 22, order: 1, units: 1, waru: 0, banked: 0, decor: 353, limit: 99, fixed: false },
+            ["Lil Star Tree"]: { level: 23, order: 1, units: 1, waru: 0, banked: 0, decor: 338, limit: 99, fixed: false },
+            ["White Signboard"]: { level: 23, order: 1, units: 1, waru: 0, banked: 0, decor: 360, limit: 99, fixed: false },
+            ["Station Timepiece"]: { level: 24, order: 1, units: 1, waru: 0, banked: 0, decor: 375, limit: 99, fixed: false },
+            ["Floral Gazebo"]: { level: 24, order: 1, units: 1, waru: 0, banked: 0, decor: 368, limit: 99, fixed: false },
+            ["Cannonball Heap"]: { level: 25, order: 1, units: 1, waru: 0, banked: 0, decor: 390, limit: 99, fixed: false },
+            ["Gardener's Wheelbarrow"]: { level: 25, order: 1, units: 1, waru: 0, banked: 0, decor: 405, limit: 99, fixed: false },
+            ["Merry-Go-Round"]: { level: 25, order: 3, units: 9, waru: 0, banked: 0, decor: 2500, limit: 99, fixed: false },
+            ["Star Tree"]: { level: 26, order: 1, units: 1, waru: 0, banked: 0, decor: 420, limit: 99, fixed: false },
+            ["Fancy Bench"]: { level: 26, order: 1, units: 1, waru: 0, banked: 0, decor: 413, limit: 99, fixed: false },
+            ["Lil Heart Tree"]: { level: 27, order: 1, units: 1, waru: 0, banked: 0, decor: 435, limit: 99, fixed: false },
+            ["Heart Tree"]: { level: 27, order: 1, units: 1, waru: 0, banked: 0, decor: 465, limit: 99, fixed: false },
+            ["Rapunzel's Tower"]: { level: 27, order: 2, units: 4, waru: 0, banked: 0, decor: 2000, limit: 99, fixed: false },
+            ["Rustic Archway"]: { level: 28, order: 1, units: 1, waru: 0, banked: 0, decor: 473, limit: 99, fixed: false },
+            ["Shady Table"]: { level: 28, order: 1, units: 1, waru: 0, banked: 0, decor: 480, limit: 99, fixed: false },
+            ["Pretty Pond"]: { level: 29, order: 3, units: 9, waru: 0, banked: 0, decor: 600, limit: 99, fixed: false },
+            ["Rockin' Wooden Horse"]: { level: 29, order: 1, units: 1, waru: 0, banked: 0, decor: 510, limit: 99, fixed: false },
+            ["Fine Fountain"]: { level: 30, order: 1, units: 1, waru: 0, banked: 0, decor: 525, limit: 99, fixed: false },
+            ["Floral Swing"]: { level: 30, order: 1, units: 1, waru: 0, banked: 0, decor: 540, limit: 99, fixed: false },
+            ["Snack Shack"]: { level: 30, order: 1, units: 1, waru: 0, banked: 0, decor: 750, limit: 99, fixed: false },
+            ["Snow Crystal Core"]: { level: 32, order: 3, units: 9, waru: 0, banked: 0, decor: 3000, limit: 99 }
         }
     },
-    road: {
-        names: [""],
+    building: {
+        names: [
+            "My House", "Green Mushroom Hut", "Henesys Homestead", "Orange Mushroom House", "Monster Barn",
+            "Sturdy Straw House", "Red Mushroom Manor", "Rien Hot Springs", "Mu Lung Barber Shop", "Tip-Top Balloon Shop",
+            "Floatland Manor", "Healthy Hospital", "Monster Manor", "Mr. Teddy X", "Ms. Teddy X",
+            "Yellow Submarine", "Refreshing Oasis", "Yeti Super Stage", "Nautilus Harbor", "Shinsoo's Nest",
+            "Ludibrium Toy House", "Orbis Flying Garden", "Ereve Fountain Garden", "Aqua Road Castle", "Zakum's Cave",
+            "Windmill", "Chopper Chalet", "Drip Brew Coffee House", "Red Brick Abode", "My House (Homestead)",
+            "Lofty Brick House", "Purple Bathhouse", "Blue Bathhouse", "Big Apple Fruit Shop", "Octo-Pot Seafood",
+            "Henesys Bowman Guild", "Rudi Beauty Salon", "Santa's Gift Shop", "Ghastly Ghost Gables", "Grand Gourd Gables",
+            "Blossom House", "Tip Top Chop Shop", "Pink Angel Place", "Full Moon Song Pyun Shop", "Gingerbread Gables",
+            "Rien's Tonic Shop", "My House (Manor)", "Blue Mushroom Mansion", "Mushroom Tower", "Ariant Fabrics (I)",
+            "Hanok House", "Fantasy Park Viking", "Alchemist's Abode", "Five-Slime Hotel", "Creamy Cake Chateau",
+            "Florina Lighthouse", "Leafre Airship", "Fish Shop", "Mushking Empire Outpost", "Nova Safehouse",
+            "Elluel House", "Ariant Fabrics (II)", "Happy Homestead", "Melody Manor", "Aqua Roadhouse",
+            "Fun Factory", "Ariant Castle", "Shaved Ice Chateau", "Magatia Workshop", "My House (Mighty Manor)",
+            "Santa's Special Shop", "Farmer's House", "Tick Tock Townhouse", "Mu Lung Dojo", "Icy Treat Retreat (I)",
+            "Beatdown Shop", "Very Berry Vineyard", "Chryse Coliseum", "Omega Sector", "Tip-Top Toy Shop",
+            "Edelstein Air Field", "Big Top Tenement", "Big Bowl Noodles", "My House (Country Mansion)", "Lumiere",
+            "Icy Treat Retreat (II)", "Wholesome Milk Farm", "The Secret Garden"
+        ],
         limits: {
-            1: { min: "", max: "" },
-            2: { min: "", max: "" },
-            3: { min: "", max: "" },
-            4: { min: "", max: "" },
-            5: { min: "", max: "" },
-            6: { min: "", max: "" },
-            7: { min: "", max: "" },
-            8: { min: "", max: "" },
-            9: { min: "", max: "" },
-            10: { min: "", max: "" },
-            11: { min: "", max: "" },
-            12: { min: "", max: "" },
-            13: { min: "", max: "" },
-            14: { min: "", max: "" },
-            15: { min: "", max: "" },
-            16: { min: "", max: "" },
-            17: { min: "", max: "" },
-            18: { min: "", max: "" },
-            19: { min: "", max: "" },
-            20: { min: "", max: "" },
-            21: { min: "", max: "" },
-            22: { min: "", max: "" },
-            23: { min: "", max: "" },
-            24: { min: "", max: "" },
-            25: { min: "", max: "" },
-            26: { min: "", max: "" },
-            27: { min: "", max: "" },
-            28: { min: "", max: "" },
-            29: { min: "", max: "" },
-            30: { min: "", max: "" },
-            31: { min: "", max: "" },
-            32: { min: "", max: "" },
-            33: { min: "", max: "" },
-            34: { min: "", max: "" },
-            35: { min: "", max: "" },
-            36: { min: "", max: "" },
-            37: { min: "", max: "" },
-            38: { min: "", max: "" },
-            39: { min: "", max: "" },
-            40: { min: "", max: "" }
+            1: { min: "Green Mushroom Hut", max: "Green Mushroom Hut" },
+            2: { min: "Green Mushroom Hut", max: "Orange Mushroom House" },
+            3: { min: "Green Mushroom Hut", max: "Zakum's Cave" },
+            4: { min: "Green Mushroom Hut", max: "Windmill" },
+            5: { min: "Green Mushroom Hut", max: "Drip Brew Coffee House" },
+            6: { min: "Green Mushroom Hut", max: "Red Brick Abode" },
+            7: { min: "Green Mushroom Hut", max: "Lofty Brick House" },
+            8: { min: "Green Mushroom Hut", max: "Purple Bathhouse" },
+            9: { min: "Green Mushroom Hut", max: "Blue Bathhouse" },
+            10: { min: "Green Mushroom Hut", max: "Grand Gourd Gables" },
+            11: { min: "Green Mushroom Hut", max: "Tip Top Chop Shop" },
+            12: { min: "Green Mushroom Hut", max: "Full Moon Song Pyun Shop" },
+            13: { min: "Green Mushroom Hut", max: "Rien's Tonic Shop" },
+            14: { min: "Green Mushroom Hut", max: "Mushroom Tower" },
+            15: { min: "Green Mushroom Hut", max: "Leafre Airship" },
+            16: { min: "Green Mushroom Hut", max: "Mushking Empire Outpost" },
+            17: { min: "Green Mushroom Hut", max: "Nova Safehouse" },
+            18: { min: "Green Mushroom Hut", max: "Ariant Fabrics (I)" },
+            19: { min: "Green Mushroom Hut", max: "Happy Homestead" },
+            20: { min: "Green Mushroom Hut", max: "Magatia Workshop" },
+            21: { min: "Green Mushroom Hut", max: "Farmer's House" },
+            22: { min: "Green Mushroom Hut", max: "Tick Tock Townhouse" },
+            23: { min: "Green Mushroom Hut", max: "Mu Lung Dojo" },
+            24: { min: "Green Mushroom Hut", max: "Icy Treat Retreat (I)" },
+            25: { min: "Green Mushroom Hut", max: "Omega Sector" },
+            26: { min: "Green Mushroom Hut", max: "Tip-Top Toy Shop" },
+            27: { min: "Green Mushroom Hut", max: "Edelstein Air Field" },
+            28: { min: "Green Mushroom Hut", max: "Big Top Tenement" },
+            29: { min: "Green Mushroom Hut", max: "Big Bowl Noodles" },
+            30: { min: "Green Mushroom Hut", max: "Icy Treat Retreat (II)" },
+            31: { min: "Green Mushroom Hut", max: "Icy Treat Retreat (II)" },
+            32: { min: "Green Mushroom Hut", max: "Icy Treat Retreat (II)" },
+            33: { min: "Green Mushroom Hut", max: "Icy Treat Retreat (II)" },
+            34: { min: "Green Mushroom Hut", max: "Icy Treat Retreat (II)" },
+            35: { min: "Green Mushroom Hut", max: "The Secret Garden" },
+            36: { min: "Green Mushroom Hut", max: "The Secret Garden" },
+            37: { min: "Green Mushroom Hut", max: "The Secret Garden" },
+            38: { min: "Green Mushroom Hut", max: "The Secret Garden" },
+            39: { min: "Green Mushroom Hut", max: "The Secret Garden" },
+            40: { min: "Green Mushroom Hut", max: "The Secret Garden" }
         },
-        props: {
-            [""]: { level: 1, order: 1, space: 1, waru: 0, banked: 0, decor: 0, limit: 0 }
-        }
-    },
-    [""]: {
-        names: [""],
-        limits: {
-            1: { min: "", max: "" },
-            2: { min: "", max: "" },
-            3: { min: "", max: "" },
-            4: { min: "", max: "" },
-            5: { min: "", max: "" },
-            6: { min: "", max: "" },
-            7: { min: "", max: "" },
-            8: { min: "", max: "" },
-            9: { min: "", max: "" },
-            10: { min: "", max: "" },
-            11: { min: "", max: "" },
-            12: { min: "", max: "" },
-            13: { min: "", max: "" },
-            14: { min: "", max: "" },
-            15: { min: "", max: "" },
-            16: { min: "", max: "" },
-            17: { min: "", max: "" },
-            18: { min: "", max: "" },
-            19: { min: "", max: "" },
-            20: { min: "", max: "" },
-            21: { min: "", max: "" },
-            22: { min: "", max: "" },
-            23: { min: "", max: "" },
-            24: { min: "", max: "" },
-            25: { min: "", max: "" },
-            26: { min: "", max: "" },
-            27: { min: "", max: "" },
-            28: { min: "", max: "" },
-            29: { min: "", max: "" },
-            30: { min: "", max: "" },
-            31: { min: "", max: "" },
-            32: { min: "", max: "" },
-            33: { min: "", max: "" },
-            34: { min: "", max: "" },
-            35: { min: "", max: "" },
-            36: { min: "", max: "" },
-            37: { min: "", max: "" },
-            38: { min: "", max: "" },
-            39: { min: "", max: "" },
-            40: { min: "", max: "" }
-        },
-        props: {
-            [""]: { level: 1, order: 1, space: 1, waru: 0, banked: 0, decor: 0, limit: 0 }
+        data: {
+            ["My House"]: {
+                level: 1, order: 5, units: 25, waru: 0, banked: 0, decor: 0, limit: 1, fixed: true
+            },
+            ["Green Mushroom Hut"]: {
+                level: 1, order: 2, units: 4, waru: 2, banked: 50, decor: 5, limit: 99, fixed: false
+            },
+            ["Henesys Homestead"]: {
+                level: 2, order: 2, units: 4, waru: 7, banked: 80, decor: 30, limit: 99, fixed: false
+            },
+            ["Orange Mushroom House"]: {
+                level: 2, order: 2, units: 4, waru: 3, banked: 60, decor: 5, limit: 99, fixed: false
+            },
+            ["Monster Barn"]: {
+                level: 3, order: 2, units: 4, waru: 0, banked: 0, decor: 0, limit: 1, fixed: false
+            },
+            ["Sturdy Straw House"]: {
+                level: 3, order: 2, units: 4, waru: 5, banked: 50, decor: 10, limit: 99, fixed: false
+            },
+            ["Red Mushroom Manor"]: {
+                level: 3, order: 2, units: 4, waru: 6, banked: 100, decor: 10, limit: 99, fixed: false
+            },
+            ["Rien Hot Springs"]: {
+                level: 3, order: 2, units: 4, waru: 25, banked: 2200, decor: 200, limit: 198, fixed: false
+            },
+            ["Mu Lung Barber Shop"]: {
+                level: 3, order: 2, units: 4, waru: 27, banked: 1800, decor: 200, limit: 198, fixed: false
+            },
+            ["Tip-Top Balloon Shop"]: {
+                level: 3, order: 2, units: 4, waru: 35, banked: 3000, decor: 400, limit: 198, fixed: false
+            },
+            ["Floatland Manor"]: {
+                level: 3, order: 3, units: 9, waru: 23, banked: 2000, decor: 150, limit: 198, fixed: false
+            },
+            ["Healthy Hospital"]: {
+                level: 3, order: 3, units: 9, waru: 44, banked: 3500, decor: 250, limit: 198, fixed: false
+            },
+            ["Monster Manor"]: {
+                level: 3, order: 3, units: 9, waru: 42, banked: 5000, decor: 400, limit: 198, fixed: false
+            },
+            ["Mr. Teddy X"]: {
+                level: 3, order: 3, units: 9, waru: 48, banked: 4500, decor: 500, limit: 198, fixed: false
+            },
+            ["Ms. Teddy X"]: {
+                level: 3, order: 3, units: 9, waru: 52, banked: 3500, decor: 500, limit: 198, fixed: false
+            },
+            ["Yellow Submarine"]: {
+                level: 3, order: 4, units: 16, waru: 72, banked: 7000, decor: 900, limit: 198, fixed: false
+            },
+            ["Refreshing Oasis"]: {
+                level: 3, order: 4, units: 16, waru: 76, banked: 6000, decor: 1000, limit: 198, fixed: false
+            },
+            ["Yeti Super Stage"]: {
+                level: 3, order: 4, units: 16, waru: 82, banked: 5000, decor: 700, limit: 198, fixed: false
+            },
+            ["Nautilus Harbor"]: {
+                level: 3, order: 4, units: 16, waru: 91, banked: 5000, decor: 1500, limit: 198, fixed: false
+            },
+            ["Shinsoo's Nest"]: {
+                level: 3, order: 4, units: 16, waru: 87, banked: 7000, decor: 2000, limit: 198, fixed: false
+            },
+            ["Ludibrium Toy House"]: {
+                level: 3, order: 4, units: 16, waru: 183, banked: 2000, decor: 4000, limit: 198, fixed: false
+            },
+            ["Orbis Flying Garden"]: {
+                level: 3, order: 4, units: 16, waru: 105, banked: 5000, decor: 1500, limit: 198, fixed: false
+            },
+            ["Ereve Fountain Garden"]: {
+                level: 3, order: 4, units: 16, waru: 70, banked: 4500, decor: 500, limit: 198, fixed: false
+            },
+            ["Aqua Road Castle"]: {
+                level: 3, order: 4, units: 16, waru: 91, banked: 4000, decor: 1200, limit: 198, fixed: false
+            },
+            ["Zakum's Cave"]: {
+                level: 3, order: 4, units: 16, waru: 60, banked: 12000, decor: 500, limit: 198, fixed: false
+            },
+            ["Windmill"]: {
+                level: 4, order: 2, units: 4, waru: 10, banked: 70, decor: 20, limit: 99, fixed: false
+            },
+            ["Chopper Chalet"]: {
+                level: 5, order: 2, units: 4, waru: 8, banked: 120, decor: 10, limit: 99, fixed: false
+            },
+            ["Drip Brew Coffee House"]: {
+                level: 5, order: 3, units: 9, waru: 10, banked: 170, decor: 10, limit: 99, fixed: false
+            },
+            ["Red Brick Abode"]: {
+                level: 6, order: 2, units: 4, waru: 10, banked: 100, decor: 15, limit: 99, fixed: false
+            },
+            ["My House (Homestead)"]: {
+                level: 7, order: 5, units: 25, waru: 0, banked: 0, decor: 0, limit: 1, fixed: true
+            },
+            ["Lofty Brick House"]: {
+                level: 7, order: 2, units: 4, waru: 8, banked: 110, decor: 30, limit: 99, fixed: false
+            },
+            ["Purple Bathhouse"]: {
+                level: 8, order: 2, units: 4, waru: 9, banked: 110, decor: 20, limit: 99, fixed: false
+            },
+            ["Blue Bathhouse"]: {
+                level: 9, order: 2, units: 4, waru: 12, banked: 100, decor: 15, limit: 99, fixed: false
+            },
+            ["Big Apple Fruit Shop"]: {
+                level: 10, order: 2, units: 4, waru: 10, banked: 160, decor: 30, limit: 99, fixed: false
+            },
+            ["Octo-Pot Seafood"]: {
+                level: 10, order: 2, units: 4, waru: 13, banked: 140, decor: 5, limit: 99, fixed: false
+            },
+            ["Henesys Bowman Guild"]: {
+                level: 10, order: 3, units: 9, waru: 15, banked: 350, decor: 5, limit: 99, fixed: false
+            },
+            ["Rudi Beauty Salon"]: {
+                level: 10, order: 3, units: 9, waru: 14, banked: 250, decor: 70, limit: 99, fixed: false
+            },
+            ["Santa's Gift Shop"]: {
+                level: 10, order: 3, units: 9, waru: 16, banked: 200, decor: 30, limit: 99, fixed: false
+            },
+            ["Ghastly Ghost Gables"]: {
+                level: 10, order: 4, units: 16, waru: 45, banked: 3000, decor: 500, limit: 198, fixed: false
+            },
+            ["Grand Gourd Gables"]: {
+                level: 10, order: 4, units: 16, waru: 43, banked: 5000, decor: 350, limit: 198, fixed: false
+            },
+            ["Blossom House"]: {
+                level: 11 , order: 2, units: 4, waru: 12, banked: 180, decor: 25, limit: 99, fixed: false
+            },
+            ["Tip Top Chop Shop"]: {
+                level: 11, order: 2, units: 4, waru: 11, banked: 190, decor: 25, limit: 99, fixed: false
+            },
+            ["Pink Angel Place"]: {
+                level: 12, order: 2, units: 4, waru: 10, banked: 210, decor: 30, limit: 99, fixed: false
+            },
+            ["Full Moon Song Pyun Shop"]: {
+                level: 12, order: 3, units: 9, waru: 12, banked: 250, decor: 30, limit: 99, fixed: false
+            },
+            ["Gingerbread Gables"]: {
+                level: 13, order: 2, units: 4, waru: 14, banked: 200, decor: 20, limit: 99, fixed: false
+            },
+            ["Rien's Tonic Shop"]: {
+                level: 13, order: 2, units: 4, waru: 15, banked: 210, decor: 20, limit: 99, fixed: false
+            },
+            ["My House (Manor)"]: {
+                level: 14, order: 5, units: 25, waru: 0, banked: 0, decor: 0, limit: 1, fixed: true
+            },
+            ["Blue Mushroom Mansion"]: {
+                level: 14, order: 2, units: 4, waru: 12, banked: 240, decor: 10, limit: 99, fixed: false
+            },
+            ["Mushroom Tower"]: {
+                level: 14, order: 4, units: 16, waru: 12, banked: 300, decor: 10, limit: 99, fixed: false
+            },
+            ["Ariant Fabrics (I)"]: {
+                level: 15, order: 2, units: 4, waru: 12, banked: 360, decor: 5, limit: 99, fixed: false
+            },
+            ["Hanok House"]: {
+                level: 15, order: 2, units: 4, waru: 17, banked: 300, decor: 50, limit: 99, fixed: false
+            },
+            ["Fantasy Park Viking"]: {
+                level: 15, order: 3, units: 9, waru: 18, banked: 600, decor: 10, limit: 99, fixed: false
+            },
+            ["Alchemist's Abode"]: {
+                level: 15, order: 3, units: 9, waru: 20, banked: 300, decor: 15, limit: 99, fixed: false
+            },
+            ["Five-Slime Hotel"]: {
+                level: 15, order: 3, units: 9, waru: 18, banked: 400, decor: 25, limit: 99, fixed: false
+            },
+            ["Creamy Cake Chateau"]: {
+                level: 15, order: 3, units: 9, waru: 20, banked: 360, decor: 35, limit: 99, fixed: false
+            },
+            ["Florina Lighthouse"]: {
+                level: 15, order: 3, units: 9, waru: 15, banked: 250, decor: 15, limit: 99, fixed: false
+            },
+            ["Leafre Airship"]: {
+                level: 15, order: 4, units: 16, waru: 50, banked: 4000, decor: 500, limit: 198, fixed: false
+            },
+            ["Fish Shop"]: {
+                level: 16, order: 2, units: 4, waru: 15, banked: 550, decor: 10, limit: 99, fixed: false
+            },
+            ["Mushking Empire Outpost"]: {
+                level: 16, order: 3, units: 9, waru: 16, banked: 700, decor: 10, limit: 99, fixed: false
+            },
+            ["Nova Safehouse"]: {
+                level: 17, order: 2, units: 4, waru: 18, banked: 300, decor: 20, limit: 99, fixed: false
+            },
+            ["Elluel House"]: {
+                level: 18, order: 2, units: 4, waru: 15, banked: 330, decor: 40, limit: 99, fixed: false
+            },
+            ["Ariant Fabrics (II)"]: {
+                level: 18, order: 2, units: 4, waru: 16, banked: 300, decor: 40, limit: 99, fixed: false
+            },
+            ["Happy Homestead"]: {
+                level: 19, order: 2, units: 4, waru: 20, banked: 340, decor: 20, limit: 99, fixed: false
+            },
+            ["Melody Manor"]: {
+                level: 20, order: 2, units: 4, waru: 17, banked: 300, decor: 50, limit: 99, fixed: false
+            },
+            ["Aqua Roadhouse"]: {
+                level: 20, order: 3, units: 9, waru: 25, banked: 550, decor: 50, limit: 99, fixed: false
+            },
+            ["Fun Factory"]: {
+                level: 20, order: 3, units: 9, waru: 20, banked: 400, decor: 40, limit: 99, fixed: false
+            },
+            ["Ariant Castle"]: {
+                level: 20, order: 4, units: 16, waru: 28, banked: 500, decor: 50, limit: 99, fixed: false
+            },
+            ["Shaved Ice Chateau"]: {
+                level: 20, order: 4, units: 16, waru: 25, banked: 500, decor: 45, limit: 99, fixed: false
+            },
+            ["Magatia Workshop"]: {
+                level: 20, order: 4, units: 16, waru: 70, banked: 2000, decor: 100, limit: 198, fixed: false
+            },
+            ["My House (Mighty Manor)"]: {
+                level: 21, order: 5, units: 25, waru: 0, banked: 0, decor: 0, limit: 1, fixed: true
+            },
+            ["Santa's Special Shop"]: {
+                level: 21, order: 2, units: 4, waru: 22, banked: 450, decor: 40, limit: 99, fixed: false
+            },
+            ["Farmer's House"]: {
+                level: 21, order: 2, units: 4, waru: 21, banked: 460, decor: 40, limit: 99, fixed: false
+            },
+            ["Tick Tock Townhouse"]: {
+                level: 22, order: 2, units: 4, waru: 25, banked: 400, decor: 35, limit: 99, fixed: false
+            },
+            ["Mu Lung Dojo"]: {
+                level: 23, order: 2, units: 4, waru: 23, banked: 450, decor: 35, limit: 99, fixed: false
+            },
+            ["Icy Treat Retreat (I)"]: {
+                level: 24, order: 2, units: 4, waru: 20, banked: 500, decor: 40, limit: 99, fixed: false
+            },
+            ["Beatdown Shop"]: {
+                level: 25, order: 3, units: 9, waru: 30, banked: 750, decor: 30, limit: 99, fixed: false
+            },
+            ["Very Berry Vineyard"]: {
+                level: 25, order: 3, units: 9, waru: 25, banked: 600, decor: 40, limit: 99, fixed: false
+            },
+            ["Chryse Coliseum"]: {
+                level: 25, order: 3, units: 9, waru: 30, banked: 750, decor: 55, limit: 99, fixed: false
+            },
+            ["Omega Sector"]: {
+                level: 25, order: 4, units: 16, waru: 45, banked: 900, decor: 60, limit: 99, fixed: false
+            },
+            ["Tip-Top Toy Shop"]: {
+                level: 26, order: 2, units: 4, waru: 22, banked: 500, decor: 50, limit: 99, fixed: false
+            },
+            ["Edelstein Air Field"]: {
+                level: 27, order: 3, units: 9, waru: 33, banked: 800, decor: 20, limit: 99, fixed: false
+            },
+            ["Big Top Tenement"]: {
+                level: 28, order: 2, units: 4, waru: 28, banked: 500, decor: 30, limit: 99, fixed: false
+            },
+            ["Big Bowl Noodles"]: {
+                level: 29, order: 2, units: 4, waru: 30, banked: 450, decor: 40, limit: 99, fixed: false
+            },
+            ["My House (Country Mansion)"]: {
+                level: 30, order: 5, units: 25, waru: 0, banked: 0, decor: 0, limit: 1, fixed: true
+            },
+            ["Lumiere"]: {
+                level: 30, order: 3, units: 9, waru: 35, banked: 900, decor: 30, limit: 99, fixed: false
+            },
+            ["Icy Treat Retreat (II)"]: {
+                level: 30, order: 3, units: 9, waru: 32, banked: 700, decor: 40, limit: 99, fixed: false
+            },
+            ["Wholesome Milk Farm"]: {
+                level: 35, order: 2, units: 4, waru: 40, banked: 700, decor: 50, limit: 99, fixed: false
+            },
+            ["The Secret Garden"]: {
+                level: 35, order: 4, units: 16, waru: 82, banked: 6000, decor: 1500, limit: 99, fixed: false
+            }
         }
     }
+};
+export const myHouses = {
+    15: "My House",
+    17: "My House (Homestead)",
+    19: "My House (Manor)",
+    22: "My House (Mighty Manor)",
+    25: "My House (Country Mansion)"
 };
 
 const beautyLevels = [
@@ -695,7 +691,7 @@ const beautyThresholds = {
     55: 574000, 56: 612600, 57: 635600, 58: 697200, 59: 743500, 60: 792700,
     61: 845000, 62: 900600, 63: 959700, 64: 959700
 }
-function getBeautyLevel(beauty) {
+function beautyLevel(beauty) {
     if (beauty >= 959700) {
         return 64;
     } else if (beauty >= 900600) {
@@ -826,8 +822,8 @@ function getBeautyLevel(beauty) {
         return 0;
     }
 }
-export function getBeautyEffects(beauty) {
-    const level = getBeautyLevel(beauty);
+export function beautyProps(beauty) {
+    const level = beautyLevel(beauty);
     return {
         next: beautyThresholds[Math.min(level + 1, beautyLevels.length)] - beauty,
         choices: Math.ceil(level / 2),
@@ -836,3 +832,11 @@ export function getBeautyEffects(beauty) {
         visit: level
     };
 }
+
+export function networkDecor(decor, paths) {
+    return Math.min(decor, Math.floor(paths * (200 + 0.02 * decor)));
+}
+export function networkWaru(waru, paths) {
+    return Math.min(waru, Math.floor(paths * (5 + 0.02 * waru)));
+}
+export const aufhebenWaru = 1;

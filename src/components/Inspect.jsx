@@ -1,6 +1,6 @@
 import { Switch, Match } from "solid-js";
 import { useState } from "../StateProvider.jsx";
-import { objectDisplayTypes } from "../data.js";
+import { aufhebenWaru } from "../data.js";
 
 function Inspect() {
     const [state] = useState();
@@ -11,67 +11,77 @@ function Inspect() {
                 <tbody>
                     <tr>
                         <th>Type</th>
-                        <td>{objectDisplayTypes[state.cells[state.mode.inspect.rootIndex].type]}</td>
+                        <td>Free cell</td>
                     </tr>
                 </tbody>
             }>
-                <Match when={state.cells[state.mode.inspect.rootIndex].type === "building"}>
+                <Match when={state.grid[state.inspect.root].object.type === "road"}>
                     <tbody>
                         <tr>
                             <th>Type</th>
-                            <td>{objectDisplayTypes[state.cells[state.mode.inspect.rootIndex].type]}</td>
-                        </tr>
-                        <tr>
-                            <th>Name</th>
-                            <td>{state.cells[state.mode.inspect.rootIndex].name}</td>
-                        </tr>
-                        <tr>
-                            <th>Adjacent roads (in-network)</th>
-                            <td>{state.cells[state.mode.inspect.rootIndex].numRoads}</td>
-                        </tr>
-                        <tr>
-                            <th>Yield rate (W/10 mins)</th>
-                            <td>{state.cells[state.mode.inspect.rootIndex].baseWaru + "(+" + state.cells[state.mode.inspect.rootIndex].bonusWaru + ")"}</td>
-                        </tr>
-                        <tr>
-                            <th>Max capacity (W)</th>
-                            <td>{state.cells[state.mode.inspect.rootIndex].baseBanked + "(+" + state.cells[state.mode.inspect.rootIndex].bonusBanked + ")"}</td>
-                        </tr>
-                        <tr>
-                            <th>Aesthetic points</th>
-                            <td>{state.cells[state.mode.inspect.rootIndex].baseDecor}</td>
-                        </tr>
-                    </tbody>
-                </Match>
-                <Match when={state.cells[state.mode.inspect.rootIndex].type === "decor"}>
-                    <tbody>
-                        <tr>
-                            <th>Type</th>
-                            <td>{objectDisplayTypes[state.cells[state.mode.inspect.rootIndex].type]}</td>
-                        </tr>
-                        <tr>
-                            <th>Name</th>
-                            <td>{state.cells[state.mode.inspect.rootIndex].name}</td>
-                        </tr>
-                        <tr>
-                            <th>Adjacent roads (in-network)</th>
-                            <td>{state.cells[state.mode.inspect.rootIndex].numRoads}</td>
-                        </tr>
-                        <tr>
-                            <th>Aesthetic points</th>
-                            <td>{state.cells[state.mode.inspect.rootIndex].baseDecor + "(+" + state.cells[state.mode.inspect.rootIndex].bonusDecor + ")"}</td>
-                        </tr>
-                    </tbody>
-                </Match>
-                <Match when={state.cells[state.mode.inspect.rootIndex].type === "road"}>
-                    <tbody>
-                        <tr>
-                            <th>Type</th>
-                            <td>{objectDisplayTypes[state.cells[state.mode.inspect.rootIndex].type]}</td>
+                            <td>Road</td>
                         </tr>
                         <tr>
                             <th>Connected to house</th>
-                            <td>{state.cells[state.mode.inspect.rootIndex].inNetwork ? "Yes" : "No"}</td>
+                            <Show
+                                when={state.grid[state.inspect.root].network.connected}
+                                fallback={<td>No</td>}
+                            >
+                                <td>Yes</td>
+                            </Show>
+                        </tr>
+                    </tbody>
+                </Match>
+                <Match when={state.grid[state.inspect.root].object.type === "decor"}>
+                    <tbody>
+                        <tr>
+                            <th>Type</th>
+                            <td>Decor</td>
+                        </tr>
+                        <tr>
+                            <th>Name</th>
+                            <td>{state.grid[state.inspect.root].object.name}</td>
+                        </tr>
+                        <tr>
+                            <th>Adjacent roads (in-network)</th>
+                            <td>{state.grid[state.inspect.root].network.paths}</td>
+                        </tr>
+                        <tr>
+                            <th>Aesthetic points</th>
+                            <td>{`${state.grid[state.inspect.root].object.decor} (+${state.grid[state.inspect.root].network.decor})`}</td>
+                        </tr>
+                    </tbody>
+                </Match>
+                <Match when={state.grid[state.inspect.root].object.type === "building"}>
+                    <tbody>
+                        <tr>
+                            <th>Type</th>
+                            <td>Building</td>
+                        </tr>
+                        <tr>
+                            <th>Name</th>
+                            <td>{state.grid[state.inspect.root].object.name}</td>
+                        </tr>
+                        <tr>
+                            <th>Adjacent roads (in-network)</th>
+                            <td>{state.grid[state.inspect.root].network.paths}</td>
+                        </tr>
+                        <tr>
+                            <th>Yield rate (W/10 mins)</th>
+                            <Show
+                                when={state.config.useAufheben}
+                                fallback={<td>{`${state.grid[state.inspect.root].object.waru} (+${state.grid[state.inspect.root].network.waru})`}</td>}
+                            >
+                                <td>{`${state.grid[state.inspect.root].object.waru} (+${state.grid[state.inspect.root].network.waru}) (+${aufhebenWaru})`}</td>
+                            </Show>
+                        </tr>
+                        <tr>
+                            <th>Max capacity (W)</th>
+                            <td>{`${state.grid[state.inspect.root].object.banked} (+${state.grid[state.inspect.root].network.banked})`}</td>
+                        </tr>
+                        <tr>
+                            <th>Aesthetic points</th>
+                            <td>{state.grid[state.inspect.root].object.decor}</td>
                         </tr>
                     </tbody>
                 </Match>
