@@ -310,6 +310,16 @@ export function StateProvider(props) {
                 if (!objectData) { // no decors available at level 1
                     return;
                 }
+                const { units, limit } = objectData;
+                if (units > 0 && state.summary.count.free < units) {
+                    return;
+                }
+                if (limit > 0) {
+                    const entry = state.summary.roots[type].find(entry => entry.name === name);
+                    if (entry && entry.list.length + 1 > limit) {
+                        return;
+                    }
+                }
                 stateSetters.setObject(cell.position, {
                     type,
                     name,
