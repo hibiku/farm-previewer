@@ -3207,6 +3207,9 @@ function StateProvider(props) {
           free = _summary$roots.free,
           decor = _summary$roots.decor,
           building = _summary$roots.building;
+      var _summary$production = summary().production,
+          lastOptimalCycle = _summary$production.lastOptimalCycle,
+          products = _summary$production.products;
       return {
         title: "Current",
         config: {
@@ -3220,7 +3223,10 @@ function StateProvider(props) {
           decor: decor,
           building: building
         },
-        production: summary().production
+        production: {
+          lastOptimalCycle: lastOptimalCycle,
+          products: products
+        }
       };
     }
 
@@ -3693,10 +3699,7 @@ function StateProvider(props) {
         props.maxCycles = maxCycles > 0 ? Math.max(maxCycles, products.length) : products.length;
         props.datasets.push({
           label: title,
-          data: products.map(function (_ref10) {
-            var total = _ref10.total;
-            return total;
-          }),
+          data: products,
           backgroundColor: function backgroundColor() {
             return colors[index];
           },
@@ -3714,14 +3717,14 @@ function StateProvider(props) {
           maxCycles = _presets$reduce.maxCycles,
           datasets = _presets$reduce.datasets;
 
-      var _presets$reduce2 = presets.reduce(function (props, _ref11) {
-        var production = _ref11.production;
+      var _presets$reduce2 = presets.reduce(function (props, _ref10) {
+        var production = _ref10.production;
         var minProduct = props.minProduct,
             maxProduct = props.maxProduct;
         var products = production.products;
-        props.minProduct = minProduct > 0 ? Math.min(minProduct, products[minCycles].total) : products[minCycles].total;
+        props.minProduct = minProduct > 0 ? Math.min(minProduct, products[minCycles]) : products[minCycles];
         var localMaxCycles = Math.min(maxCycles, products.length - 1);
-        props.maxProduct = maxProduct > 0 ? Math.max(maxProduct, products[localMaxCycles].total) : products[localMaxCycles].total;
+        props.maxProduct = maxProduct > 0 ? Math.max(maxProduct, products[localMaxCycles]) : products[localMaxCycles];
         return props;
       }, {
         minProduct: 0,
@@ -3811,11 +3814,7 @@ function StateProvider(props) {
     });
     var finalWaru = state.config.useAufheben ? aufhebenWaru : 0;
     var lastOptimalCycle = 0;
-    var products = [{
-      cycle: 0,
-      total: 0,
-      marginal: 0
-    }];
+    var products = [0];
     buildingRoots.forEach(function (list) {
       list.forEach(function (root) {
         var _state$grid$root2 = state.grid[root],
@@ -3832,56 +3831,33 @@ function StateProvider(props) {
           lastOptimalCycle = lastOptimalCycle > 0 ? Math.min(lastOptimalCycle, lowerCycles) : lowerCycles;
 
           for (var i = 1; i <= lowerCycles; i++) {
-            if (!products[i]) {
-              products[i] = {
-                cycle: i,
-                total: 0,
-                marginal: 0
-              };
-            }
-
-            products[i].marginal += totalWaru;
+            products[i] = (products[i] || 0) + totalWaru;
           }
 
           if (remWaru > 0) {
-            if (!products[upperCycles]) {
-              products[upperCycles] = {
-                cycle: upperCycles,
-                total: 0,
-                marginal: 0
-              };
-            }
-
-            products[upperCycles].marginal += remWaru;
+            products[upperCycles] = (products[upperCycles] || 0) + remWaru;
           }
         }
       });
-    });
-    var totalProduct = 0;
-    products.forEach(function (product, cycle) {
-      if (cycle > 0) {
-        totalProduct += product.marginal;
-        product.total = totalProduct;
-      }
     });
     return {
       roots: {
         free: freeRoots,
         road: roadRoots,
-        decor: Array.from(decorRoots, function (_ref12) {
-          var _ref13 = _slicedToArray(_ref12, 2),
-              name = _ref13[0],
-              list = _ref13[1];
+        decor: Array.from(decorRoots, function (_ref11) {
+          var _ref12 = _slicedToArray(_ref11, 2),
+              name = _ref12[0],
+              list = _ref12[1];
 
           return {
             name: name,
             list: list
           };
         }),
-        building: Array.from(buildingRoots, function (_ref14) {
-          var _ref15 = _slicedToArray(_ref14, 2),
-              name = _ref15[0],
-              list = _ref15[1];
+        building: Array.from(buildingRoots, function (_ref13) {
+          var _ref14 = _slicedToArray(_ref13, 2),
+              name = _ref14[0],
+              list = _ref14[1];
 
           return {
             name: name,
@@ -3899,7 +3875,14 @@ function StateProvider(props) {
       }),
       production: {
         lastOptimalCycle: lastOptimalCycle,
-        products: products
+        lastOptimalRate: products[lastOptimalCycle],
+        products: products.reduce(function (total, marginal, index) {
+          if (index > 0) {
+            total[index] = total[index - 1] + marginal;
+          }
+
+          return total;
+        }, [0])
       }
     };
   });
@@ -5238,7 +5221,7 @@ function Production() {
     typeof _ref$ === "function" ? _ref$(_el$44) : setupCanvas = _el$44;
 
     (0,web/* insert */.$T)(_el$48, function () {
-      return state.summary.production.products[state.summary.production.lastOptimalCycle].marginal;
+      return state.summary.production.lastOptimalRate;
     });
 
     (0,web/* insert */.$T)(_el$51, function () {
@@ -5246,7 +5229,7 @@ function Production() {
     });
 
     (0,web/* insert */.$T)(_el$54, function () {
-      return state.summary.production.products[state.summary.production.products.length - 1].total;
+      return state.summary.production.products[state.summary.production.products.length - 1];
     });
 
     (0,web/* insert */.$T)(_el$57, function () {
