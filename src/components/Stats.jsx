@@ -127,7 +127,7 @@ function Production() {
                     },
                     y: {
                         display: true,
-                        min: 0,
+                        suggestedMin: 0,
                         title: {
                             display: true,
                             text: "Product (W)"

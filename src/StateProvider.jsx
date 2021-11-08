@@ -522,7 +522,7 @@ export function StateProvider(props) {
         updateChart() {
             const presets = [...state.presets, state.preset];
             const colors = hslColors(presets.length);
-            const { minCycles, maxCycles, datasets } = presets.reduce((props, {title, production}, index) => {
+            const { minCycles, maxCycles, datasets } = presets.reduce((props, { title, production }, index) => {
                 const { minCycles, maxCycles } = props;
                 const { lastOptimalCycle, products } = production;
                 props.minCycles = minCycles > 0 ? Math.min(minCycles, lastOptimalCycle) : lastOptimalCycle;
@@ -539,14 +539,29 @@ export function StateProvider(props) {
                 maxCycles: 0,
                 datasets: []
             });
+            const { minProduct, maxProduct } = presets.reduce((props, { production }) => {
+                const { minProduct, maxProduct } = props;
+                const { products } = production;
+                props.minProduct = minProduct > 0 ? Math.min(minProduct, products[minCycles].total) : products[minCycles].total;
+                const localMaxCycles = Math.min(maxCycles, products.length - 1);
+                props.maxProduct = maxProduct > 0 ? Math.max(maxProduct, products[localMaxCycles].total) : products[localMaxCycles].total;
+                return props;
+            }, {
+                minProduct: 0,
+                maxProduct: 0
+            });
             setState("chart", "data", {
                 labels: Array.from({ length: maxCycles + 1 }, (_, i) => 10 * i),
                 datasets
             });
             setState("chart", "options", "scales", "x", {
-                suggestedMin: minCycles,
-                suggestedMax: maxCycles
+                min: minCycles,
+                max: maxCycles
             });
+            setState("chart", "options", "scales", "y", {
+                suggestedMin: minProduct,
+                suggestedMax: maxProduct
+            })
             state.chart.update();
             state.presets.forEach((_, index) => {
                 state.chart.hide(index);
