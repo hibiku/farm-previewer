@@ -1,7 +1,7 @@
 "use strict";
 (self["webpackChunkfarm_previewer"] = self["webpackChunkfarm_previewer"] || []).push([[179],{
 
-/***/ 532:
+/***/ 473:
 /***/ ((__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) => {
 
 
@@ -3010,6 +3010,14 @@ var aufhebenWaru = 1;
 ;// CONCATENATED MODULE: ./src/StateProvider.jsx
 
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { StateProvider_defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -3055,6 +3063,9 @@ function StateProvider(props) {
       useAutofill: false
     },
     grid: undefined,
+    presets: JSON.parse(window.localStorage.getItem("presets")) || [],
+    canvas: undefined,
+    chart: undefined,
 
     get baseProps() {
       var type = this.config.useAutofill ? "road" : "free";
@@ -3184,6 +3195,33 @@ function StateProvider(props) {
 
     get summary() {
       return summary();
+    },
+
+    get preset() {
+      var _this$config = this.config,
+          level = _this$config.level,
+          order = _this$config.order,
+          mobCap = _this$config.mobCap,
+          useAufheben = _this$config.useAufheben;
+      var _summary$roots = summary().roots,
+          free = _summary$roots.free,
+          decor = _summary$roots.decor,
+          building = _summary$roots.building;
+      return {
+        title: "Current",
+        config: {
+          level: level,
+          order: order,
+          mobCap: mobCap,
+          useAufheben: useAufheben
+        },
+        roots: {
+          free: free,
+          decor: decor,
+          building: building
+        },
+        production: summary().production
+      };
     }
 
   }),
@@ -3219,6 +3257,18 @@ function StateProvider(props) {
     return boundary;
   };
 
+  var hslColors = function hslColors(n) {
+    if (n < 1) {
+      return [];
+    }
+
+    return Array.from({
+      length: n
+    }, function (_, i) {
+      return "hsl(".concat(i * (360 / n) % 360, ", 100%, 50%, 75%)");
+    });
+  };
+
   var stateSetters = {
     initGrid: function initGrid() {
       var newGrid = [];
@@ -3241,8 +3291,13 @@ function StateProvider(props) {
 
       setState("grid", newGrid);
     },
-    onLevelChange: function onLevelChange(event) {
-      var newLevel = Number(event.currentTarget.value);
+    setCanvas: function setCanvas(canvas) {
+      setState("canvas", canvas);
+    },
+    setChart: function setChart(chart) {
+      setState("chart", chart);
+    },
+    setLevel: function setLevel(newLevel) {
       var oldOrder = state.config.order;
       var newOrder = orderLimits[newLevel].max;
       var oldMobCap = state.config.mobCap;
@@ -3259,21 +3314,26 @@ function StateProvider(props) {
         }
 
         if (oldMobCap !== newMobCap) {
-          setState("config", "mobCap", newMobCap);
+          stateSetters.setMobCap(newMobCap);
         }
       });
+
+      if (oldOrder !== newOrder) {
+        stateSetters.updateChart();
+      }
     },
-    onOrderChange: function onOrderChange(event) {
+    setOrder: function setOrder(newOrder) {
       (0,solid/* batch */.dC)(function () {
-        stateSetters.resizeGrid(state.config.order, Number(event.currentTarget.value));
+        stateSetters.resizeGrid(state.config.order, newOrder);
       });
+      stateSetters.updateChart();
     },
     resizeGrid: function resizeGrid(oldOrder, newOrder) {
       setState("config", "order", newOrder);
       var _state$grid$state$ins = state.grid[state.inspect.root].position,
           row = _state$grid$state$ins.row,
           column = _state$grid$state$ins.column;
-      setState("inspect", "root", row >= newOrder || column >= newOrder ? myHouseRoot : row * newOrder + column);
+      stateSetters.setInspectRoot(row >= newOrder || column >= newOrder ? myHouseRoot : row * newOrder + column);
       setState("grid", state.grid[myHouseRoot].position.interior, "object", state.myHouseProps);
       var oldRoots = new Set();
       var newGrid = [];
@@ -3361,27 +3421,29 @@ function StateProvider(props) {
       setState("grid", newGrid);
       stateSetters.applyNetwork();
     },
-    onMobCapChange: function onMobCapChange(event) {
-      setState("config", "mobCap", Number(event.currentTarget.value));
+    setMobCap: function setMobCap(newMobCap) {
+      setState("config", "mobCap", newMobCap);
     },
-    onAufhebenChange: function onAufhebenChange() {
-      setState("config", "useAufheben", !state.config.useAufheben);
-      stateSetters.applyNetwork();
+    toggleAufheben: function toggleAufheben() {
+      (0,solid/* batch */.dC)(function () {
+        setState("config", "useAufheben", !state.config.useAufheben);
+        stateSetters.applyNetwork();
+      });
+      stateSetters.updateChart();
     },
-    onModeClick: function onModeClick(data) {
-      setState("mode", data.mode);
+    setMode: function setMode(newMode) {
+      setState("mode", newMode);
     },
-    onDecorateTypeChange: function onDecorateTypeChange(event) {
-      var newType = event.currentTarget.value;
+    setDecorateType: function setDecorateType(newType) {
       setState("decorate", {
         type: newType,
         name: objects[newType].limits[state.config.level].min
       });
     },
-    onDecorateNameChange: function onDecorateNameChange(event) {
-      setState("decorate", "name", event.currentTarget.value);
+    setDecorateName: function setDecorateName(newName) {
+      setState("decorate", "name", newName);
     },
-    onAutofillChange: function onAutofillChange() {
+    toggleAutofill: function toggleAutofill() {
       setState("config", "useAutofill", !state.config.useAutofill);
       var targetType = state.config.useAutofill ? "free" : "road";
       var object = state.baseProps.object;
@@ -3389,37 +3451,122 @@ function StateProvider(props) {
         setState("grid", state.summary.roots[targetType], "object", object);
         stateSetters.applyNetwork();
       });
+      stateSetters.updateChart();
     },
-    onGridClick: function onGridClick(_ref3) {
-      var cell = _ref3.cell;
+    loadPreset: function loadPreset(index) {
+      var _state$presets$index = state.presets[index],
+          config = _state$presets$index.config,
+          roots = _state$presets$index.roots;
+      (0,solid/* batch */.dC)(function () {
+        setState("config", _objectSpread(_objectSpread({}, config), {}, {
+          useAutofill: true
+        }));
+        stateSetters.initGrid();
+        setState("config", "useAutofill", false);
 
-      if (state.mode === "inspect") {
-        setState("inspect", "root", cell.position.root);
-      } else if (state.mode === "decorate") {
-        var _state$decorate = state.decorate,
-            type = _state$decorate.type,
-            name = _state$decorate.name;
-        var objectData = objects[type].data[name];
+        var freeObject = _objectSpread({
+          type: "free",
+          name: ""
+        }, objects.free.data[""]);
 
-        if (!objectData) {
-          // no decors available at level 1
-          return;
+        var _loop = function _loop() {
+          var _Object$entries$_i = _slicedToArray(_Object$entries[_i2], 2),
+              type = _Object$entries$_i[0],
+              collection = _Object$entries$_i[1];
+
+          if (type === "free") {
+            setState("grid", collection, "object", freeObject);
+          } else {
+            collection.forEach(function (_ref3) {
+              var name = _ref3.name,
+                  list = _ref3.list;
+              list.forEach(function (root) {
+                stateSetters.setObject(state.grid[root].position, _objectSpread({
+                  type: type,
+                  name: name
+                }, objects[type].data[name]));
+              });
+            });
+          }
+        };
+
+        for (var _i2 = 0, _Object$entries = Object.entries(roots); _i2 < _Object$entries.length; _i2++) {
+          _loop();
         }
 
-        stateSetters.setObject(cell.position, _objectSpread({
+        stateSetters.applyNetwork();
+        stateSetters.setInspectRoot(myHouseRoot);
+      });
+    },
+    deletePreset: function deletePreset(index) {
+      setState("presets", [].concat(_toConsumableArray(state.presets.slice(0, index)), _toConsumableArray(state.presets.slice(index + 1))));
+    },
+    createPreset: function createPreset(title) {
+      setState("presets", function (presets) {
+        return [].concat(_toConsumableArray(presets), [_objectSpread(_objectSpread({}, state.preset), {}, {
+          title: title
+        })]);
+      });
+    },
+    setInspectRoot: function setInspectRoot(newRoot) {
+      setState("inspect", "root", newRoot);
+    },
+    insertObject: function insertObject(position) {
+      var _state$decorate = state.decorate,
+          type = _state$decorate.type,
+          name = _state$decorate.name;
+      var objectData = objects[type].data[name];
+
+      if (!objectData) {
+        return "No object selected";
+      }
+
+      var units = objectData.units,
+          limit = objectData.limit;
+
+      if (units > 0 && state.summary.count.available < units) {
+        return "Exceeded required number of available cells";
+      }
+
+      if (limit > 0) {
+        var entry = state.summary.roots[type].find(function (entry) {
+          return entry.name === name;
+        });
+
+        if (entry && entry.list.length + 1 > limit) {
+          return "\"".concat(name, "\" is limited to a quantity of ").concat(limit);
+        }
+      }
+
+      var err;
+      (0,solid/* batch */.dC)(function () {
+        err = stateSetters.setObject(position, _objectSpread({
           type: type,
           name: name
         }, objectData));
+
+        if (!err) {
+          stateSetters.applyNetwork();
+          stateSetters.setInspectRoot(position.index);
+        }
+      });
+
+      if (!err) {
+        stateSetters.updateChart();
       }
+
+      return err;
     },
-    setObject: function setObject(currentPosition, objectProps) {
-      var interiorLowerRow = currentPosition.row;
-      var interiorLowerCol = currentPosition.column;
+    setObject: function setObject(_ref4, objectProps) {
+      var row = _ref4.row,
+          column = _ref4.column;
+      var interiorLowerRow = row;
+      var interiorLowerCol = column;
       var interiorUpperRow = interiorLowerRow + objectProps.order - 1;
       var interiorUpperCol = interiorLowerCol + objectProps.order - 1;
 
       if (interiorUpperRow >= state.config.order || interiorUpperCol >= state.config.order) {
-        return;
+        return "Out-of-bounds placement";
       }
 
       var boundaryLowerRow = interiorLowerRow - 1;
@@ -3440,7 +3587,7 @@ function StateProvider(props) {
                 position = _state$grid$index.position;
 
             if (object.units > 0) {
-              return;
+              return "Overlapping placement";
             }
 
             interior.push(index);
@@ -3466,26 +3613,26 @@ function StateProvider(props) {
         }
       }
 
-      (0,solid/* batch */.dC)(function () {
-        setState("inspect", "root", currentPosition.index);
-        newCells.forEach(function (cell, index) {
-          setState("grid", index, cell);
-        });
-        stateSetters.applyNetwork();
+      newCells.forEach(function (cell, index) {
+        setState("grid", index, cell);
       });
     },
-    onRemoveClick: function onRemoveClick() {
+    removeObject: function removeObject() {
       var _state$grid$state$ins2 = state.grid[state.inspect.root],
           object = _state$grid$state$ins2.object,
           position = _state$grid$state$ins2.position;
 
-      if (object.type === "free" || object.fixed) {
-        return;
+      if (object.type === "free") {
+        return "No object to remove";
+      }
+
+      if (object.fixed) {
+        return "Object is fixed";
       }
 
       (0,solid/* batch */.dC)(function () {
-        setState("grid", position.interior, function (_ref4) {
-          var position = _ref4.position;
+        setState("grid", position.interior, function (_ref5) {
+          var position = _ref5.position;
           var row = position.row,
               column = position.column,
               index = position.index;
@@ -3499,15 +3646,16 @@ function StateProvider(props) {
         });
         stateSetters.applyNetwork();
       });
+      stateSetters.updateChart();
     },
-    onResetClick: function onResetClick() {
+    resetGrid: function resetGrid() {
       var targetType = state.config.useAutofill ? "free" : "road";
       (0,solid/* batch */.dC)(function () {
-        setState("grid", function (_ref5) {
-          var object = _ref5.object;
+        setState("grid", function (_ref6) {
+          var object = _ref6.object;
           return object.type === targetType || !object.fixed;
-        }, function (_ref6) {
-          var position = _ref6.position;
+        }, function (_ref7) {
+          var position = _ref7.position;
           var row = position.row,
               column = position.column,
               index = position.index;
@@ -3521,23 +3669,80 @@ function StateProvider(props) {
         });
         stateSetters.applyNetwork();
       });
+      stateSetters.updateChart();
     },
     applyNetwork: function applyNetwork() {
-      state.networkProps.forEach(function (_ref7) {
-        var root = _ref7.root,
-            props = _ref7.props;
+      state.networkProps.forEach(function (_ref8) {
+        var root = _ref8.root,
+            props = _ref8.props;
         setState("grid", root, "network", props);
+      });
+    },
+    updateChart: function updateChart() {
+      var presets = [].concat(_toConsumableArray(state.presets), [state.preset]);
+      var colors = hslColors(presets.length);
+
+      var _presets$reduce = presets.reduce(function (props, _ref9, index) {
+        var title = _ref9.title,
+            production = _ref9.production;
+        var minCycles = props.minCycles,
+            maxCycles = props.maxCycles;
+        var lastOptimalCycle = production.lastOptimalCycle,
+            products = production.products;
+        props.minCycles = minCycles > 0 ? Math.min(minCycles, lastOptimalCycle) : lastOptimalCycle;
+        props.maxCycles = maxCycles > 0 ? Math.max(maxCycles, products.length) : products.length;
+        props.datasets.push({
+          label: title,
+          data: products.map(function (_ref10) {
+            var total = _ref10.total;
+            return total;
+          }),
+          backgroundColor: function backgroundColor() {
+            return colors[index];
+          },
+          borderColor: function borderColor() {
+            return colors[index];
+          }
+        });
+        return props;
+      }, {
+        minCycles: 0,
+        maxCycles: 0,
+        datasets: []
+      }),
+          minCycles = _presets$reduce.minCycles,
+          maxCycles = _presets$reduce.maxCycles,
+          datasets = _presets$reduce.datasets;
+
+      setState("chart", "data", {
+        labels: Array.from({
+          length: maxCycles + 1
+        }, function (_, i) {
+          return 10 * i;
+        }),
+        datasets: datasets
+      });
+      setState("chart", "options", "scales", "x", {
+        suggestedMin: minCycles,
+        suggestedMax: maxCycles
+      });
+      state.chart.update();
+      state.presets.forEach(function (_, index) {
+        state.chart.hide(index);
       });
     }
   };
-  stateSetters.initGrid();
-  stateSetters.setObject(state.grid[myHouseRoot].position, state.myHouseProps);
+  (0,solid/* batch */.dC)(function () {
+    stateSetters.initGrid();
+    stateSetters.setObject(state.grid[myHouseRoot].position, state.myHouseProps);
+    stateSetters.applyNetwork();
+  });
   summary = (0,solid/* createMemo */.Py)(function () {
     var freeRoots = [];
     var roadRoots = [];
     var decorRoots = new Map();
     var buildingRoots = new Map();
-    var totalFree = Math.pow(state.config.order, 2) - state.config.mobCap - 1;
+    var totalAvailable = Math.pow(state.config.order, 2) - state.config.mobCap - 1;
     var totalConnected = 0;
     var totalBeauty = 0;
     state.grid.forEach(function (cell, index) {
@@ -3569,7 +3774,7 @@ function StateProvider(props) {
           }
 
           decorRoots.get(object.name).push(index);
-          totalFree -= object.units;
+          totalAvailable -= object.units;
           totalBeauty += object.decor + network.decor;
           break;
 
@@ -3579,7 +3784,7 @@ function StateProvider(props) {
           }
 
           buildingRoots.get(object.name).push(index);
-          totalFree -= object.units;
+          totalAvailable -= object.units;
           totalBeauty += object.decor;
           break;
       }
@@ -3589,7 +3794,6 @@ function StateProvider(props) {
     var products = [{
       cycle: 0,
       total: 0,
-      average: 0,
       marginal: 0
     }];
     buildingRoots.forEach(function (list) {
@@ -3612,7 +3816,6 @@ function StateProvider(props) {
               products[i] = {
                 cycle: i,
                 total: 0,
-                average: 0,
                 marginal: 0
               };
             }
@@ -3625,7 +3828,6 @@ function StateProvider(props) {
               products[upperCycles] = {
                 cycle: upperCycles,
                 total: 0,
-                average: 0,
                 marginal: 0
               };
             }
@@ -3640,27 +3842,26 @@ function StateProvider(props) {
       if (cycle > 0) {
         totalProduct += product.marginal;
         product.total = totalProduct;
-        product.average = Math.round(totalProduct / cycle * 100) / 100;
       }
     });
     return {
       roots: {
         free: freeRoots,
         road: roadRoots,
-        decor: Array.from(decorRoots, function (_ref8) {
-          var _ref9 = _slicedToArray(_ref8, 2),
-              name = _ref9[0],
-              list = _ref9[1];
+        decor: Array.from(decorRoots, function (_ref11) {
+          var _ref12 = _slicedToArray(_ref11, 2),
+              name = _ref12[0],
+              list = _ref12[1];
 
           return {
             name: name,
             list: list
           };
         }),
-        building: Array.from(buildingRoots, function (_ref10) {
-          var _ref11 = _slicedToArray(_ref10, 2),
-              name = _ref11[0],
-              list = _ref11[1];
+        building: Array.from(buildingRoots, function (_ref13) {
+          var _ref14 = _slicedToArray(_ref13, 2),
+              name = _ref14[0],
+              list = _ref14[1];
 
           return {
             name: name,
@@ -3669,7 +3870,7 @@ function StateProvider(props) {
         })
       },
       count: {
-        free: totalFree,
+        available: totalAvailable,
         inNetwork: totalConnected,
         outNetwork: roadRoots.length - totalConnected
       },
@@ -3696,7 +3897,6 @@ function useState() {
   return (0,solid/* useContext */.qp)(StateContext);
 }
 ;// CONCATENATED MODULE: ./src/components/Config.jsx
-
 
 
 
@@ -3732,12 +3932,16 @@ function Level() {
   var _useState = useState(),
       _useState2 = Config_slicedToArray(_useState, 2),
       state = _useState2[0],
-      onLevelChange = _useState2[1].onLevelChange;
+      setLevel = _useState2[1].setLevel;
+
+  var onChange = function onChange(event) {
+    setLevel(Number(event.currentTarget.value));
+  };
 
   return [_tmpl$.cloneNode(true), function () {
     var _el$2 = _tmpl$2.cloneNode(true);
 
-    (0,web/* addEventListener */.Oo)(_el$2, "change", onLevelChange);
+    _el$2.addEventListener("change", onChange);
 
     (0,web/* insert */.$T)(_el$2, (0,solid/* createComponent */.LM)(solid/* For */.U2, {
       each: levels,
@@ -3766,7 +3970,11 @@ function Order() {
   var _useState3 = useState(),
       _useState4 = Config_slicedToArray(_useState3, 2),
       state = _useState4[0],
-      onOrderChange = _useState4[1].onOrderChange;
+      setOrder = _useState4[1].setOrder;
+
+  var onChange = function onChange(event) {
+    setOrder(Number(event.currentTarget.value));
+  };
 
   var disabled = function disabled(order) {
     var _orderLimits$state$co = orderLimits[state.config.level],
@@ -3778,7 +3986,7 @@ function Order() {
   return [_tmpl$4.cloneNode(true), function () {
     var _el$5 = _tmpl$5.cloneNode(true);
 
-    (0,web/* addEventListener */.Oo)(_el$5, "change", onOrderChange);
+    _el$5.addEventListener("change", onChange);
 
     (0,web/* insert */.$T)(_el$5, (0,solid/* createComponent */.LM)(solid/* For */.U2, {
       each: orders,
@@ -3811,7 +4019,11 @@ function MobCap() {
   var _useState5 = useState(),
       _useState6 = Config_slicedToArray(_useState5, 2),
       state = _useState6[0],
-      onMobCapChange = _useState6[1].onMobCapChange;
+      setMobCap = _useState6[1].setMobCap;
+
+  var onChange = function onChange(event) {
+    setMobCap(Number(event.currentTarget.value));
+  };
 
   var disabled = function disabled(mobCap) {
     var _mobCapLimits$state$c = mobCapLimits[state.config.level],
@@ -3823,7 +4035,7 @@ function MobCap() {
   return [_tmpl$6.cloneNode(true), function () {
     var _el$8 = _tmpl$7.cloneNode(true);
 
-    (0,web/* addEventListener */.Oo)(_el$8, "change", onMobCapChange);
+    _el$8.addEventListener("change", onChange);
 
     (0,web/* insert */.$T)(_el$8, (0,solid/* createComponent */.LM)(solid/* For */.U2, {
       each: mobCaps,
@@ -3856,13 +4068,17 @@ function Aufheben() {
   var _useState7 = useState(),
       _useState8 = Config_slicedToArray(_useState7, 2),
       state = _useState8[0],
-      onAufhebenChange = _useState8[1].onAufhebenChange;
+      toggleAufheben = _useState8[1].toggleAufheben;
+
+  var onChange = function onChange() {
+    toggleAufheben();
+  };
 
   return function () {
     var _el$10 = _tmpl$8.cloneNode(true),
         _el$11 = _el$10.firstChild;
 
-    (0,web/* addEventListener */.Oo)(_el$11, "change", onAufhebenChange);
+    _el$11.addEventListener("change", onChange);
 
     (0,solid/* createRenderEffect */.F3)(function () {
       return _el$11.checked = state.config.useAufheben;
@@ -3891,32 +4107,47 @@ function Config() {
 }
 
 /* harmony default export */ const components_Config = (Config);
-;// CONCATENATED MODULE: ./src/components/Inspect.jsx
+;// CONCATENATED MODULE: ./src/components/Mode.jsx
 
 
 
 
 
-const Inspect_tmpl$ = (0,web/* template */.XK)(`<td>Yes</td>`, 2),
-      Inspect_tmpl$2 = (0,web/* template */.XK)(`<tbody><tr><th>Type</th><td>Road</td></tr><tr><th>Connected to house</th></tr></tbody>`, 12),
-      Inspect_tmpl$3 = (0,web/* template */.XK)(`<tbody><tr><th>Type</th><td>Decor</td></tr><tr><th>Name</th><td></td></tr><tr><th>Adjacent roads (in-network)</th><td></td></tr><tr><th>Aesthetic points</th><td></td></tr></tbody>`, 26),
-      Inspect_tmpl$4 = (0,web/* template */.XK)(`<td></td>`, 2),
-      Inspect_tmpl$5 = (0,web/* template */.XK)(`<tbody><tr><th>Type</th><td>Building</td></tr><tr><th>Name</th><td></td></tr><tr><th>Adjacent roads (in-network)</th><td></td></tr><tr><th>Yield rate (W/10 mins)</th></tr><tr><th>Max capacity (W)</th><td></td></tr><tr><th>Aesthetic points</th><td></td></tr></tbody>`, 36),
-      Inspect_tmpl$6 = (0,web/* template */.XK)(`<table><caption>Cell properties</caption></table>`, 4),
-      Inspect_tmpl$7 = (0,web/* template */.XK)(`<tbody><tr><th>Type</th><td>Free cell</td></tr></tbody>`, 8),
-      Inspect_tmpl$8 = (0,web/* template */.XK)(`<td>No</td>`, 2);
 
-function Inspect_slicedToArray(arr, i) { return Inspect_arrayWithHoles(arr) || Inspect_iterableToArrayLimit(arr, i) || Inspect_unsupportedIterableToArray(arr, i) || Inspect_nonIterableRest(); }
 
-function Inspect_nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 
-function Inspect_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return Inspect_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return Inspect_arrayLikeToArray(o, minLen); }
 
-function Inspect_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+const Mode_tmpl$ = (0,web/* template */.XK)(`<td>Yes</td>`, 2),
+      Mode_tmpl$2 = (0,web/* template */.XK)(`<tbody><tr><th>Type</th><td>Road</td></tr><tr><th>Connected to house</th></tr></tbody>`, 12),
+      Mode_tmpl$3 = (0,web/* template */.XK)(`<tbody><tr><th>Type</th><td>Decor</td></tr><tr><th>Name</th><td></td></tr><tr><th>Adjacent roads (in-network)</th><td></td></tr><tr><th>Aesthetic points</th><td></td></tr></tbody>`, 26),
+      Mode_tmpl$4 = (0,web/* template */.XK)(`<td></td>`, 2),
+      Mode_tmpl$5 = (0,web/* template */.XK)(`<tbody><tr><th>Type</th><td>Building</td></tr><tr><th>Name</th><td></td></tr><tr><th>Adjacent roads (in-network)</th><td></td></tr><tr><th>Production rate (W/10 mins)</th></tr><tr><th>Max capacity (W)</th><td></td></tr><tr><th>Aesthetic points</th><td></td></tr></tbody>`, 36),
+      Mode_tmpl$6 = (0,web/* template */.XK)(`<table><caption>Cell properties</caption></table>`, 4),
+      Mode_tmpl$7 = (0,web/* template */.XK)(`<tbody><tr><th>Type</th><td>Free cell</td></tr></tbody>`, 8),
+      Mode_tmpl$8 = (0,web/* template */.XK)(`<td>No</td>`, 2),
+      Mode_tmpl$9 = (0,web/* template */.XK)(`<label for="decorate-type">Type</label>`, 2),
+      _tmpl$10 = (0,web/* template */.XK)(`<select id="decorate-type"></select>`, 2),
+      _tmpl$11 = (0,web/* template */.XK)(`<option></option>`, 2),
+      _tmpl$12 = (0,web/* template */.XK)(`<label for="decorate-name">Name</label>`, 2),
+      _tmpl$13 = (0,web/* template */.XK)(`<select id="decorate-name"></select>`, 2),
+      _tmpl$14 = (0,web/* template */.XK)(`<div><input type="checkbox" id="autofill"><label for="autofill">Autofill roads</label></div>`, 5),
+      _tmpl$15 = (0,web/* template */.XK)(`<button type="button">Switch to Decorate mode</button>`, 2),
+      _tmpl$16 = (0,web/* template */.XK)(`<fieldset><legend></legend><div></div></fieldset>`, 6),
+      _tmpl$17 = (0,web/* template */.XK)(`<button type="button">Switch to Inspect mode</button>`, 2);
 
-function Inspect_iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+function Mode_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-function Inspect_arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+function Mode_slicedToArray(arr, i) { return Mode_arrayWithHoles(arr) || Mode_iterableToArrayLimit(arr, i) || Mode_unsupportedIterableToArray(arr, i) || Mode_nonIterableRest(); }
+
+function Mode_nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function Mode_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return Mode_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return Mode_arrayLikeToArray(o, minLen); }
+
+function Mode_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function Mode_iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function Mode_arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
@@ -3924,16 +4155,16 @@ function Inspect_arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 function Inspect() {
   var _useState = useState(),
-      _useState2 = Inspect_slicedToArray(_useState, 1),
+      _useState2 = Mode_slicedToArray(_useState, 1),
       state = _useState2[0];
 
   return function () {
-    var _el$ = Inspect_tmpl$6.cloneNode(true),
+    var _el$ = Mode_tmpl$6.cloneNode(true),
         _el$2 = _el$.firstChild;
 
     (0,web/* insert */.$T)(_el$, (0,solid/* createComponent */.LM)(solid/* Switch */.rs, {
       get fallback() {
-        return Inspect_tmpl$7.cloneNode(true);
+        return Mode_tmpl$7.cloneNode(true);
       },
 
       get children() {
@@ -3943,7 +4174,7 @@ function Inspect() {
           },
 
           get children() {
-            var _el$3 = Inspect_tmpl$2.cloneNode(true),
+            var _el$3 = Mode_tmpl$2.cloneNode(true),
                 _el$4 = _el$3.firstChild,
                 _el$5 = _el$4.nextSibling,
                 _el$6 = _el$5.firstChild;
@@ -3954,11 +4185,11 @@ function Inspect() {
               },
 
               get fallback() {
-                return Inspect_tmpl$8.cloneNode(true);
+                return Mode_tmpl$8.cloneNode(true);
               },
 
               get children() {
-                return Inspect_tmpl$.cloneNode(true);
+                return Mode_tmpl$.cloneNode(true);
               }
 
             }), null);
@@ -3972,7 +4203,7 @@ function Inspect() {
           },
 
           get children() {
-            var _el$8 = Inspect_tmpl$3.cloneNode(true),
+            var _el$8 = Mode_tmpl$3.cloneNode(true),
                 _el$9 = _el$8.firstChild,
                 _el$10 = _el$9.nextSibling,
                 _el$11 = _el$10.firstChild,
@@ -4005,7 +4236,7 @@ function Inspect() {
           },
 
           get children() {
-            var _el$19 = Inspect_tmpl$5.cloneNode(true),
+            var _el$19 = Mode_tmpl$5.cloneNode(true),
                 _el$20 = _el$19.firstChild,
                 _el$21 = _el$20.nextSibling,
                 _el$22 = _el$21.firstChild,
@@ -4037,7 +4268,7 @@ function Inspect() {
 
               get fallback() {
                 return function () {
-                  var _el$38 = Inspect_tmpl$4.cloneNode(true);
+                  var _el$38 = Mode_tmpl$4.cloneNode(true);
 
                   (0,web/* insert */.$T)(_el$38, function () {
                     return "".concat(state.grid[state.inspect.root].object.waru, " (+").concat(state.grid[state.inspect.root].network.waru, ")");
@@ -4048,10 +4279,10 @@ function Inspect() {
               },
 
               get children() {
-                var _el$29 = Inspect_tmpl$4.cloneNode(true);
+                var _el$29 = Mode_tmpl$4.cloneNode(true);
 
                 (0,web/* insert */.$T)(_el$29, function () {
-                  return "".concat(state.grid[state.inspect.root].object.waru, " (+").concat(state.grid[state.inspect.root].network.waru, ") (+").concat(aufhebenWaru, ")");
+                  return "".concat(state.grid[state.inspect.root].object.waru, " (+").concat(state.grid[state.inspect.root].network.waru, ") (+").concat(state.grid[state.inspect.root].object.waru > 0 && state.grid[state.inspect.root].object.banked > 0 ? aufhebenWaru : 0, ")");
                 });
 
                 return _el$29;
@@ -4079,82 +4310,58 @@ function Inspect() {
   }();
 }
 
-/* harmony default export */ const components_Inspect = (Inspect);
-;// CONCATENATED MODULE: ./src/components/Decorate.jsx
-
-
-
-
-
-
-
-
-const Decorate_tmpl$ = (0,web/* template */.XK)(`<label for="decorate-type">Type</label>`, 2),
-      Decorate_tmpl$2 = (0,web/* template */.XK)(`<select id="decorate-type"></select>`, 2),
-      Decorate_tmpl$3 = (0,web/* template */.XK)(`<option></option>`, 2),
-      Decorate_tmpl$4 = (0,web/* template */.XK)(`<label for="decorate-name">Name</label>`, 2),
-      Decorate_tmpl$5 = (0,web/* template */.XK)(`<select id="decorate-name"></select>`, 2),
-      Decorate_tmpl$6 = (0,web/* template */.XK)(`<div><input type="checkbox" id="autofill"><label for="autofill">Autofill roads</label></div>`, 5);
-
-function Decorate_slicedToArray(arr, i) { return Decorate_arrayWithHoles(arr) || Decorate_iterableToArrayLimit(arr, i) || Decorate_unsupportedIterableToArray(arr, i) || Decorate_nonIterableRest(); }
-
-function Decorate_nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function Decorate_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return Decorate_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return Decorate_arrayLikeToArray(o, minLen); }
-
-function Decorate_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-function Decorate_iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function Decorate_arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-
-
-
 function DecorateType() {
-  var _useState = useState(),
-      _useState2 = Decorate_slicedToArray(_useState, 2),
-      state = _useState2[0],
-      onDecorateTypeChange = _useState2[1].onDecorateTypeChange;
+  var _useState3 = useState(),
+      _useState4 = Mode_slicedToArray(_useState3, 2),
+      state = _useState4[0],
+      setDecorateType = _useState4[1].setDecorateType;
+
+  var onChange = function onChange(event) {
+    setDecorateType(event.currentTarget.value);
+  };
 
   var decorateTypes = Object.keys(objects).filter(function (type) {
     return type !== "free";
   });
-  return [Decorate_tmpl$.cloneNode(true), function () {
-    var _el$2 = Decorate_tmpl$2.cloneNode(true);
+  return [Mode_tmpl$9.cloneNode(true), function () {
+    var _el$40 = _tmpl$10.cloneNode(true);
 
-    (0,web/* addEventListener */.Oo)(_el$2, "change", onDecorateTypeChange);
+    _el$40.addEventListener("change", onChange);
 
-    (0,web/* insert */.$T)(_el$2, (0,solid/* createComponent */.LM)(solid/* For */.U2, {
+    (0,web/* insert */.$T)(_el$40, (0,solid/* createComponent */.LM)(solid/* For */.U2, {
       each: decorateTypes,
       children: function children(type) {
         return function () {
-          var _el$3 = Decorate_tmpl$3.cloneNode(true);
+          var _el$41 = _tmpl$11.cloneNode(true);
 
-          _el$3.value = type;
+          _el$41.value = type;
 
-          (0,web/* insert */.$T)(_el$3, function () {
+          (0,web/* insert */.$T)(_el$41, function () {
             return type.charAt(0).toUpperCase() + type.slice(1);
           });
 
-          return _el$3;
+          return _el$41;
         }();
       }
     }));
 
     (0,solid/* createRenderEffect */.F3)(function () {
-      return _el$2.value = state.decorate.type;
+      return _el$40.value = state.decorate.type;
     });
 
-    return _el$2;
+    return _el$40;
   }()];
 }
 
 function DecorateName() {
-  var _useState3 = useState(),
-      _useState4 = Decorate_slicedToArray(_useState3, 2),
-      state = _useState4[0],
-      onDecorateNameChange = _useState4[1].onDecorateNameChange;
+  var _useState5 = useState(),
+      _useState6 = Mode_slicedToArray(_useState5, 2),
+      state = _useState6[0],
+      setDecorateName = _useState6[1].setDecorateName;
+
+  var onChange = function onChange(event) {
+    setDecorateName(event.currentTarget.value);
+  };
 
   var names = function names() {
     var _objects$state$decora = objects[state.decorate.type],
@@ -4175,29 +4382,29 @@ function DecorateName() {
     },
 
     get children() {
-      return [Decorate_tmpl$4.cloneNode(true), function () {
-        var _el$5 = Decorate_tmpl$5.cloneNode(true);
+      return [_tmpl$12.cloneNode(true), function () {
+        var _el$43 = _tmpl$13.cloneNode(true);
 
-        (0,web/* addEventListener */.Oo)(_el$5, "change", onDecorateNameChange);
+        _el$43.addEventListener("change", onChange);
 
-        (0,web/* insert */.$T)(_el$5, (0,solid/* createComponent */.LM)(solid/* For */.U2, {
+        (0,web/* insert */.$T)(_el$43, (0,solid/* createComponent */.LM)(solid/* For */.U2, {
           get each() {
             return names();
           },
 
           children: function children(name) {
             return function () {
-              var _el$6 = Decorate_tmpl$3.cloneNode(true);
+              var _el$44 = _tmpl$11.cloneNode(true);
 
-              _el$6.value = name;
+              _el$44.value = name;
 
-              (0,web/* insert */.$T)(_el$6, name);
+              (0,web/* insert */.$T)(_el$44, name);
 
               (0,solid/* createRenderEffect */.F3)(function () {
-                return _el$6.disabled = disabled(name);
+                return _el$44.disabled = disabled(name);
               });
 
-              return _el$6;
+              return _el$44;
             }();
           }
         }));
@@ -4206,15 +4413,15 @@ function DecorateName() {
           var _v$ = !state.decorate.name,
               _v$2 = state.decorate.name;
 
-          _v$ !== _p$._v$ && (_el$5.disabled = _p$._v$ = _v$);
-          _v$2 !== _p$._v$2 && (_el$5.value = _p$._v$2 = _v$2);
+          _v$ !== _p$._v$ && (_el$43.disabled = _p$._v$ = _v$);
+          _v$2 !== _p$._v$2 && (_el$43.value = _p$._v$2 = _v$2);
           return _p$;
         }, {
           _v$: undefined,
           _v$2: undefined
         });
 
-        return _el$5;
+        return _el$43;
       }()];
     }
 
@@ -4222,112 +4429,84 @@ function DecorateName() {
 }
 
 function Autofill() {
-  var _useState5 = useState(),
-      _useState6 = Decorate_slicedToArray(_useState5, 2),
-      state = _useState6[0],
-      onAutofillChange = _useState6[1].onAutofillChange;
+  var _useState7 = useState(),
+      _useState8 = Mode_slicedToArray(_useState7, 2),
+      state = _useState8[0],
+      toggleAutofill = _useState8[1].toggleAutofill;
+
+  var onChange = function onChange() {
+    toggleAutofill();
+  };
 
   return function () {
-    var _el$7 = Decorate_tmpl$6.cloneNode(true),
-        _el$8 = _el$7.firstChild;
+    var _el$45 = _tmpl$14.cloneNode(true),
+        _el$46 = _el$45.firstChild;
 
-    (0,web/* addEventListener */.Oo)(_el$8, "change", onAutofillChange);
+    _el$46.addEventListener("change", onChange);
 
     (0,solid/* createRenderEffect */.F3)(function () {
-      return _el$8.checked = state.config.useAutofill;
+      return _el$46.checked = state.config.useAutofill;
     });
 
-    return _el$7;
+    return _el$45;
   }();
 }
 
-function Decorate() {
-  return [(0,solid/* createComponent */.LM)(DecorateType, {}), (0,solid/* createComponent */.LM)(DecorateName, {}), (0,solid/* createComponent */.LM)(Autofill, {})];
-}
-
-/* harmony default export */ const components_Decorate = (Decorate);
-;// CONCATENATED MODULE: ./src/components/Mode.jsx
-
-
-
-
-
-
-
-
-const Mode_tmpl$ = (0,web/* template */.XK)(`<button type="button">Switch to Decorate mode</button>`, 2),
-      Mode_tmpl$2 = (0,web/* template */.XK)(`<fieldset><legend></legend><div></div></fieldset>`, 6),
-      Mode_tmpl$3 = (0,web/* template */.XK)(`<button type="button">Switch to Inspect mode</button>`, 2);
-
-function Mode_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-function Mode_slicedToArray(arr, i) { return Mode_arrayWithHoles(arr) || Mode_iterableToArrayLimit(arr, i) || Mode_unsupportedIterableToArray(arr, i) || Mode_nonIterableRest(); }
-
-function Mode_nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function Mode_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return Mode_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return Mode_arrayLikeToArray(o, minLen); }
-
-function Mode_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-function Mode_iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function Mode_arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-
-
-
-
 function Mode() {
-  var _useState = useState(),
-      _useState2 = Mode_slicedToArray(_useState, 2),
-      state = _useState2[0],
-      onModeClick = _useState2[1].onModeClick;
+  var _useState9 = useState(),
+      _useState10 = Mode_slicedToArray(_useState9, 2),
+      state = _useState10[0],
+      setMode = _useState10[1].setMode;
+
+  var onClick = function onClick(data) {
+    setMode(data.mode);
+  };
 
   return function () {
-    var _el$ = Mode_tmpl$2.cloneNode(true),
-        _el$2 = _el$.firstChild,
-        _el$3 = _el$2.nextSibling;
+    var _el$47 = _tmpl$16.cloneNode(true),
+        _el$48 = _el$47.firstChild,
+        _el$49 = _el$48.nextSibling;
 
-    (0,web/* insert */.$T)(_el$2, function () {
+    (0,web/* insert */.$T)(_el$48, function () {
       return "Mode: ".concat(state.mode);
     });
 
-    (0,web/* insert */.$T)(_el$3, (0,solid/* createComponent */.LM)(solid/* Show */.di, {
+    (0,web/* insert */.$T)(_el$49, (0,solid/* createComponent */.LM)(solid/* Show */.di, {
       get when() {
         return state.mode === "inspect";
       },
 
       get fallback() {
-        return [(0,solid/* createComponent */.LM)(components_Decorate, {}), function () {
-          var _el$5 = Mode_tmpl$3.cloneNode(true);
+        return [(0,solid/* createComponent */.LM)(DecorateType, {}), (0,solid/* createComponent */.LM)(DecorateName, {}), (0,solid/* createComponent */.LM)(Autofill, {}), function () {
+          var _el$51 = _tmpl$17.cloneNode(true);
 
-          _el$5.$$click = onModeClick;
-          _el$5.$$clickData = {
+          _el$51.$$click = onClick;
+          _el$51.$$clickData = {
             mode: "inspect"
           };
-          return _el$5;
+          return _el$51;
         }()];
       },
 
       get children() {
-        return [(0,solid/* createComponent */.LM)(components_Inspect, {}), function () {
-          var _el$4 = Mode_tmpl$.cloneNode(true);
+        return [(0,solid/* createComponent */.LM)(Inspect, {}), function () {
+          var _el$50 = _tmpl$15.cloneNode(true);
 
-          _el$4.$$click = onModeClick;
-          _el$4.$$clickData = {
+          _el$50.$$click = onClick;
+          _el$50.$$clickData = {
             mode: "decorate"
           };
-          return _el$4;
+          return _el$50;
         }()];
       }
 
     }));
 
     (0,solid/* createRenderEffect */.F3)(function (_$p) {
-      return (0,web/* classList */.s1)(_el$3, Mode_defineProperty({}, state.mode, true), _$p);
+      return (0,web/* classList */.s1)(_el$49, Mode_defineProperty({}, state.mode, true), _$p);
     });
 
-    return _el$;
+    return _el$47;
   }();
 }
 
@@ -4343,10 +4522,18 @@ function Mode() {
 
 
 
-const Grid_tmpl$ = (0,web/* template */.XK)(`<button type="button">Remove</button>`, 2),
-      Grid_tmpl$2 = (0,web/* template */.XK)(`<button type="button">Reset</button>`, 2),
-      Grid_tmpl$3 = (0,web/* template */.XK)(`<fieldset><legend>Grid</legend><div class="grid"><div class="grid-outer"><div class="grid-inner"></div></div><div class="grid-legend"><div><div class="box my-house"></div><div>My House</div></div><div><div class="box building"></div><div>Building</div></div><div><div class="box decor"></div><div>Decor</div></div><div><div class="box road-in-network"></div><div>Road (in-network)</div></div><div><div class="box road-out-network"></div><div>Road (out-network)</div></div></div><div class="grid-control"></div></div></fieldset>`, 44),
-      Grid_tmpl$4 = (0,web/* template */.XK)(`<div class="grid-cell"></div>`, 2);
+
+
+const Grid_tmpl$ = (0,web/* template */.XK)(`<div><select><option disabled hidden>Choose...</option></select><button type="button">Load</button><button type="button">Delete</button></div>`, 10),
+      Grid_tmpl$2 = (0,web/* template */.XK)(`<div><input type="text" required placeholder="Enter a title..."><button type="button">Create</button></div>`, 5),
+      Grid_tmpl$3 = (0,web/* template */.XK)(`<div><strong></strong></div>`, 4),
+      Grid_tmpl$4 = (0,web/* template */.XK)(`<option></option>`, 2),
+      Grid_tmpl$5 = (0,web/* template */.XK)(`<button type="button">Remove</button>`, 2),
+      Grid_tmpl$6 = (0,web/* template */.XK)(`<button type="button">Reset</button>`, 2),
+      Grid_tmpl$7 = (0,web/* template */.XK)(`<fieldset><legend>Grid</legend><div class="grid"><div class="grid-presets"></div><div class="grid-outer"><div class="grid-inner"></div></div><div class="grid-legend"><div><div class="box my-house"></div><div>My House</div></div><div><div class="box building"></div><div>Building</div></div><div><div class="box decor"></div><div>Decor</div></div><div><div class="box road-in-network"></div><div>Road (in-network)</div></div><div><div class="box road-out-network"></div><div>Road (out-network)</div></div></div><div class="grid-control"></div></div></fieldset>`, 46),
+      Grid_tmpl$8 = (0,web/* template */.XK)(`<div class="grid-cell"></div>`, 2);
+
+function Grid_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function Grid_slicedToArray(arr, i) { return Grid_arrayWithHoles(arr) || Grid_iterableToArrayLimit(arr, i) || Grid_unsupportedIterableToArray(arr, i) || Grid_nonIterableRest(); }
 
@@ -4362,141 +4549,397 @@ function Grid_arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
-function Remove() {
+
+
+function Presets(_ref) {
+  var alert = _ref.alert,
+      setAlert = _ref.setAlert;
+
   var _useState = useState(),
       _useState2 = Grid_slicedToArray(_useState, 2),
       state = _useState2[0],
-      onRemoveClick = _useState2[1].onRemoveClick;
+      _useState2$ = _useState2[1],
+      loadPreset = _useState2$.loadPreset,
+      deletePreset = _useState2$.deletePreset,
+      createPreset = _useState2$.createPreset,
+      updateChart = _useState2$.updateChart;
+
+  var storePresets = function storePresets(presets) {
+    try {
+      window.localStorage.setItem("presets", presets);
+    } catch (err) {
+      return err.message;
+    }
+  };
+
+  var _createSignal = (0,solid/* createSignal */.gQ)(-1),
+      _createSignal2 = Grid_slicedToArray(_createSignal, 2),
+      presetIndex = _createSignal2[0],
+      setPresetIndex = _createSignal2[1];
+
+  var onChange = function onChange(event) {
+    setPresetIndex(Number(event.currentTarget.value));
+  };
+
+  var onLoadClick = function onLoadClick() {
+    loadPreset(presetIndex());
+    updateChart();
+    setPresetIndex(-1);
+  };
+
+  var onDeleteClick = function onDeleteClick() {
+    var index = presetIndex();
+    var title = state.presets[index].title;
+    deletePreset(index);
+    updateChart();
+    var err = storePresets(JSON.stringify(state.presets));
+
+    if (err) {
+      (0,solid/* batch */.dC)(function () {
+        setAlert("status", "failure");
+        setAlert("message", "Unable to delete preset \"".concat(title, "\" from local storage: ").concat(err, "."));
+      });
+    } else {
+      (0,solid/* batch */.dC)(function () {
+        setAlert("status", "success");
+        setAlert("message", "Deleted preset \"".concat(title, "\" from local storage."));
+      });
+    }
+
+    setPresetIndex(-1);
+  };
+
+  var _createSignal3 = (0,solid/* createSignal */.gQ)(""),
+      _createSignal4 = Grid_slicedToArray(_createSignal3, 2),
+      newTitle = _createSignal4[0],
+      setNewTitle = _createSignal4[1];
+
+  var onInput = function onInput(event) {
+    setNewTitle(event.currentTarget.value);
+  };
+
+  var onCreateClick = function onCreateClick() {
+    var title = newTitle();
+    createPreset(title);
+    updateChart();
+    var err = storePresets(JSON.stringify(state.presets));
+
+    if (err) {
+      (0,solid/* batch */.dC)(function () {
+        setAlert("status", "failure");
+        setAlert("message", "Unable to save preset \"".concat(title, "\" to local storage: ").concat(err));
+      });
+    } else {
+      (0,solid/* batch */.dC)(function () {
+        setAlert("status", "success");
+        setAlert("message", "Saved preset \"".concat(title, "\" to local storage."));
+      });
+    }
+
+    setPresetIndex(-1);
+    setNewTitle("");
+  };
+
+  return [function () {
+    var _el$ = Grid_tmpl$.cloneNode(true),
+        _el$2 = _el$.firstChild,
+        _el$3 = _el$2.firstChild,
+        _el$4 = _el$2.nextSibling,
+        _el$5 = _el$4.nextSibling;
+
+    _el$2.addEventListener("change", onChange);
+
+    _el$3.value = -1;
+
+    (0,web/* insert */.$T)(_el$2, (0,solid/* createComponent */.LM)(solid/* Index */.gm, {
+      get each() {
+        return state.presets;
+      },
+
+      children: function children(preset, index) {
+        return function () {
+          var _el$11 = Grid_tmpl$4.cloneNode(true);
+
+          _el$11.value = index;
+
+          (0,web/* insert */.$T)(_el$11, function () {
+            return preset().title;
+          });
+
+          return _el$11;
+        }();
+      }
+    }), null);
+
+    _el$4.$$click = onLoadClick;
+    _el$5.$$click = onDeleteClick;
+
+    (0,solid/* createRenderEffect */.F3)(function (_p$) {
+      var _v$ = presetIndex(),
+          _v$2 = !state.presets.length,
+          _v$3 = presetIndex() < 0,
+          _v$4 = presetIndex() < 0;
+
+      _v$ !== _p$._v$ && (_el$2.value = _p$._v$ = _v$);
+      _v$2 !== _p$._v$2 && (_el$2.disabled = _p$._v$2 = _v$2);
+      _v$3 !== _p$._v$3 && (_el$4.disabled = _p$._v$3 = _v$3);
+      _v$4 !== _p$._v$4 && (_el$5.disabled = _p$._v$4 = _v$4);
+      return _p$;
+    }, {
+      _v$: undefined,
+      _v$2: undefined,
+      _v$3: undefined,
+      _v$4: undefined
+    });
+
+    return _el$;
+  }(), function () {
+    var _el$6 = Grid_tmpl$2.cloneNode(true),
+        _el$7 = _el$6.firstChild,
+        _el$8 = _el$7.nextSibling;
+
+    _el$7.$$input = onInput;
+    _el$8.$$click = onCreateClick;
+
+    (0,solid/* createRenderEffect */.F3)(function (_p$) {
+      var _v$5 = newTitle(),
+          _v$6 = !newTitle();
+
+      _v$5 !== _p$._v$5 && (_el$7.value = _p$._v$5 = _v$5);
+      _v$6 !== _p$._v$6 && (_el$8.disabled = _p$._v$6 = _v$6);
+      return _p$;
+    }, {
+      _v$5: undefined,
+      _v$6: undefined
+    });
+
+    return _el$6;
+  }(), (0,solid/* createComponent */.LM)(solid/* Show */.di, {
+    get when() {
+      return alert.status;
+    },
+
+    get children() {
+      var _el$9 = Grid_tmpl$3.cloneNode(true),
+          _el$10 = _el$9.firstChild;
+
+      (0,web/* insert */.$T)(_el$10, function () {
+        return "".concat(alert.status, "!");
+      });
+
+      (0,web/* insert */.$T)(_el$9, function () {
+        return alert.message;
+      }, null);
+
+      (0,solid/* createRenderEffect */.F3)(function (_$p) {
+        return (0,web/* classList */.s1)(_el$9, Grid_defineProperty({
+          alert: true
+        }, alert.status, true), _$p);
+      });
+
+      return _el$9;
+    }
+
+  })];
+}
+
+function Remove(_ref2) {
+  var setAlert = _ref2.setAlert;
+
+  var _useState3 = useState(),
+      _useState4 = Grid_slicedToArray(_useState3, 2),
+      state = _useState4[0],
+      removeObject = _useState4[1].removeObject;
 
   var disabled = function disabled() {
     var object = state.grid[state.inspect.root].object;
     return object.type === "free" || object.fixed;
   };
 
-  return function () {
-    var _el$ = Grid_tmpl$.cloneNode(true);
+  var onClick = function onClick() {
+    var err = removeObject();
 
-    (0,web/* addEventListener */.Oo)(_el$, "click", onRemoveClick, true);
+    if (err) {
+      (0,solid/* batch */.dC)(function () {
+        setAlert("status", "failure");
+        setAlert("message", "Unable to remove object: ".concat(err, "."));
+      });
+    }
+  };
+
+  return function () {
+    var _el$12 = Grid_tmpl$5.cloneNode(true);
+
+    _el$12.$$click = onClick;
 
     (0,solid/* createRenderEffect */.F3)(function () {
-      return _el$.disabled = disabled();
+      return _el$12.disabled = disabled();
     });
 
-    return _el$;
+    return _el$12;
   }();
 }
 
 function Reset() {
-  var _useState3 = useState(),
-      _useState4 = Grid_slicedToArray(_useState3, 2),
-      _ = _useState4[0],
-      onResetClick = _useState4[1].onResetClick;
+  var _useState5 = useState(),
+      _useState6 = Grid_slicedToArray(_useState5, 2),
+      _ = _useState6[0],
+      resetGrid = _useState6[1].resetGrid;
+
+  var onClick = function onClick() {
+    resetGrid();
+  };
 
   return function () {
-    var _el$2 = Grid_tmpl$2.cloneNode(true);
+    var _el$13 = Grid_tmpl$6.cloneNode(true);
 
-    (0,web/* addEventListener */.Oo)(_el$2, "click", onResetClick, true);
-
-    return _el$2;
+    _el$13.$$click = onClick;
+    return _el$13;
   }();
 }
 
 function Grid() {
-  var _useState5 = useState(),
-      _useState6 = Grid_slicedToArray(_useState5, 2),
-      state = _useState6[0],
-      onGridClick = _useState6[1].onGridClick;
+  var _useState7 = useState(),
+      _useState8 = Grid_slicedToArray(_useState7, 2),
+      state = _useState8[0],
+      _useState8$ = _useState8[1],
+      setInspectRoot = _useState8$.setInspectRoot,
+      insertObject = _useState8$.insertObject;
+
+  var _createStore = (0,dist_store/* createStore */.MT)({
+    status: "info",
+    message: "Found ".concat(state.presets.length, " presets in local storage.")
+  }),
+      _createStore2 = Grid_slicedToArray(_createStore, 2),
+      alert = _createStore2[0],
+      setAlert = _createStore2[1];
+
+  (0,solid/* createEffect */.GW)(function () {
+    if (alert.status && alert.message) {
+      setTimeout(function () {
+        (0,solid/* batch */.dC)(function () {
+          setAlert("status", "");
+          setAlert("message", "");
+        });
+      }, 3000);
+    }
+  });
+
+  var onClick = function onClick(_ref3) {
+    var cell = _ref3.cell;
+
+    if (state.mode === "inspect") {
+      setInspectRoot(cell.position.root);
+    } else if (state.mode === "decorate") {
+      var err = insertObject(cell.position);
+
+      if (err) {
+        (0,solid/* batch */.dC)(function () {
+          setAlert("status", "failure");
+          setAlert("message", "Unable to insert object: ".concat(err, "."));
+        });
+      }
+    }
+  };
 
   return function () {
-    var _el$3 = Grid_tmpl$3.cloneNode(true),
-        _el$4 = _el$3.firstChild,
-        _el$5 = _el$4.nextSibling,
-        _el$6 = _el$5.firstChild,
-        _el$7 = _el$6.firstChild,
-        _el$8 = _el$6.nextSibling,
-        _el$9 = _el$8.nextSibling;
+    var _el$14 = Grid_tmpl$7.cloneNode(true),
+        _el$15 = _el$14.firstChild,
+        _el$16 = _el$15.nextSibling,
+        _el$17 = _el$16.firstChild,
+        _el$18 = _el$17.nextSibling,
+        _el$19 = _el$18.firstChild,
+        _el$20 = _el$18.nextSibling,
+        _el$21 = _el$20.nextSibling;
 
-    (0,web/* insert */.$T)(_el$7, (0,solid/* createComponent */.LM)(solid/* For */.U2, {
+    (0,web/* insert */.$T)(_el$17, (0,solid/* createComponent */.LM)(Presets, {
+      alert: alert,
+      setAlert: setAlert
+    }));
+
+    (0,web/* insert */.$T)(_el$19, (0,solid/* createComponent */.LM)(solid/* For */.U2, {
       get each() {
         return state.grid;
       },
 
       children: function children(cell) {
         return function () {
-          var _el$10 = Grid_tmpl$4.cloneNode(true);
+          var _el$22 = Grid_tmpl$8.cloneNode(true);
 
-          _el$10.$$click = onGridClick;
-          _el$10.$$clickData = {
+          _el$22.$$click = onClick;
+          _el$22.$$clickData = {
             cell: cell
           };
 
           (0,solid/* createRenderEffect */.F3)(function (_p$) {
-            var _v$3 = cell.position.root === state.inspect.root ? "red" : "black",
-                _v$4 = cell.border.top ? "solid" : "none",
-                _v$5 = cell.border.right ? "solid" : "none",
-                _v$6 = cell.border.bottom ? "solid" : "none",
-                _v$7 = cell.border.left ? "solid" : "none",
-                _v$8 = cell.position.root === 0,
-                _v$9 = cell.object.type === "building",
-                _v$10 = cell.object.type === "decor",
-                _v$11 = cell.object.type === "road" && cell.network.connected,
-                _v$12 = cell.object.type === "road" && !cell.network.connected;
+            var _v$9 = cell.position.root === state.inspect.root ? "red" : "black",
+                _v$10 = cell.border.top ? "solid" : "none",
+                _v$11 = cell.border.right ? "solid" : "none",
+                _v$12 = cell.border.bottom ? "solid" : "none",
+                _v$13 = cell.border.left ? "solid" : "none",
+                _v$14 = cell.position.root === 0,
+                _v$15 = cell.object.type === "building",
+                _v$16 = cell.object.type === "decor",
+                _v$17 = cell.object.type === "road" && cell.network.connected,
+                _v$18 = cell.object.type === "road" && !cell.network.connected;
 
-            _v$3 !== _p$._v$3 && _el$10.style.setProperty("border-color", _p$._v$3 = _v$3);
-            _v$4 !== _p$._v$4 && _el$10.style.setProperty("border-top-style", _p$._v$4 = _v$4);
-            _v$5 !== _p$._v$5 && _el$10.style.setProperty("border-right-style", _p$._v$5 = _v$5);
-            _v$6 !== _p$._v$6 && _el$10.style.setProperty("border-bottom-style", _p$._v$6 = _v$6);
-            _v$7 !== _p$._v$7 && _el$10.style.setProperty("border-left-style", _p$._v$7 = _v$7);
-            _v$8 !== _p$._v$8 && _el$10.classList.toggle("my-house", _p$._v$8 = _v$8);
-            _v$9 !== _p$._v$9 && _el$10.classList.toggle("building", _p$._v$9 = _v$9);
-            _v$10 !== _p$._v$10 && _el$10.classList.toggle("decor", _p$._v$10 = _v$10);
-            _v$11 !== _p$._v$11 && _el$10.classList.toggle("road-in-network", _p$._v$11 = _v$11);
-            _v$12 !== _p$._v$12 && _el$10.classList.toggle("road-out-network", _p$._v$12 = _v$12);
+            _v$9 !== _p$._v$9 && _el$22.style.setProperty("border-color", _p$._v$9 = _v$9);
+            _v$10 !== _p$._v$10 && _el$22.style.setProperty("border-top-style", _p$._v$10 = _v$10);
+            _v$11 !== _p$._v$11 && _el$22.style.setProperty("border-right-style", _p$._v$11 = _v$11);
+            _v$12 !== _p$._v$12 && _el$22.style.setProperty("border-bottom-style", _p$._v$12 = _v$12);
+            _v$13 !== _p$._v$13 && _el$22.style.setProperty("border-left-style", _p$._v$13 = _v$13);
+            _v$14 !== _p$._v$14 && _el$22.classList.toggle("my-house", _p$._v$14 = _v$14);
+            _v$15 !== _p$._v$15 && _el$22.classList.toggle("building", _p$._v$15 = _v$15);
+            _v$16 !== _p$._v$16 && _el$22.classList.toggle("decor", _p$._v$16 = _v$16);
+            _v$17 !== _p$._v$17 && _el$22.classList.toggle("road-in-network", _p$._v$17 = _v$17);
+            _v$18 !== _p$._v$18 && _el$22.classList.toggle("road-out-network", _p$._v$18 = _v$18);
             return _p$;
           }, {
-            _v$3: undefined,
-            _v$4: undefined,
-            _v$5: undefined,
-            _v$6: undefined,
-            _v$7: undefined,
-            _v$8: undefined,
             _v$9: undefined,
             _v$10: undefined,
             _v$11: undefined,
-            _v$12: undefined
+            _v$12: undefined,
+            _v$13: undefined,
+            _v$14: undefined,
+            _v$15: undefined,
+            _v$16: undefined,
+            _v$17: undefined,
+            _v$18: undefined
           });
 
-          return _el$10;
+          return _el$22;
         }();
       }
     }));
 
-    (0,web/* insert */.$T)(_el$9, (0,solid/* createComponent */.LM)(Remove, {}), null);
+    (0,web/* insert */.$T)(_el$21, (0,solid/* createComponent */.LM)(Remove, {
+      setAlert: setAlert
+    }), null);
 
-    (0,web/* insert */.$T)(_el$9, (0,solid/* createComponent */.LM)(Reset, {}), null);
+    (0,web/* insert */.$T)(_el$21, (0,solid/* createComponent */.LM)(Reset, {}), null);
 
     (0,solid/* createRenderEffect */.F3)(function (_p$) {
-      var _v$ = "repeat(".concat(state.config.order, ", auto)"),
-          _v$2 = "repeat(".concat(state.config.order, ", auto)");
+      var _v$7 = "repeat(".concat(state.config.order, ", auto)"),
+          _v$8 = "repeat(".concat(state.config.order, ", auto)");
 
-      _v$ !== _p$._v$ && _el$7.style.setProperty("grid-template-columns", _p$._v$ = _v$);
-      _v$2 !== _p$._v$2 && _el$7.style.setProperty("grid-template-rows", _p$._v$2 = _v$2);
+      _v$7 !== _p$._v$7 && _el$19.style.setProperty("grid-template-columns", _p$._v$7 = _v$7);
+      _v$8 !== _p$._v$8 && _el$19.style.setProperty("grid-template-rows", _p$._v$8 = _v$8);
       return _p$;
     }, {
-      _v$: undefined,
-      _v$2: undefined
+      _v$7: undefined,
+      _v$8: undefined
     });
 
-    return _el$3;
+    return _el$14;
   }();
 }
 
 /* harmony default export */ const components_Grid = (Grid);
 
-(0,web/* delegateEvents */.Qj)(["click"]);
+(0,web/* delegateEvents */.Qj)(["click", "input"]);
+// EXTERNAL MODULE: ./node_modules/chart.js/dist/chart.esm.js + 1 modules
+var chart_esm = __webpack_require__(181);
 ;// CONCATENATED MODULE: ./src/components/Stats.jsx
-
-
 
 
 
@@ -4505,15 +4948,12 @@ function Grid() {
 
 const Stats_tmpl$ = (0,web/* template */.XK)(`<tr><th colspan="2">Road (in-network)</th><td colspan="1"></td></tr>`, 6),
       Stats_tmpl$2 = (0,web/* template */.XK)(`<tr><th colspan="2">Road (out-network)</th><td colspan="1"></td></tr>`, 6),
-      Stats_tmpl$3 = (0,web/* template */.XK)(`<table><caption>Object count</caption><thead><tr><th>Type</th><th>Name</th><th>Quantity</th></tr></thead><tbody><tr><th colspan="2">Free cells</th><td colspan="1"></td></tr></tbody></table>`, 22),
+      Stats_tmpl$3 = (0,web/* template */.XK)(`<table><caption>Object count</caption><thead><tr><th>Type</th><th>Name</th><th>Quantity</th></tr></thead><tbody><tr><th colspan="2">Available cells</th><td colspan="1"></td></tr></tbody></table>`, 22),
       Stats_tmpl$4 = (0,web/* template */.XK)(`<tr><td>Building</td><td></td><td></td></tr>`, 8),
       Stats_tmpl$5 = (0,web/* template */.XK)(`<tr><td>Decor</td><td></td><td></td></tr>`, 8),
       Stats_tmpl$6 = (0,web/* template */.XK)(`<table><caption>Beauty effects</caption><thead><tr><th>Combine Result Choices</th><th>Building Max Capacity (W)</th><th>Shop Discount</th><th>Special Merchant Visit</th></tr></thead><tbody><tr><td></td><td></td><td></td><td></td></tr></tbody><tfoot><tr><th colspan="2">Total aesthetic points</th><td colspan="2"></td></tr><tr><th colspan="2">Points to next threshold</th><td colspan="2"></td></tr></tfoot></table>`, 42),
-      Stats_tmpl$7 = (0,web/* template */.XK)(`<tr><td>...</td><td>...</td><td>...</td><td>...</td></tr>`, 10),
-      Stats_tmpl$8 = (0,web/* template */.XK)(`<th colspan="4"><button type="button"></button></th>`, 4),
-      Stats_tmpl$9 = (0,web/* template */.XK)(`<table><caption>Waru production</caption><thead><tr><th>Time (mins)</th><th>Total (W)</th><th>Marginal (W)</th><th>Average (W)</th></tr></thead><tbody></tbody><tfoot><tr></tr><tr><th colspan="2">Total yield (W)</th><td colspan="2"></td></tr><tr><th colspan="2">Time until total yield (mins)</th><td colspan="2"></td></tr><tr><th colspan="2">Max yield rate (W/10 mins)</th><td colspan="2"></td></tr><tr><th colspan="2">Time until diminishing returns (mins)</th><td colspan="2"></td></tr></tfoot></table>`, 46),
-      _tmpl$10 = (0,web/* template */.XK)(`<tr><td></td><td></td><td></td><td></td></tr>`, 10),
-      _tmpl$11 = (0,web/* template */.XK)(`<fieldset><legend>Stats</legend><div class="stats"></div></fieldset>`, 6);
+      Stats_tmpl$7 = (0,web/* template */.XK)(`<table><caption>Waru production</caption><thead><tr><th colspan="2" class="canvas-header">Production timeline</th></tr></thead><tbody><tr><td colspan="2" class="canvas-data"><canvas></canvas></td></tr></tbody><tfoot><tr><th>Max total production rate (W/10 mins)</th><td></td></tr><tr><th>Time until diminishing total product (mins)</th><td></td></tr><tr><th>Total product (W)</th><td></td></tr><tr><th>Total production time (mins)</th><td></td></tr></tfoot></table>`, 44),
+      Stats_tmpl$8 = (0,web/* template */.XK)(`<fieldset><legend>Stats</legend><div class="stats"></div></fieldset>`, 6);
 
 function Stats_slicedToArray(arr, i) { return Stats_arrayWithHoles(arr) || Stats_iterableToArrayLimit(arr, i) || Stats_unsupportedIterableToArray(arr, i) || Stats_nonIterableRest(); }
 
@@ -4529,6 +4969,8 @@ function Stats_arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
+
+chart_esm/* Chart.register */.kL.register(chart_esm/* LineElement */.jn, chart_esm/* PointElement */.od, chart_esm/* LineController */.ST, chart_esm/* CategoryScale */.uw, chart_esm/* LinearScale */.f$, chart_esm/* Legend */.De, chart_esm/* Tooltip */.u);
 
 function Objects() {
   var _useState = useState(),
@@ -4633,7 +5075,7 @@ function Objects() {
     }), _el$11);
 
     (0,web/* insert */.$T)(_el$13, function () {
-      return state.summary.count.free;
+      return state.summary.count.available;
     });
 
     return _el$;
@@ -4693,117 +5135,102 @@ function Beauty() {
 
 function Production() {
   var _useState5 = useState(),
-      _useState6 = Stats_slicedToArray(_useState5, 1),
-      state = _useState6[0];
+      _useState6 = Stats_slicedToArray(_useState5, 2),
+      state = _useState6[0],
+      _useState6$ = _useState6[1],
+      setCanvas = _useState6$.setCanvas,
+      setChart = _useState6$.setChart,
+      updateChart = _useState6$.updateChart;
 
-  var _createSignal = (0,solid/* createSignal */.gQ)(true),
-      _createSignal2 = Stats_slicedToArray(_createSignal, 2),
-      truncated = _createSignal2[0],
-      setTruncated = _createSignal2[1];
-
-  var onClick = function onClick() {
-    setTruncated(!truncated());
+  var setupCanvas = function setupCanvas(canvas) {
+    setCanvas(canvas);
   };
 
+  (0,solid/* onMount */.H3)(function () {
+    setChart(new chart_esm/* Chart */.kL(state.canvas, {
+      type: "line",
+      options: {
+        animation: false,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: {
+            labels: {
+              usePointStyle: true
+            },
+            position: "bottom"
+          },
+          tooltip: {
+            usePointStyle: true
+          }
+        },
+        elements: {
+          point: {
+            pointStyle: "circle"
+          }
+        },
+        scales: {
+          x: {
+            display: true,
+            title: {
+              display: true,
+              text: "Time (mins)"
+            }
+          },
+          y: {
+            display: true,
+            min: 0,
+            title: {
+              display: true,
+              text: "Product (W)"
+            }
+          }
+        }
+      }
+    }));
+    updateChart();
+  });
+  (0,solid/* onCleanup */.$W)(function () {
+    state.chart.destroy();
+  });
   return function () {
-    var _el$38 = Stats_tmpl$9.cloneNode(true),
+    var _el$38 = Stats_tmpl$7.cloneNode(true),
         _el$39 = _el$38.firstChild,
         _el$40 = _el$39.nextSibling,
         _el$41 = _el$40.nextSibling,
-        _el$43 = _el$41.nextSibling,
+        _el$42 = _el$41.firstChild,
+        _el$43 = _el$42.firstChild,
         _el$44 = _el$43.firstChild,
-        _el$47 = _el$44.nextSibling,
-        _el$48 = _el$47.firstChild,
-        _el$49 = _el$48.nextSibling,
-        _el$50 = _el$47.nextSibling,
-        _el$51 = _el$50.firstChild,
-        _el$52 = _el$51.nextSibling,
-        _el$53 = _el$50.nextSibling,
-        _el$54 = _el$53.firstChild,
-        _el$55 = _el$54.nextSibling,
-        _el$56 = _el$53.nextSibling,
-        _el$57 = _el$56.firstChild,
-        _el$58 = _el$57.nextSibling;
+        _el$45 = _el$41.nextSibling,
+        _el$46 = _el$45.firstChild,
+        _el$47 = _el$46.firstChild,
+        _el$48 = _el$47.nextSibling,
+        _el$49 = _el$46.nextSibling,
+        _el$50 = _el$49.firstChild,
+        _el$51 = _el$50.nextSibling,
+        _el$52 = _el$49.nextSibling,
+        _el$53 = _el$52.firstChild,
+        _el$54 = _el$53.nextSibling,
+        _el$55 = _el$52.nextSibling,
+        _el$56 = _el$55.firstChild,
+        _el$57 = _el$56.nextSibling;
 
-    (0,web/* insert */.$T)(_el$41, (0,solid/* createComponent */.LM)(solid/* Show */.di, {
-      get when() {
-        return truncated() && state.summary.production.lastOptimalCycle > 0;
-      },
+    var _ref$ = setupCanvas;
+    typeof _ref$ === "function" ? _ref$(_el$44) : setupCanvas = _el$44;
 
-      get children() {
-        return Stats_tmpl$7.cloneNode(true);
-      }
-
-    }), null);
-
-    (0,web/* insert */.$T)(_el$41, (0,solid/* createComponent */.LM)(solid/* For */.U2, {
-      get each() {
-        return state.summary.production.products.slice(truncated() ? state.summary.production.lastOptimalCycle : 0);
-      },
-
-      children: function children(product) {
-        return function () {
-          var _el$59 = _tmpl$10.cloneNode(true),
-              _el$60 = _el$59.firstChild,
-              _el$61 = _el$60.nextSibling,
-              _el$62 = _el$61.nextSibling,
-              _el$63 = _el$62.nextSibling;
-
-          (0,web/* insert */.$T)(_el$60, function () {
-            return 10 * product.cycle;
-          });
-
-          (0,web/* insert */.$T)(_el$61, function () {
-            return product.total;
-          });
-
-          (0,web/* insert */.$T)(_el$62, function () {
-            return product.marginal;
-          });
-
-          (0,web/* insert */.$T)(_el$63, function () {
-            return product.average;
-          });
-
-          return _el$59;
-        }();
-      }
-    }), null);
-
-    (0,web/* insert */.$T)(_el$44, (0,solid/* createComponent */.LM)(solid/* Show */.di, {
-      get when() {
-        return state.summary.production.lastOptimalCycle > 0;
-      },
-
-      get children() {
-        var _el$45 = Stats_tmpl$8.cloneNode(true),
-            _el$46 = _el$45.firstChild;
-
-        _el$46.$$click = onClick;
-
-        (0,web/* insert */.$T)(_el$46, function () {
-          return (truncated() ? "Expand" : "Collapse") + " rows";
-        });
-
-        return _el$45;
-      }
-
-    }));
-
-    (0,web/* insert */.$T)(_el$49, function () {
-      return state.summary.production.products[state.summary.production.products.length - 1].total;
-    });
-
-    (0,web/* insert */.$T)(_el$52, function () {
-      return 10 * (state.summary.production.products.length - 1);
-    });
-
-    (0,web/* insert */.$T)(_el$55, function () {
+    (0,web/* insert */.$T)(_el$48, function () {
       return state.summary.production.products[state.summary.production.lastOptimalCycle].marginal;
     });
 
-    (0,web/* insert */.$T)(_el$58, function () {
+    (0,web/* insert */.$T)(_el$51, function () {
       return 10 * state.summary.production.lastOptimalCycle;
+    });
+
+    (0,web/* insert */.$T)(_el$54, function () {
+      return state.summary.production.products[state.summary.production.products.length - 1].total;
+    });
+
+    (0,web/* insert */.$T)(_el$57, function () {
+      return 10 * (state.summary.production.products.length - 1);
     });
 
     return _el$38;
@@ -4812,23 +5239,21 @@ function Production() {
 
 function Stats() {
   return function () {
-    var _el$64 = _tmpl$11.cloneNode(true),
-        _el$65 = _el$64.firstChild,
-        _el$66 = _el$65.nextSibling;
+    var _el$58 = Stats_tmpl$8.cloneNode(true),
+        _el$59 = _el$58.firstChild,
+        _el$60 = _el$59.nextSibling;
 
-    (0,web/* insert */.$T)(_el$66, (0,solid/* createComponent */.LM)(Objects, {}), null);
+    (0,web/* insert */.$T)(_el$60, (0,solid/* createComponent */.LM)(Objects, {}), null);
 
-    (0,web/* insert */.$T)(_el$66, (0,solid/* createComponent */.LM)(Beauty, {}), null);
+    (0,web/* insert */.$T)(_el$60, (0,solid/* createComponent */.LM)(Beauty, {}), null);
 
-    (0,web/* insert */.$T)(_el$66, (0,solid/* createComponent */.LM)(Production, {}), null);
+    (0,web/* insert */.$T)(_el$60, (0,solid/* createComponent */.LM)(Production, {}), null);
 
-    return _el$64;
+    return _el$58;
   }();
 }
 
 /* harmony default export */ const components_Stats = (Stats);
-
-(0,web/* delegateEvents */.Qj)(["click"]);
 ;// CONCATENATED MODULE: ./src/App.jsx
 
 
@@ -4858,7 +5283,7 @@ function App() {
 },
 /******/ __webpack_require__ => { // webpackRuntimeModules
 /******/ var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-/******/ __webpack_require__.O(0, [216], () => (__webpack_exec__(532)));
+/******/ __webpack_require__.O(0, [216], () => (__webpack_exec__(473)));
 /******/ var __webpack_exports__ = __webpack_require__.O();
 /******/ }
 ]);
