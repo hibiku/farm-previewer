@@ -24,6 +24,9 @@ export function StateProvider(props) {
             useAutofill: false
         },
         grid: undefined,
+        presets: JSON.parse(window.localStorage.getItem("presets")) || [],
+        canvas: undefined,
+        chart: undefined,
         get baseProps() {
             const type = this.config.useAutofill ? "road" : "free";
             return {
@@ -129,6 +132,25 @@ export function StateProvider(props) {
         },
         get summary() {
             return summary();
+        },
+        get preset() {
+            const { level, order, mobCap, useAufheben } = this.config;
+            const { free, decor, building } = summary().roots;
+            return {
+                title: "Current",
+                config: {
+                    level,
+                    order,
+                    mobCap,
+                    useAufheben
+                },
+                roots: {
+                    free,
+                    decor,
+                    building
+                },
+                production: summary().production
+            };
         }
     });
 
@@ -153,6 +175,12 @@ export function StateProvider(props) {
         }
         return boundary;
     }
+    const hslColors = (n) => {
+        if (n < 1) {
+            return [];
+        }
+        return Array.from({ length: n }, (_, i) => `hsl(${i * (360 / n) % 360}, 100%, 50%, 75%)`);
+    };
 
     const stateSetters = {
         initGrid() {
@@ -175,8 +203,13 @@ export function StateProvider(props) {
             }
             setState("grid", newGrid);
         },
-        onLevelChange(event) {
-            const newLevel = Number(event.currentTarget.value);
+        setCanvas(canvas) {
+            setState("canvas", canvas);
+        },
+        setChart(chart) {
+            setState("chart", chart);
+        },
+        setLevel(newLevel) {
             const oldOrder = state.config.order;
             const newOrder = orderLimits[newLevel].max;
             const oldMobCap = state.config.mobCap;
@@ -190,19 +223,23 @@ export function StateProvider(props) {
                     stateSetters.resizeGrid(oldOrder, newOrder);
                 }
                 if (oldMobCap !== newMobCap) {
-                    setState("config", "mobCap", newMobCap);
+                    stateSetters.setMobCap(newMobCap);
                 }
             });
+            if (oldOrder !== newOrder) {
+                stateSetters.updateChart();
+            }
         },
-        onOrderChange(event) {
+        setOrder(newOrder) {
             batch(() => {
-                stateSetters.resizeGrid(state.config.order, Number(event.currentTarget.value));
+                stateSetters.resizeGrid(state.config.order, newOrder);
             });
+            stateSetters.updateChart();
         },
         resizeGrid(oldOrder, newOrder) {
             setState("config", "order", newOrder);
             const { row, column } = state.grid[state.inspect.root].position;
-            setState("inspect", "root", (row >= newOrder || column >= newOrder) ? myHouseRoot : row * newOrder + column);
+            stateSetters.setInspectRoot((row >= newOrder || column >= newOrder) ? myHouseRoot : row * newOrder + column);
             setState("grid", state.grid[myHouseRoot].position.interior, "object", state.myHouseProps);
             const oldRoots = new Set();
             const newGrid = [];
@@ -272,27 +309,29 @@ export function StateProvider(props) {
             setState("grid", newGrid);
             stateSetters.applyNetwork();
         },
-        onMobCapChange(event) {
-            setState("config", "mobCap", Number(event.currentTarget.value));
+        setMobCap(newMobCap) {
+            setState("config", "mobCap", newMobCap);
         },
-        onAufhebenChange() {
-            setState("config", "useAufheben", !state.config.useAufheben);
-            stateSetters.applyNetwork();
+        toggleAufheben() {
+            batch(() => {
+                setState("config", "useAufheben", !state.config.useAufheben);
+                stateSetters.applyNetwork();
+            });
+            stateSetters.updateChart();
         },
-        onModeClick(data) {
-            setState("mode", data.mode);
+        setMode(newMode) {
+            setState("mode", newMode);
         },
-        onDecorateTypeChange(event) {
-            const newType = event.currentTarget.value;
+        setDecorateType(newType) {
             setState("decorate", {
                 type: newType,
                 name: objects[newType].limits[state.config.level].min
             });
         },
-        onDecorateNameChange(event) {
-            setState("decorate", "name", event.currentTarget.value);
+        setDecorateName(newName) {
+            setState("decorate", "name", newName);
         },
-        onAutofillChange() {
+        toggleAutofill() {
             setState("config", "useAutofill", !state.config.useAutofill);
             const targetType = state.config.useAutofill ? "free" : "road";
             const { object } = state.baseProps;
@@ -300,40 +339,93 @@ export function StateProvider(props) {
                 setState("grid", state.summary.roots[targetType], "object", object);
                 stateSetters.applyNetwork();
             });
+            stateSetters.updateChart();
         },
-        onGridClick({ cell }) {
-            if (state.mode === "inspect") {
-                setState("inspect", "root", cell.position.root);
-            } else if (state.mode === "decorate") {
-                const { type, name } = state.decorate;
-                const objectData = objects[type].data[name];
-                if (!objectData) { // no decors available at level 1
-                    return;
-                }
-                const { units, limit } = objectData;
-                if (units > 0 && state.summary.count.free < units) {
-                    return;
-                }
-                if (limit > 0) {
-                    const entry = state.summary.roots[type].find(entry => entry.name === name);
-                    if (entry && entry.list.length + 1 > limit) {
-                        return;
+        loadPreset(index) {
+            const { config, roots } = state.presets[index];
+            batch(() => {
+                setState("config", {
+                    ...config,
+                    useAutofill: true
+                });
+                stateSetters.initGrid();
+                setState("config", "useAutofill", false);
+                const freeObject = {
+                    type: "free",
+                    name: "",
+                    ...objects.free.data[""]
+                };
+                for (const [type, collection] of Object.entries(roots)) {
+                    if (type === "free") {
+                        setState("grid", collection, "object", freeObject);
+                    } else {
+                        collection.forEach(({ name, list }) => {
+                            list.forEach(root => {
+                                stateSetters.setObject(state.grid[root].position, {
+                                    type,
+                                    name,
+                                    ...objects[type].data[name]
+                                });
+                            });
+                        });
                     }
                 }
-                stateSetters.setObject(cell.position, {
+                stateSetters.applyNetwork();
+                stateSetters.setInspectRoot(myHouseRoot);
+            });
+        },
+        deletePreset(index) {
+            setState("presets", [...state.presets.slice(0, index), ...state.presets.slice(index + 1)]);
+        },
+        createPreset(title) {
+            setState("presets", presets => [...presets, {
+                ...state.preset,
+                title
+            }]);
+        },
+        setInspectRoot(newRoot) {
+            setState("inspect", "root", newRoot);
+        },
+        insertObject(position) {
+            const { type, name } = state.decorate;
+            const objectData = objects[type].data[name];
+            if (!objectData) {
+                return "No object selected";
+            }
+            const { units, limit } = objectData;
+            if (units > 0 && state.summary.count.available < units) {
+                return "Exceeded required number of available cells";
+            }
+            if (limit > 0) {
+                const entry = state.summary.roots[type].find(entry => entry.name === name);
+                if (entry && entry.list.length + 1 > limit) {
+                    return `"${name}" is limited to a quantity of ${limit}`;
+                }
+            }
+            let err;
+            batch(() => {
+                err = stateSetters.setObject(position, {
                     type,
                     name,
                     ...objectData
                 });
+                if (!err) {
+                    stateSetters.applyNetwork();
+                    stateSetters.setInspectRoot(position.index);
+                }
+            });
+            if (!err) {
+                stateSetters.updateChart();
             }
+            return err;
         },
-        setObject(currentPosition, objectProps) {
-            const interiorLowerRow = currentPosition.row;
-            const interiorLowerCol = currentPosition.column;
+        setObject({ row, column }, objectProps) {
+            const interiorLowerRow = row;
+            const interiorLowerCol = column;
             const interiorUpperRow = interiorLowerRow + objectProps.order - 1;
             const interiorUpperCol = interiorLowerCol + objectProps.order - 1;
             if (interiorUpperRow >= state.config.order || interiorUpperCol >= state.config.order) {
-                return;
+                return "Out-of-bounds placement";
             }
             const boundaryLowerRow = interiorLowerRow - 1;
             const boundaryLowerCol = interiorLowerCol - 1;
@@ -347,7 +439,7 @@ export function StateProvider(props) {
                     if (r >= interiorLowerRow && r <= interiorUpperRow && c >= interiorLowerCol && c <= interiorUpperCol) {
                         const { object, position } = state.grid[index];
                         if (object.units > 0) {
-                            return;
+                            return "Overlapping placement";
                         }
                         interior.push(index);
                         newCells.set(index, {
@@ -372,18 +464,17 @@ export function StateProvider(props) {
                     }
                 }
             }
-            batch(() => {
-                setState("inspect", "root", currentPosition.index);
-                newCells.forEach((cell, index) => {
-                    setState("grid", index, cell);
-                });
-                stateSetters.applyNetwork();
+            newCells.forEach((cell, index) => {
+                setState("grid", index, cell);
             });
         },
-        onRemoveClick() {
+        removeObject() {
             const { object, position } = state.grid[state.inspect.root];
-            if (object.type === "free" || object.fixed) {
-                return;
+            if (object.type === "free") {
+                return "No object to remove";
+            }
+            if (object.fixed) {
+                return "Object is fixed";
             }
             batch(() => {
                 setState("grid", position.interior, ({ position }) => {
@@ -400,8 +491,9 @@ export function StateProvider(props) {
                 });
                 stateSetters.applyNetwork();
             });
+            stateSetters.updateChart();
         },
-        onResetClick() {
+        resetGrid() {
             const targetType = state.config.useAutofill ? "free" : "road";
             batch(() => {
                 setState("grid", ({ object }) => {
@@ -420,23 +512,60 @@ export function StateProvider(props) {
                 });
                 stateSetters.applyNetwork();
             });
+            stateSetters.updateChart();
         },
         applyNetwork() {
             state.networkProps.forEach(({ root, props }) => {
                 setState("grid", root, "network", props);
             });
+        },
+        updateChart() {
+            const presets = [...state.presets, state.preset];
+            const colors = hslColors(presets.length);
+            const { minCycles, maxCycles, datasets } = presets.reduce((props, {title, production}, index) => {
+                const { minCycles, maxCycles } = props;
+                const { lastOptimalCycle, products } = production;
+                props.minCycles = minCycles > 0 ? Math.min(minCycles, lastOptimalCycle) : lastOptimalCycle;
+                props.maxCycles = maxCycles > 0 ? Math.max(maxCycles, products.length) : products.length;
+                props.datasets.push({
+                    label: title,
+                    data: products.map(({ total }) => total),
+                    backgroundColor: () => colors[index],
+                    borderColor: () => colors[index]
+                });
+                return props;
+            }, {
+                minCycles: 0,
+                maxCycles: 0,
+                datasets: []
+            });
+            setState("chart", "data", {
+                labels: Array.from({ length: maxCycles + 1 }, (_, i) => 10 * i),
+                datasets
+            });
+            setState("chart", "options", "scales", "x", {
+                suggestedMin: minCycles,
+                suggestedMax: maxCycles
+            });
+            state.chart.update();
+            state.presets.forEach((_, index) => {
+                state.chart.hide(index);
+            });
         }
     };
 
-    stateSetters.initGrid();
-    stateSetters.setObject(state.grid[myHouseRoot].position, state.myHouseProps);
+    batch(() => {
+        stateSetters.initGrid();
+        stateSetters.setObject(state.grid[myHouseRoot].position, state.myHouseProps);
+        stateSetters.applyNetwork();
+    });
 
     summary = createMemo(() => {
         const freeRoots = [];
         const roadRoots = [];
         const decorRoots = new Map();
         const buildingRoots = new Map();
-        let totalFree = state.config.order ** 2 - state.config.mobCap - 1;
+        let totalAvailable = state.config.order ** 2 - state.config.mobCap - 1;
         let totalConnected = 0;
         let totalBeauty = 0;
     
@@ -460,7 +589,7 @@ export function StateProvider(props) {
                         decorRoots.set(object.name, []);
                     }
                     decorRoots.get(object.name).push(index);
-                    totalFree -= object.units;
+                    totalAvailable -= object.units;
                     totalBeauty += (object.decor + network.decor);
                     break;
                 case "building":
@@ -468,7 +597,7 @@ export function StateProvider(props) {
                         buildingRoots.set(object.name, []);
                     }
                     buildingRoots.get(object.name).push(index);
-                    totalFree -= object.units;
+                    totalAvailable -= object.units;
                     totalBeauty += object.decor;
                     break;
             }
@@ -476,7 +605,7 @@ export function StateProvider(props) {
     
         const finalWaru = state.config.useAufheben ? aufhebenWaru : 0;
         let lastOptimalCycle = 0;
-        const products = [{ cycle: 0, total: 0, average: 0, marginal: 0 }];
+        const products = [{ cycle: 0, total: 0, marginal: 0 }];
     
         buildingRoots.forEach(list => {
             list.forEach(root => {
@@ -491,13 +620,13 @@ export function StateProvider(props) {
                     lastOptimalCycle = lastOptimalCycle > 0 ? Math.min(lastOptimalCycle, lowerCycles) : lowerCycles;
                     for (let i = 1; i <= lowerCycles; i++) {
                         if (!products[i]) {
-                            products[i] = { cycle: i, total: 0, average: 0, marginal: 0 };
+                            products[i] = { cycle: i, total: 0, marginal: 0 };
                         }
                         products[i].marginal += totalWaru;
                     }
                     if (remWaru > 0) {
                         if (!products[upperCycles]) {
-                            products[upperCycles] = { cycle: upperCycles, total: 0, average: 0, marginal: 0 };
+                            products[upperCycles] = { cycle: upperCycles, total: 0, marginal: 0 };
                         }
                         products[upperCycles].marginal += remWaru;
                     }
@@ -509,7 +638,6 @@ export function StateProvider(props) {
             if (cycle > 0) {
                 totalProduct += product.marginal;
                 product.total = totalProduct;
-                product.average = Math.round(totalProduct / cycle * 100) / 100;
             }
         });
 
@@ -521,7 +649,7 @@ export function StateProvider(props) {
                 building: Array.from(buildingRoots, ([name, list]) => ({ name, list }))
             },
             count: {
-                free: totalFree,
+                available: totalAvailable,
                 inNetwork: totalConnected,
                 outNetwork: roadRoots.length - totalConnected
             },

@@ -3,10 +3,13 @@ body {
     margin: 1em auto;
     width: 90%;
 }
+dt {
+    font-weight: bold;
+}
 fieldset {
     background-color: cornsilk;
 }
-legend {
+legend, strong {
     text-transform: capitalize;
 }
 select, table {
@@ -33,6 +36,7 @@ th, td {
     grid-template-rows: repeat(4, 1fr);
     row-gap: 1em;
     justify-items: center;
+    align-items: center;
 }
 .config > div,
 .decorate > div,
@@ -42,11 +46,31 @@ th, td {
 
 .inspect,
 .grid,
+.grid-presets,
 .stats {
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
     row-gap: 1em;
+}
+.grid-presets > div,
+.grid-legend > div {
+    display: flex;
+    flex-flow: row nowrap;
+    column-gap: 0.5em;
+}
+.alert {
+    padding: 0.5em;
+    border-radius: 1em;
+}
+.info {
+    background-color: lightblue;
+}
+.success {
+    background-color: lightgreen;
+}
+.failure {
+    background-color: lightpink;
 }
 .grid-outer {
     background-color: white;
@@ -78,23 +102,11 @@ th, td {
     row-gap: 0.5em;
     column-gap: 1em;
 }
-.grid-legend > div {
-    display: flex;
-    flex-flow: row nowrap;
-    column-gap: 0.5em;
-}
 .box {
     border: black solid thin;
     width: 1em;
     height: 1em;
 }
-.grid-control {
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: center;
-    column-gap: 1em;
-}
-
 .road-out-network {
     background-color: #b3daff;
 }
@@ -109,6 +121,22 @@ th, td {
 }
 .my-house {
     background-color: #ffb3da;
+}
+.grid-control {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    column-gap: 1em;
+}
+
+.canvas-header {
+    border-bottom: none;
+    padding-top: 0.5em;
+}
+.canvas-data {
+    border-top: none;
+    position: relative;
+    width: 90%;
 }
 
 @media screen and (min-width: 800px) {

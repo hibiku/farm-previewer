@@ -1,5 +1,7 @@
-import { createSignal } from "solid-js";
+import { onCleanup, onMount } from "solid-js";
 import { useState } from "../StateProvider.jsx";
+import { Chart, LineElement, PointElement, LineController, CategoryScale, LinearScale, Legend, Tooltip } from "chart.js";
+Chart.register(LineElement, PointElement, LineController, CategoryScale, LinearScale, Legend, Tooltip);
 
 function Objects() {
     const [state] = useState();
@@ -45,8 +47,8 @@ function Objects() {
                     </tr>
                 </Show>
                 <tr>
-                    <th colspan={2}>Free cells</th>
-                    <td colspan={1}>{state.summary.count.free}</td>
+                    <th colspan={2}>Available cells</th>
+                    <td colspan={1}>{state.summary.count.available}</td>
                 </tr>
             </tbody>
         </table>
@@ -89,68 +91,88 @@ function Beauty() {
 }
 
 function Production() {
-    const [state] = useState();
-    const [truncated, setTruncated] = createSignal(true);
-    const onClick = () => {
-        setTruncated(!truncated());
+    const [state, { setCanvas, setChart, updateChart }] = useState();
+    const setupCanvas = canvas => {
+        setCanvas(canvas);
     };
+    onMount(() => {
+        setChart(new Chart(state.canvas, {
+            type: "line",
+            options: {
+                animation: false,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        labels: {
+                            usePointStyle: true
+                        },
+                        position: "bottom"
+                    },
+                    tooltip: {
+                        usePointStyle: true
+                    }
+                },
+                elements: {
+                    point: {
+                        pointStyle: "circle"
+                    }
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: "Time (mins)"
+                        }
+                    },
+                    y: {
+                        display: true,
+                        min: 0,
+                        title: {
+                            display: true,
+                            text: "Product (W)"
+                        }
+                    }
+                }
+            }
+        }));
+        updateChart();
+    });
+    onCleanup(() => {
+        state.chart.destroy();
+    });
     return (
         <>
             <table>
                 <caption>Waru production</caption>
                 <thead>
                     <tr>
-                        <th>Time (mins)</th>
-                        <th>Total (W)</th>
-                        <th>Marginal (W)</th>
-                        <th>Average (W)</th>
+                        <th colspan={2} class="canvas-header">Production timeline</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <Show when={truncated() && state.summary.production.lastOptimalCycle > 0}>
-                        <tr>
-                            <td>...</td>
-                            <td>...</td>
-                            <td>...</td>
-                            <td>...</td>
-                        </tr>
-                    </Show>
-                    <For each={state.summary.production.products.slice(truncated() ? state.summary.production.lastOptimalCycle : 0)}>
-                        {
-                            product => <tr>
-                                <td>{10 * product.cycle}</td>
-                                <td>{product.total}</td>
-                                <td>{product.marginal}</td>
-                                <td>{product.average}</td>
-                            </tr>
-                        }
-                    </For>
+                    <tr>
+                        <td colspan={2} class="canvas-data">
+                            <canvas ref={setupCanvas} />
+                        </td>
+                    </tr>
                 </tbody>
                 <tfoot>
                     <tr>
-                        <Show when={state.summary.production.lastOptimalCycle > 0}>
-                            <th colspan={4}>
-                                <button type="button" onClick={onClick}>
-                                    {(truncated() ? "Expand" : "Collapse") + " rows"}
-                                </button>
-                            </th>
-                        </Show>
+                        <th>Max total production rate (W/10 mins)</th>
+                        <td>{state.summary.production.products[state.summary.production.lastOptimalCycle].marginal}</td>
                     </tr>
                     <tr>
-                        <th colspan={2}>Total yield (W)</th>
-                        <td colspan={2}>{state.summary.production.products[state.summary.production.products.length - 1].total}</td>
+                        <th>Time until diminishing total product (mins)</th>
+                        <td>{10 * state.summary.production.lastOptimalCycle}</td>
                     </tr>
                     <tr>
-                        <th colspan={2}>Time until total yield (mins)</th>
-                        <td colspan={2}>{10 * (state.summary.production.products.length - 1)}</td>
+                        <th>Total product (W)</th>
+                        <td>{state.summary.production.products[state.summary.production.products.length - 1].total}</td>
                     </tr>
                     <tr>
-                        <th colspan={2}>Max yield rate (W/10 mins)</th>
-                        <td colspan={2}>{state.summary.production.products[state.summary.production.lastOptimalCycle].marginal}</td>
-                    </tr>
-                    <tr>
-                        <th colspan={2}>Time until diminishing returns (mins)</th>
-                        <td colspan={2}>{10 * state.summary.production.lastOptimalCycle}</td>
+                        <th>Total production time (mins)</th>
+                        <td>{10 * (state.summary.production.products.length - 1)}</td>
                     </tr>
                 </tfoot>
             </table>
