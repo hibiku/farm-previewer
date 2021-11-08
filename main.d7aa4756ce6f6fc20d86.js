@@ -3714,6 +3714,22 @@ function StateProvider(props) {
           maxCycles = _presets$reduce.maxCycles,
           datasets = _presets$reduce.datasets;
 
+      var _presets$reduce2 = presets.reduce(function (props, _ref11) {
+        var production = _ref11.production;
+        var minProduct = props.minProduct,
+            maxProduct = props.maxProduct;
+        var products = production.products;
+        props.minProduct = minProduct > 0 ? Math.min(minProduct, products[minCycles].total) : products[minCycles].total;
+        var localMaxCycles = Math.min(maxCycles, products.length - 1);
+        props.maxProduct = maxProduct > 0 ? Math.max(maxProduct, products[localMaxCycles].total) : products[localMaxCycles].total;
+        return props;
+      }, {
+        minProduct: 0,
+        maxProduct: 0
+      }),
+          minProduct = _presets$reduce2.minProduct,
+          maxProduct = _presets$reduce2.maxProduct;
+
       setState("chart", "data", {
         labels: Array.from({
           length: maxCycles + 1
@@ -3723,8 +3739,12 @@ function StateProvider(props) {
         datasets: datasets
       });
       setState("chart", "options", "scales", "x", {
-        suggestedMin: minCycles,
-        suggestedMax: maxCycles
+        min: minCycles,
+        max: maxCycles
+      });
+      setState("chart", "options", "scales", "y", {
+        suggestedMin: minProduct,
+        suggestedMax: maxProduct
       });
       state.chart.update();
       state.presets.forEach(function (_, index) {
@@ -3848,20 +3868,20 @@ function StateProvider(props) {
       roots: {
         free: freeRoots,
         road: roadRoots,
-        decor: Array.from(decorRoots, function (_ref11) {
-          var _ref12 = _slicedToArray(_ref11, 2),
-              name = _ref12[0],
-              list = _ref12[1];
+        decor: Array.from(decorRoots, function (_ref12) {
+          var _ref13 = _slicedToArray(_ref12, 2),
+              name = _ref13[0],
+              list = _ref13[1];
 
           return {
             name: name,
             list: list
           };
         }),
-        building: Array.from(buildingRoots, function (_ref13) {
-          var _ref14 = _slicedToArray(_ref13, 2),
-              name = _ref14[0],
-              list = _ref14[1];
+        building: Array.from(buildingRoots, function (_ref14) {
+          var _ref15 = _slicedToArray(_ref14, 2),
+              name = _ref15[0],
+              list = _ref15[1];
 
           return {
             name: name,
@@ -5178,7 +5198,7 @@ function Production() {
           },
           y: {
             display: true,
-            min: 0,
+            suggestedMin: 0,
             title: {
               display: true,
               text: "Product (W)"
