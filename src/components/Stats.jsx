@@ -160,7 +160,7 @@ function Production() {
                 <tfoot>
                     <tr>
                         <th>Max total production rate (W/10 mins)</th>
-                        <td>{state.summary.production.products[state.summary.production.lastOptimalCycle].marginal}</td>
+                        <td>{state.summary.production.lastOptimalRate}</td>
                     </tr>
                     <tr>
                         <th>Time until diminishing total product (mins)</th>
@@ -168,7 +168,7 @@ function Production() {
                     </tr>
                     <tr>
                         <th>Total product (W)</th>
-                        <td>{state.summary.production.products[state.summary.production.products.length - 1].total}</td>
+                        <td>{state.summary.production.products[state.summary.production.products.length - 1]}</td>
                     </tr>
                     <tr>
                         <th>Total production time (mins)</th>

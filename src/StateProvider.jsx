@@ -136,6 +136,7 @@ export function StateProvider(props) {
         get preset() {
             const { level, order, mobCap, useAufheben } = this.config;
             const { free, decor, building } = summary().roots;
+            const { lastOptimalCycle, products } = summary().production;
             return {
                 title: "Current",
                 config: {
@@ -149,7 +150,10 @@ export function StateProvider(props) {
                     decor,
                     building
                 },
-                production: summary().production
+                production: {
+                    lastOptimalCycle,
+                    products
+                }
             };
         }
     });
@@ -529,7 +533,7 @@ export function StateProvider(props) {
                 props.maxCycles = maxCycles > 0 ? Math.max(maxCycles, products.length) : products.length;
                 props.datasets.push({
                     label: title,
-                    data: products.map(({ total }) => total),
+                    data: products,
                     backgroundColor: () => colors[index],
                     borderColor: () => colors[index]
                 });
@@ -542,9 +546,9 @@ export function StateProvider(props) {
             const { minProduct, maxProduct } = presets.reduce((props, { production }) => {
                 const { minProduct, maxProduct } = props;
                 const { products } = production;
-                props.minProduct = minProduct > 0 ? Math.min(minProduct, products[minCycles].total) : products[minCycles].total;
+                props.minProduct = minProduct > 0 ? Math.min(minProduct, products[minCycles]) : products[minCycles];
                 const localMaxCycles = Math.min(maxCycles, products.length - 1);
-                props.maxProduct = maxProduct > 0 ? Math.max(maxProduct, products[localMaxCycles].total) : products[localMaxCycles].total;
+                props.maxProduct = maxProduct > 0 ? Math.max(maxProduct, products[localMaxCycles]) : products[localMaxCycles];
                 return props;
             }, {
                 minProduct: 0,
@@ -620,8 +624,7 @@ export function StateProvider(props) {
     
         const finalWaru = state.config.useAufheben ? aufhebenWaru : 0;
         let lastOptimalCycle = 0;
-        const products = [{ cycle: 0, total: 0, marginal: 0 }];
-    
+        const products = [0];
         buildingRoots.forEach(list => {
             list.forEach(root => {
                 const { object, network } = state.grid[root];
@@ -634,26 +637,13 @@ export function StateProvider(props) {
                     const upperCycles = Math.ceil(cycles);
                     lastOptimalCycle = lastOptimalCycle > 0 ? Math.min(lastOptimalCycle, lowerCycles) : lowerCycles;
                     for (let i = 1; i <= lowerCycles; i++) {
-                        if (!products[i]) {
-                            products[i] = { cycle: i, total: 0, marginal: 0 };
-                        }
-                        products[i].marginal += totalWaru;
+                        products[i] = (products[i] || 0) + totalWaru;
                     }
                     if (remWaru > 0) {
-                        if (!products[upperCycles]) {
-                            products[upperCycles] = { cycle: upperCycles, total: 0, marginal: 0 };
-                        }
-                        products[upperCycles].marginal += remWaru;
+                        products[upperCycles] = (products[upperCycles] || 0) + remWaru;
                     }
                 }
             });
-        });
-        let totalProduct = 0;
-        products.forEach((product, cycle) => {
-            if (cycle > 0) {
-                totalProduct += product.marginal;
-                product.total = totalProduct;
-            }
         });
 
         return {
@@ -671,7 +661,13 @@ export function StateProvider(props) {
             beauty: { ...beautyProps(totalBeauty), total: totalBeauty },
             production: {
                 lastOptimalCycle,
-                products
+                lastOptimalRate: products[lastOptimalCycle],
+                products: products.reduce((total, marginal, index) => {
+                    if (index > 0) {
+                        total[index] = total[index - 1] + marginal;
+                    }
+                    return total;
+                }, [0])
             }
         };
     });
