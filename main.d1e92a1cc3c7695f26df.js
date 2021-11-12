@@ -3263,17 +3263,10 @@ function StateProvider(props) {
     return boundary;
   };
 
-  var hslColors = function hslColors(n) {
-    if (n < 1) {
-      return [];
-    }
+  var nextColor = function nextColor(i, s, l) {
+    return "hsl(".concat(i * 180 * (3 - Math.sqrt(5)), ", ").concat(s, "%, ").concat(l, "%)");
+  }; // use golden angle
 
-    return Array.from({
-      length: n
-    }, function (_, i) {
-      return "hsl(".concat(i * (360 / n) % 360, ", 100%, 50%, 75%)");
-    });
-  };
 
   var stateSetters = {
     initGrid: function initGrid() {
@@ -3686,35 +3679,34 @@ function StateProvider(props) {
     },
     updateChart: function updateChart() {
       var presets = [].concat(_toConsumableArray(state.presets), [state.preset]);
-      var colors = hslColors(presets.length);
 
       var _presets$reduce = presets.reduce(function (props, _ref9, index) {
         var title = _ref9.title,
             production = _ref9.production;
-        var minCycles = props.minCycles,
-            maxCycles = props.maxCycles;
+        var minCycle = props.minCycle,
+            maxCycle = props.maxCycle;
         var lastOptimalCycle = production.lastOptimalCycle,
             products = production.products;
-        props.minCycles = minCycles > 0 ? Math.min(minCycles, lastOptimalCycle) : lastOptimalCycle;
-        props.maxCycles = maxCycles > 0 ? Math.max(maxCycles, products.length) : products.length;
+        props.minCycle = minCycle > 0 ? Math.min(minCycle, lastOptimalCycle) : lastOptimalCycle;
+        props.maxCycle = maxCycle > 0 ? Math.max(maxCycle, products.length - 1) : products.length - 1;
         props.datasets.push({
           label: title,
           data: products,
           backgroundColor: function backgroundColor() {
-            return colors[index];
+            return nextColor(index, 100, 50);
           },
           borderColor: function borderColor() {
-            return colors[index];
+            return nextColor(index, 100, 50);
           }
         });
         return props;
       }, {
-        minCycles: 0,
-        maxCycles: 0,
+        minCycle: 0,
+        maxCycle: 0,
         datasets: []
       }),
-          minCycles = _presets$reduce.minCycles,
-          maxCycles = _presets$reduce.maxCycles,
+          minCycle = _presets$reduce.minCycle,
+          maxCycle = _presets$reduce.maxCycle,
           datasets = _presets$reduce.datasets;
 
       var _presets$reduce2 = presets.reduce(function (props, _ref10) {
@@ -3722,9 +3714,9 @@ function StateProvider(props) {
         var minProduct = props.minProduct,
             maxProduct = props.maxProduct;
         var products = production.products;
-        props.minProduct = minProduct > 0 ? Math.min(minProduct, products[minCycles]) : products[minCycles];
-        var localMaxCycles = Math.min(maxCycles, products.length - 1);
-        props.maxProduct = maxProduct > 0 ? Math.max(maxProduct, products[localMaxCycles]) : products[localMaxCycles];
+        props.minProduct = minProduct > 0 ? Math.min(minProduct, products[minCycle]) : products[minCycle];
+        var localMaxCycle = Math.min(maxCycle, products.length - 1);
+        props.maxProduct = maxProduct > 0 ? Math.max(maxProduct, products[localMaxCycle]) : products[localMaxCycle];
         return props;
       }, {
         minProduct: 0,
@@ -3735,20 +3727,25 @@ function StateProvider(props) {
 
       setState("chart", "data", {
         labels: Array.from({
-          length: maxCycles + 1
+          length: maxCycle + 1
         }, function (_, i) {
           return 10 * i;
         }),
         datasets: datasets
       });
       setState("chart", "options", "scales", "x", {
-        min: minCycles,
-        max: maxCycles
+        min: 10 * minCycle,
+        max: 10 * maxCycle
       });
       setState("chart", "options", "scales", "y", {
         suggestedMin: minProduct,
         suggestedMax: maxProduct
       });
+
+      if (minProduct > 0) {
+        setState("chart", "options", "scales", "y", "min", undefined);
+      }
+
       state.chart.update();
       state.presets.forEach(function (_, index) {
         state.chart.hide(index);
@@ -3841,23 +3838,42 @@ function StateProvider(props) {
       });
     });
     return {
+      legend: [].concat(_toConsumableArray(Array.from(buildingRoots, function (_ref11, index) {
+        var _ref12 = _slicedToArray(_ref11, 1),
+            name = _ref12[0];
+
+        return {
+          type: "building",
+          name: name,
+          backgroundColor: nextColor(index, 80, 80)
+        };
+      })), _toConsumableArray(Array.from(decorRoots, function (_ref13, index) {
+        var _ref14 = _slicedToArray(_ref13, 1),
+            name = _ref14[0];
+
+        return {
+          type: "decor",
+          name: name,
+          backgroundColor: nextColor(buildingRoots.size + index, 80, 80)
+        };
+      }))),
       roots: {
         free: freeRoots,
         road: roadRoots,
-        decor: Array.from(decorRoots, function (_ref11) {
-          var _ref12 = _slicedToArray(_ref11, 2),
-              name = _ref12[0],
-              list = _ref12[1];
+        decor: Array.from(decorRoots, function (_ref15) {
+          var _ref16 = _slicedToArray(_ref15, 2),
+              name = _ref16[0],
+              list = _ref16[1];
 
           return {
             name: name,
             list: list
           };
         }),
-        building: Array.from(buildingRoots, function (_ref13) {
-          var _ref14 = _slicedToArray(_ref13, 2),
-              name = _ref14[0],
-              list = _ref14[1];
+        building: Array.from(buildingRoots, function (_ref17) {
+          var _ref18 = _slicedToArray(_ref17, 2),
+              name = _ref18[0],
+              list = _ref18[1];
 
           return {
             name: name,
@@ -3878,11 +3894,13 @@ function StateProvider(props) {
         lastOptimalRate: products[lastOptimalCycle],
         products: products.reduce(function (total, marginal, index) {
           if (index > 0) {
-            total[index] = total[index - 1] + marginal;
+            total.push(total[index - 1] + marginal);
+          } else {
+            total.push(marginal);
           }
 
           return total;
-        }, [0])
+        }, [])
       }
     };
   });
@@ -4533,8 +4551,12 @@ const Grid_tmpl$ = (0,web/* template */.XK)(`<div><select><option disabled hidde
       Grid_tmpl$4 = (0,web/* template */.XK)(`<option></option>`, 2),
       Grid_tmpl$5 = (0,web/* template */.XK)(`<button type="button">Remove</button>`, 2),
       Grid_tmpl$6 = (0,web/* template */.XK)(`<button type="button">Reset</button>`, 2),
-      Grid_tmpl$7 = (0,web/* template */.XK)(`<fieldset><legend>Grid</legend><div class="grid"><div class="grid-presets"></div><div class="grid-outer"><div class="grid-inner"></div></div><div class="grid-legend"><div><div class="box my-house"></div><div>My House</div></div><div><div class="box building"></div><div>Building</div></div><div><div class="box decor"></div><div>Decor</div></div><div><div class="box road-in-network"></div><div>Road (in-network)</div></div><div><div class="box road-out-network"></div><div>Road (out-network)</div></div></div><div class="grid-control"></div></div></fieldset>`, 46),
-      Grid_tmpl$8 = (0,web/* template */.XK)(`<div class="grid-cell"></div>`, 2);
+      Grid_tmpl$7 = (0,web/* template */.XK)(`<div><div class="grid-legend-item road-in-network"></div><div>Road (in-network)</div></div>`, 6),
+      Grid_tmpl$8 = (0,web/* template */.XK)(`<div><div class="grid-legend-item road-out-network"></div><div>Road (out-network)</div></div>`, 6),
+      Grid_tmpl$9 = (0,web/* template */.XK)(`<div><div class="grid-legend-item"></div><div>Free cell</div></div>`, 6),
+      Grid_tmpl$10 = (0,web/* template */.XK)(`<fieldset><legend>Grid</legend><div class="grid"><div class="grid-presets"></div><div class="grid-outer"><div class="grid-inner"></div></div><div class="grid-legend"></div><div class="grid-control"></div></div></fieldset>`, 16),
+      Grid_tmpl$11 = (0,web/* template */.XK)(`<div class="grid-cell"></div>`, 2),
+      Grid_tmpl$12 = (0,web/* template */.XK)(`<div><div class="grid-legend-item"></div><div></div></div>`, 6);
 
 function Grid_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -4846,14 +4868,14 @@ function Grid() {
   };
 
   return function () {
-    var _el$14 = Grid_tmpl$7.cloneNode(true),
+    var _el$14 = Grid_tmpl$10.cloneNode(true),
         _el$15 = _el$14.firstChild,
         _el$16 = _el$15.nextSibling,
         _el$17 = _el$16.firstChild,
         _el$18 = _el$17.nextSibling,
         _el$19 = _el$18.firstChild,
         _el$20 = _el$18.nextSibling,
-        _el$21 = _el$20.nextSibling;
+        _el$24 = _el$20.nextSibling;
 
     (0,web/* insert */.$T)(_el$17, (0,solid/* createComponent */.LM)(Presets, {
       alert: alert,
@@ -4867,35 +4889,33 @@ function Grid() {
 
       children: function children(cell) {
         return function () {
-          var _el$22 = Grid_tmpl$8.cloneNode(true);
+          var _el$25 = Grid_tmpl$11.cloneNode(true);
 
-          _el$22.$$click = onClick;
-          _el$22.$$clickData = {
+          _el$25.$$click = onClick;
+          _el$25.$$clickData = {
             cell: cell
           };
 
           (0,solid/* createRenderEffect */.F3)(function (_p$) {
-            var _v$9 = cell.position.root === state.inspect.root ? "red" : "black",
-                _v$10 = cell.border.top ? "solid" : "none",
-                _v$11 = cell.border.right ? "solid" : "none",
-                _v$12 = cell.border.bottom ? "solid" : "none",
-                _v$13 = cell.border.left ? "solid" : "none",
-                _v$14 = cell.position.root === 0,
-                _v$15 = cell.object.type === "building",
-                _v$16 = cell.object.type === "decor",
-                _v$17 = cell.object.type === "road" && cell.network.connected,
-                _v$18 = cell.object.type === "road" && !cell.network.connected;
+            var _v$9 = cell.object.type === "road" && cell.network.connected,
+                _v$10 = cell.object.type === "road" && !cell.network.connected,
+                _v$11 = cell.object.type === "decor" || cell.object.type === "building" ? state.summary.legend.find(function (item) {
+              return item.type === cell.object.type && item.name === cell.object.name;
+            }).backgroundColor : "",
+                _v$12 = cell.position.root === state.inspect.root ? "red" : "black",
+                _v$13 = cell.border.top ? "solid" : "none",
+                _v$14 = cell.border.right ? "solid" : "none",
+                _v$15 = cell.border.bottom ? "solid" : "none",
+                _v$16 = cell.border.left ? "solid" : "none";
 
-            _v$9 !== _p$._v$9 && _el$22.style.setProperty("border-color", _p$._v$9 = _v$9);
-            _v$10 !== _p$._v$10 && _el$22.style.setProperty("border-top-style", _p$._v$10 = _v$10);
-            _v$11 !== _p$._v$11 && _el$22.style.setProperty("border-right-style", _p$._v$11 = _v$11);
-            _v$12 !== _p$._v$12 && _el$22.style.setProperty("border-bottom-style", _p$._v$12 = _v$12);
-            _v$13 !== _p$._v$13 && _el$22.style.setProperty("border-left-style", _p$._v$13 = _v$13);
-            _v$14 !== _p$._v$14 && _el$22.classList.toggle("my-house", _p$._v$14 = _v$14);
-            _v$15 !== _p$._v$15 && _el$22.classList.toggle("building", _p$._v$15 = _v$15);
-            _v$16 !== _p$._v$16 && _el$22.classList.toggle("decor", _p$._v$16 = _v$16);
-            _v$17 !== _p$._v$17 && _el$22.classList.toggle("road-in-network", _p$._v$17 = _v$17);
-            _v$18 !== _p$._v$18 && _el$22.classList.toggle("road-out-network", _p$._v$18 = _v$18);
+            _v$9 !== _p$._v$9 && _el$25.classList.toggle("road-in-network", _p$._v$9 = _v$9);
+            _v$10 !== _p$._v$10 && _el$25.classList.toggle("road-out-network", _p$._v$10 = _v$10);
+            _v$11 !== _p$._v$11 && _el$25.style.setProperty("background-color", _p$._v$11 = _v$11);
+            _v$12 !== _p$._v$12 && _el$25.style.setProperty("border-color", _p$._v$12 = _v$12);
+            _v$13 !== _p$._v$13 && _el$25.style.setProperty("border-top-style", _p$._v$13 = _v$13);
+            _v$14 !== _p$._v$14 && _el$25.style.setProperty("border-right-style", _p$._v$14 = _v$14);
+            _v$15 !== _p$._v$15 && _el$25.style.setProperty("border-bottom-style", _p$._v$15 = _v$15);
+            _v$16 !== _p$._v$16 && _el$25.style.setProperty("border-left-style", _p$._v$16 = _v$16);
             return _p$;
           }, {
             _v$9: undefined,
@@ -4905,21 +4925,74 @@ function Grid() {
             _v$13: undefined,
             _v$14: undefined,
             _v$15: undefined,
-            _v$16: undefined,
-            _v$17: undefined,
-            _v$18: undefined
+            _v$16: undefined
           });
 
-          return _el$22;
+          return _el$25;
         }();
       }
     }));
 
-    (0,web/* insert */.$T)(_el$21, (0,solid/* createComponent */.LM)(Remove, {
+    (0,web/* insert */.$T)(_el$20, (0,solid/* createComponent */.LM)(solid/* For */.U2, {
+      get each() {
+        return state.summary.legend;
+      },
+
+      children: function children(_ref4) {
+        var name = _ref4.name,
+            backgroundColor = _ref4.backgroundColor;
+        return function () {
+          var _el$26 = Grid_tmpl$12.cloneNode(true),
+              _el$27 = _el$26.firstChild,
+              _el$28 = _el$27.nextSibling;
+
+          _el$27.style.setProperty("background-color", backgroundColor);
+
+          (0,web/* insert */.$T)(_el$28, name);
+
+          return _el$26;
+        }();
+      }
+    }), null);
+
+    (0,web/* insert */.$T)(_el$20, (0,solid/* createComponent */.LM)(solid/* Show */.di, {
+      get when() {
+        return state.summary.count.inNetwork > 0;
+      },
+
+      get children() {
+        return Grid_tmpl$7.cloneNode(true);
+      }
+
+    }), null);
+
+    (0,web/* insert */.$T)(_el$20, (0,solid/* createComponent */.LM)(solid/* Show */.di, {
+      get when() {
+        return state.summary.count.outNetwork > 0;
+      },
+
+      get children() {
+        return Grid_tmpl$8.cloneNode(true);
+      }
+
+    }), null);
+
+    (0,web/* insert */.$T)(_el$20, (0,solid/* createComponent */.LM)(solid/* Show */.di, {
+      get when() {
+        return state.summary.roots.free.length > 0;
+      },
+
+      get children() {
+        return Grid_tmpl$9.cloneNode(true);
+      }
+
+    }), null);
+
+    (0,web/* insert */.$T)(_el$24, (0,solid/* createComponent */.LM)(Remove, {
       setAlert: setAlert
     }), null);
 
-    (0,web/* insert */.$T)(_el$21, (0,solid/* createComponent */.LM)(Reset, {}), null);
+    (0,web/* insert */.$T)(_el$24, (0,solid/* createComponent */.LM)(Reset, {}), null);
 
     (0,solid/* createRenderEffect */.F3)(function (_p$) {
       var _v$7 = "repeat(".concat(state.config.order, ", auto)"),
@@ -5181,7 +5254,7 @@ function Production() {
           },
           y: {
             display: true,
-            suggestedMin: 0,
+            min: 0,
             title: {
               display: true,
               text: "Product (W)"
