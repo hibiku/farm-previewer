@@ -179,13 +179,8 @@ export function StateProvider(props) {
         }
         return boundary;
     }
-    const hslColors = (n) => {
-        if (n < 1) {
-            return [];
-        }
-        return Array.from({ length: n }, (_, i) => `hsl(${i * (360 / n) % 360}, 100%, 50%, 75%)`);
-    };
-
+    const nextColor = (i, s, l) => `hsl(${i * 180 * (3 - Math.sqrt(5))}, ${s}%, ${l}%)`; // use golden angle
+    
     const stateSetters = {
         initGrid() {
             const newGrid = [];
@@ -525,47 +520,49 @@ export function StateProvider(props) {
         },
         updateChart() {
             const presets = [...state.presets, state.preset];
-            const colors = hslColors(presets.length);
-            const { minCycles, maxCycles, datasets } = presets.reduce((props, { title, production }, index) => {
-                const { minCycles, maxCycles } = props;
+            const { minCycle, maxCycle, datasets } = presets.reduce((props, { title, production }, index) => {
+                const { minCycle, maxCycle } = props;
                 const { lastOptimalCycle, products } = production;
-                props.minCycles = minCycles > 0 ? Math.min(minCycles, lastOptimalCycle) : lastOptimalCycle;
-                props.maxCycles = maxCycles > 0 ? Math.max(maxCycles, products.length) : products.length;
+                props.minCycle = minCycle > 0 ? Math.min(minCycle, lastOptimalCycle) : lastOptimalCycle;
+                props.maxCycle = maxCycle > 0 ? Math.max(maxCycle, products.length - 1) : products.length - 1;
                 props.datasets.push({
                     label: title,
                     data: products,
-                    backgroundColor: () => colors[index],
-                    borderColor: () => colors[index]
+                    backgroundColor: () => nextColor(index, 100, 50),
+                    borderColor: () => nextColor(index, 100, 50)
                 });
                 return props;
             }, {
-                minCycles: 0,
-                maxCycles: 0,
+                minCycle: 0,
+                maxCycle: 0,
                 datasets: []
             });
             const { minProduct, maxProduct } = presets.reduce((props, { production }) => {
                 const { minProduct, maxProduct } = props;
                 const { products } = production;
-                props.minProduct = minProduct > 0 ? Math.min(minProduct, products[minCycles]) : products[minCycles];
-                const localMaxCycles = Math.min(maxCycles, products.length - 1);
-                props.maxProduct = maxProduct > 0 ? Math.max(maxProduct, products[localMaxCycles]) : products[localMaxCycles];
+                props.minProduct = minProduct > 0 ? Math.min(minProduct, products[minCycle]) : products[minCycle];
+                const localMaxCycle = Math.min(maxCycle, products.length - 1);
+                props.maxProduct = maxProduct > 0 ? Math.max(maxProduct, products[localMaxCycle]) : products[localMaxCycle];
                 return props;
             }, {
                 minProduct: 0,
                 maxProduct: 0
             });
             setState("chart", "data", {
-                labels: Array.from({ length: maxCycles + 1 }, (_, i) => 10 * i),
+                labels: Array.from({ length: maxCycle + 1 }, (_, i) => 10 * i),
                 datasets
             });
             setState("chart", "options", "scales", "x", {
-                min: minCycles,
-                max: maxCycles
+                min: 10 * minCycle,
+                max: 10 * maxCycle
             });
             setState("chart", "options", "scales", "y", {
                 suggestedMin: minProduct,
                 suggestedMax: maxProduct
-            })
+            });
+            if (minProduct > 0) {
+                setState("chart", "options", "scales", "y", "min", undefined);
+            }
             state.chart.update();
             state.presets.forEach((_, index) => {
                 state.chart.hide(index);
@@ -647,6 +644,18 @@ export function StateProvider(props) {
         });
 
         return {
+            legend: [
+                ...Array.from(buildingRoots, ([name], index) => ({
+                    type: "building",
+                    name,
+                    backgroundColor: nextColor(index, 80, 80),
+                })),
+                ...Array.from(decorRoots, ([name], index) => ({
+                    type: "decor",
+                    name,
+                    backgroundColor: nextColor(buildingRoots.size + index, 80, 80),
+                }))
+            ],
             roots: {
                 free: freeRoots,
                 road: roadRoots,
@@ -664,10 +673,12 @@ export function StateProvider(props) {
                 lastOptimalRate: products[lastOptimalCycle],
                 products: products.reduce((total, marginal, index) => {
                     if (index > 0) {
-                        total[index] = total[index - 1] + marginal;
+                        total.push(total[index - 1] + marginal);
+                    } else {
+                        total.push(marginal);
                     }
                     return total;
-                }, [0])
+                }, [])
             }
         };
     });

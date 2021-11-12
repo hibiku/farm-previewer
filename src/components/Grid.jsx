@@ -192,20 +192,21 @@ function Grid() {
                         <For each={state.grid}>
                             {
                                 cell => <div
+                                    classList={{
+                                        "grid-cell": true,
+                                        "road-in-network": cell.object.type === "road" && cell.network.connected,
+                                        "road-out-network": cell.object.type === "road" && !cell.network.connected
+                                    }}
                                     style={{
+                                        "background-color": (cell.object.type === "decor" || cell.object.type === "building") ?
+                                        state.summary.legend.find(item => {
+                                            return item.type === cell.object.type && item.name === cell.object.name;
+                                        }).backgroundColor : "",
                                         "border-color": cell.position.root === state.inspect.root ? "red" : "black",
                                         "border-top-style": cell.border.top ? "solid" : "none",
                                         "border-right-style": cell.border.right ? "solid" : "none",
                                         "border-bottom-style": cell.border.bottom ? "solid" : "none",
                                         "border-left-style": cell.border.left ? "solid" : "none",
-                                    }}
-                                    classList={{
-                                        "my-house": cell.position.root === 0,
-                                        building: cell.object.type === "building",
-                                        decor: cell.object.type === "decor",
-                                        "road-in-network": cell.object.type === "road" && cell.network.connected,
-                                        "road-out-network": cell.object.type === "road" && !cell.network.connected,
-                                        "grid-cell": true,
                                     }}
                                     onClick={[onClick, { cell }]}
                                 ></div>
@@ -214,26 +215,30 @@ function Grid() {
                     </div>
                 </div>
                 <div class="grid-legend">
-                    <div>
-                        <div class="box my-house"></div>
-                        <div>My House</div>
-                    </div>
-                    <div>
-                        <div class="box building"></div>
-                        <div>Building</div>
-                    </div>
-                    <div>
-                        <div class="box decor"></div>
-                        <div>Decor</div>
-                    </div>
-                    <div>
-                        <div class="box road-in-network"></div>
-                        <div>Road (in-network)</div>
-                    </div>
-                    <div>
-                        <div class="box road-out-network"></div>
-                        <div>Road (out-network)</div>
-                    </div>
+                    <For each={state.summary.legend}>{
+                        ({ name, backgroundColor }) => <div>
+                            <div class="grid-legend-item" style={{ "background-color": backgroundColor }} />
+                            <div>{name}</div>
+                        </div>
+                    }</For>
+                    <Show when={state.summary.count.inNetwork > 0}>
+                        <div>
+                            <div class="grid-legend-item road-in-network" />
+                            <div>Road (in-network)</div>
+                        </div>
+                    </Show>
+                    <Show when={state.summary.count.outNetwork > 0}>
+                        <div>
+                            <div class="grid-legend-item road-out-network" />
+                            <div>Road (out-network)</div>
+                        </div>
+                    </Show>
+                    <Show when={state.summary.roots.free.length > 0}>
+                        <div>
+                            <div class="grid-legend-item" />
+                            <div>Free cell</div>
+                        </div>
+                    </Show>
                 </div>
                 <div class="grid-control">
                     <Remove setAlert={setAlert} />

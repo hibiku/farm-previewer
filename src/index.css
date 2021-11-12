@@ -73,7 +73,6 @@ th, td {
     background-color: lightpink;
 }
 .grid-outer {
-    background-color: white;
     display: inline-block;
     position: relative;
     width: 100%;
@@ -93,7 +92,8 @@ th, td {
     position: absolute;
 }
 .grid-cell {
-    border-width: thin;
+    background-color: white;
+    border: black solid thin;
 }
 .grid-legend {
     display: flex;
@@ -102,25 +102,17 @@ th, td {
     row-gap: 0.5em;
     column-gap: 1em;
 }
-.box {
+.grid-legend-item {
+    background-color: white;
     border: black solid thin;
     width: 1em;
     height: 1em;
 }
 .road-out-network {
-    background-color: #b3daff;
+    background-color: hsl(0, 0%, 50%);
 }
 .road-in-network {
-    background-color: #daffb3;
-}
-.decor {
-    background-color: #ffd8b3;
-}
-.building {
-    background-color: #d8b3ff;
-}
-.my-house {
-    background-color: #ffb3da;
+    background-color: hsl(120, 50%, 50%);
 }
 .grid-control {
     display: flex;
