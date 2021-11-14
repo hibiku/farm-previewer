@@ -3182,7 +3182,9 @@ function StateProvider(props) {
             root = _ref2[0],
             props = _ref2[1];
 
-        if (props.waru > 0) {
+        var object = _this.grid[root].object;
+
+        if (object.waru > 0 && object.banked > 0) {
           props.banked = networkBanked;
         }
 
