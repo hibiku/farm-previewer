@@ -124,7 +124,8 @@ export function StateProvider(props) {
 
             const networkBanked = beautyProps(totalBeauty).banked;
             return Array.from(roots, ([root, props]) => {
-                if (props.waru > 0) {
+                const { object } = this.grid[root];
+                if (object.waru > 0 && object.banked > 0) {
                     props.banked = networkBanked;
                 }
                 return { root, props };
