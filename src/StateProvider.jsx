@@ -1,14 +1,330 @@
 import { batch, createMemo, createContext, useContext } from "solid-js";
 import { createStore } from "solid-js/store";
 import { DisjointSet } from "dsforest";
-import { levels, orderLimits, mobCapLimits, objects, myHouses, beautyProps, networkDecor, networkWaru, aufhebenWaru } from "./data.js";
+import { levels, orderLimits, mobCapLimits, objects, myHouseNames, myHouseRoot, beautyDetails, networkDecor, networkWaru, aufhebenWaru } from "./data.js";
 
 const StateContext = createContext();
 
+function adjustedIndex(oldIndex, oldOrder, newOrder) {
+    const oldRow = Math.floor(oldIndex / oldOrder);
+    const oldCol = oldIndex % oldOrder;
+    return oldRow * newOrder + oldCol;
+};
+function halfBoundary(row, column, index, order) {
+    const boundary = [];
+    if (row > 0 && column > 0) {
+        boundary.push(index - order - 1);
+    }
+    if (row > 0) {
+        boundary.push(index - order);
+    }
+    if (row > 0 && column < order - 1) {
+        boundary.push(index - order + 1);
+    }
+    if (column > 0) {
+        boundary.push(index - 1);
+    }
+    return boundary;
+};
+function nextColor(i, s, l) {
+    return `hsl(${i * 180 * (3 - Math.sqrt(5))}, ${s}%, ${l}%)`; // use golden angle
+}
+function layoutStats(config, grid) {
+    const network = new DisjointSet();
+    const blankRoots = [];
+    const roadRoots = [];
+    const decorRoots = new Map();
+    const buildingRoots = new Map();
+    let totalBeauty = 0;
+
+    grid.forEach((tile, index) => {
+        const { data, position } = tile;
+        switch (data.type) {
+            case "blank":
+                blankRoots.push(index);
+                break;
+            case "road":
+                network.makeSet(index);
+                position.boundary.forEach(idx => {
+                    if (grid[idx].data.type === "road" || grid[idx].position.root === myHouseRoot) {
+                        network.union(idx, index);
+                    }
+                });
+                roadRoots.push(index);
+                break;
+            case "decor":
+                if (position.root !== index) {
+                    return;
+                }
+                if (!decorRoots.has(data.name)) {
+                    decorRoots.set(data.name, []);
+                }
+                decorRoots.get(data.name).push(index);
+                break;
+            case "building":
+                if (position.root === myHouseRoot) {
+                    network.makeSet(index);
+                    network.union(myHouseRoot, index);
+                }
+                if (position.root !== index) {
+                    return;
+                }
+                if (!buildingRoots.has(data.name)) {
+                    buildingRoots.set(data.name, []);
+                }
+                buildingRoots.get(data.name).push(index);
+                break;
+        }
+    });
+
+    const decorNames = [];
+    decorRoots.forEach((roots, name) => {
+        decorNames.push(name);
+        const { decor } = objects.decor.data[name];
+        totalBeauty += (decor * roots.length + roots.reduce((bonusDecor, root) => {
+            const { position } = grid[root];
+            const paths = position.boundary.reduce((count, index) => {
+                if (grid[index].data.type === "road" && network.areConnected(myHouseRoot, index)) {
+                    return count + 1;
+                }
+                return count;
+            }, 0);
+            if (paths > 0) {
+                bonusDecor += networkDecor(decor, paths);
+            }
+            return bonusDecor;
+        }, 0));
+    });
+
+    const buildingNames = [];
+    buildingRoots.forEach((roots, name) => {
+        buildingNames.push(name);
+        totalBeauty += objects.building.data[name].decor * roots.length;
+    });
+
+    const finalWaru = config.useAufheben ? aufhebenWaru : 0;
+    const beauty = beautyDetails(totalBeauty);
+    const bonusBanked = beauty.banked;
+    let lastOptimalCycle = 0;
+    const products = [0];
+    buildingRoots.forEach(roots => {
+        roots.forEach(root => {
+            const { data, position } = grid[root];
+            if (data.waru > 0 && data.banked > 0) {
+                const paths = position.boundary.reduce((count, index) => {
+                    if (grid[index].data.type === "road" && network.areConnected(myHouseRoot, index)) {
+                        return count + 1;
+                    }
+                    return count;
+                }, 0);
+                const totalWaru = data.waru + (paths > 0 ? networkWaru(data.waru, paths) : 0) + finalWaru;
+                const totalBanked = data.banked + bonusBanked;
+                const cycles = totalBanked / totalWaru;
+                const remWaru = totalBanked % totalWaru;
+                const lowerCycles = Math.floor(cycles);
+                const upperCycles = Math.ceil(cycles);
+                lastOptimalCycle = lastOptimalCycle > 0 ? Math.min(lastOptimalCycle, lowerCycles) : lowerCycles;
+                for (let i = 1; i <= lowerCycles; i++) {
+                    products[i] = (products[i] || 0) + totalWaru;
+                }
+                if (remWaru > 0) {
+                    products[upperCycles] = (products[upperCycles] || 0) + remWaru;
+                }
+            }
+        });
+    });
+
+    const totalInNetwork = roadRoots.reduce((count, root) => {
+        if (network.areConnected(myHouseRoot, root)) {
+            ++count;
+        }
+        return count;
+    }, 0);
+
+    return {
+        network,
+        tiling: {
+            free: {
+                count: blankRoots.length + roadRoots.length - config.mobCap - 1
+            },
+            blank: {
+                roots: blankRoots
+            },
+            road: {
+                count: {
+                    inNetwork: totalInNetwork,
+                    outNetwork: roadRoots.length - totalInNetwork
+                },
+                roots: roadRoots
+            },
+            decor: {
+                names: decorNames,
+                pairs: Object.fromEntries(Array.from(decorRoots, ([name, roots], index) => ([name, {
+                    backgroundColor: nextColor(index + buildingRoots.size, 80, 80),
+                    roots
+                }])))
+            },
+            building: {
+                names: buildingNames,
+                pairs: Object.fromEntries(Array.from(buildingRoots, ([name, roots], index) => ([name, {
+                    backgroundColor: nextColor(index, 80, 80),
+                    roots
+                }])))
+            }
+        },
+        beauty,
+        production: {
+            lastOptimalCycle,
+            lastOptimalRate: products[lastOptimalCycle],
+            products: products.reduce((total, marginal, index) => {
+                if (index > 0) {
+                    total.push(total[index - 1] + marginal);
+                } else {
+                    total.push(marginal);
+                }
+                return total;
+            }, [])
+        }
+    };
+};
+function createTiles(config, grid, data, { row, column }) {
+    const interiorLowerRow = row;
+    const interiorLowerCol = column;
+    const interiorUpperRow = interiorLowerRow + data.order - 1;
+    const interiorUpperCol = interiorLowerCol + data.order - 1;
+    if (interiorUpperRow >= config.order || interiorUpperCol >= config.order) {
+        return {
+            err: "Out-of-bounds positioning",
+            tiles: undefined
+        };
+    }
+    const boundaryLowerRow = interiorLowerRow - 1;
+    const boundaryLowerCol = interiorLowerCol - 1;
+    const boundaryUpperRow = interiorUpperRow + 1;
+    const boundaryUpperCol = interiorUpperCol + 1;
+    const tiles = [];
+    const interior = [], boundary = [];
+    for (let r = boundaryLowerRow; r <= boundaryUpperRow; ++r) {
+        for (let c = boundaryLowerCol; c <= boundaryUpperCol; ++c) {
+            const index = r * config.order + c;
+            if (r >= interiorLowerRow && r <= interiorUpperRow && c >= interiorLowerCol && c <= interiorUpperCol) {
+                const tile = grid[index];
+                if (tile && tile.data.tiles > 0) {
+                    return {
+                        err: "Tiles are already occupied",
+                        tiles: undefined
+                    };
+                }
+                interior.push(index);
+                tiles.push({
+                    data,
+                    position: {
+                        row: r,
+                        column: c,
+                        index,
+                        root: interior[0],
+                        interior,
+                        boundary
+                    }
+                });
+            } else {
+                if (r >= 0 && r < config.order && c >= 0 && c < config.order) {
+                    boundary.push(index);
+                }
+            }
+        }
+    }
+    return {
+        err: undefined,
+        tiles
+    };
+};
+function createGrid(config, tiling) {
+    const grid = [];
+    if (tiling) {
+        tiling.forEach(({ type, name, roots }) => {
+            const data = objects[type].data[name];
+            if (type === "blank" || type === "road") {
+                roots.forEach(root => {
+                    const row = Math.floor(root / config.order);
+                    const column = root % config.order;
+                    grid[root] = {
+                        data,
+                        position: {
+                            row,
+                            column,
+                            index: root,
+                            root,
+                            interior: [root],
+                            boundary: halfBoundary(row, column, root, config.order)
+                        }
+                    };
+                });
+            } else if (type === "decor" || type === "building") {
+                roots.forEach(root => {
+                    const { tiles } = createTiles(config, grid, data, {
+                        row: Math.floor(root / config.order),
+                        column: root % config.order
+                    });
+                    tiles.forEach(tile => {
+                        grid[tile.position.index] = tile;
+                    });
+                });
+            }
+        });
+    } else {
+        const baseData = objects[config.useAutofill ? "road" : "blank"].data[""];
+        const myHouseData = objects.building.data[myHouseNames[config.order]];
+        const myHouseInterior = [];
+        const myHouseBoundary = [];
+        for (let r = 0; r < config.order; ++r) {
+            for (let c = 0; c < config.order; ++c) {
+                const index = r * config.order + c;
+                if (r < myHouseData.order && c < myHouseData.order) {
+                    myHouseInterior.push(index);
+                    grid.push({
+                        data: myHouseData,
+                        position: {
+                            row: r,
+                            column: c,
+                            index,
+                            root: myHouseRoot,
+                            interior: myHouseInterior,
+                            boundary: myHouseBoundary
+                        }
+                    });
+                } else {
+                    if (r >= 0 && r <= myHouseData.order && c >= 0 && c <= myHouseData.order) {
+                        myHouseBoundary.push(index);
+                    }
+                    grid.push({
+                        data: baseData,
+                        position: {
+                            row: r,
+                            column: c,
+                            index,
+                            root: index,
+                            interior: [index],
+                            boundary: halfBoundary(r, c, index, config.order)
+                        }
+                    });
+                }   
+            }
+        }
+    }
+    return grid;
+}
+
 export function StateProvider(props) {
-    let summary;
+    let summary, tileData;
     const baseLevel = levels[0];
-    const myHouseRoot = 0;
+    const baseConfig = {
+        level: baseLevel,
+        order: orderLimits[baseLevel].min,
+        mobCap: mobCapLimits[baseLevel].min,
+        useAufheben: false,
+        useAutofill: false
+    };
     const [state, setState] = createStore({
         mode: "inspect",
         inspect: { root: myHouseRoot },
@@ -16,128 +332,28 @@ export function StateProvider(props) {
             type: "building",
             name: objects.building.limits[baseLevel].min
         },
-        config: {
-            level: baseLevel,
-            order: orderLimits[baseLevel].min,
-            mobCap: mobCapLimits[baseLevel].min,
-            useAufheben: false,
-            useAutofill: false
-        },
-        grid: undefined,
-        presets: JSON.parse(window.localStorage.getItem("presets")) || [],
-        canvas: undefined,
+        config: baseConfig,
+        grid: createGrid(baseConfig),
+        presets: (JSON.parse(window.localStorage.getItem("presets")) || []).map(({ title, config, tiling }) => ({
+            title,
+            config,
+            tiling,
+            production: layoutStats(config, createGrid(config, tiling)).production
+        })),
         chart: undefined,
-        get baseProps() {
-            const type = this.config.useAutofill ? "road" : "free";
-            return {
-                object: {
-                    type,
-                    name: "",
-                    ...objects[type].data[""]
-                },
-                border: {
-                    top: true,
-                    right: true,
-                    bottom: true,
-                    left: true
-                }
-            };
-        },
-        get myHouseProps() {
-            const name = myHouses[this.config.order];
-            return {
-                type: "building",
-                name,
-                ...objects.building.data[name]
-            };
-        },
-        get networkProps() {
-            const network = new DisjointSet();
-            const roots = new Map();
-            let totalBeauty = 0;
-            
-            this.grid.forEach((cell, index) => {
-                const { object, position } = cell;
-                switch (object.type) {
-                    case "road":
-                        network.makeSet(index);
-                        position.boundary.forEach(idx => {
-                            if (this.grid[idx].object.type === "road" || this.grid[idx].position.root === myHouseRoot) {
-                                network.union(idx, index);
-                            }
-                        });
-                        roots.set(index, {
-                            connected: false
-                        });
-                        break;
-                    case "decor":
-                        if (position.root === index) {
-                            roots.set(index, {
-                                paths: 0,
-                                decor: 0
-                            });
-                        }
-                        break;
-                    case "building":
-                        if (position.root === myHouseRoot) {
-                            network.makeSet(index);
-                            network.union(myHouseRoot, index);
-                        }
-                        if (position.root === index) {
-                            roots.set(index, {
-                                paths: 0,
-                                waru: 0,
-                                banked: 0
-                            });   
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            });
-
-            roots.forEach((props, root) => {
-                const { object, position } = this.grid[root];
-                if (object.type === "road") {
-                    if (network.areConnected(myHouseRoot, root)) {
-                        props.connected = true;
-                    }
-                } else {
-                    const paths = position.boundary.reduce((count, index) => {
-                        if (this.grid[index].object.type === "road" && network.areConnected(myHouseRoot, index)) {
-                            return count + 1;
-                        }
-                        return count;
-                    }, 0);
-                    if (paths > 0) {
-                        props.paths = paths;
-                        if (object.type === "decor") {
-                            props.decor = networkDecor(object.decor, paths);
-                            totalBeauty += props.decor;
-                        } else if (object.type === "building") {
-                            props.waru = networkWaru(object.waru, paths);
-                        }
-                    }
-                    totalBeauty += object.decor;
-                }
-            });
-
-            const networkBanked = beautyProps(totalBeauty).banked;
-            return Array.from(roots, ([root, props]) => {
-                const { object } = this.grid[root];
-                if (object.waru > 0 && object.banked > 0) {
-                    props.banked = networkBanked;
-                }
-                return { root, props };
-            });
+        get baseData() {
+            return objects[this.config.useAutofill ? "road" : "blank"].data[""];
         },
         get summary() {
             return summary();
         },
+        get tileData() {
+            return tileData();
+        },
         get preset() {
             const { level, order, mobCap, useAufheben } = this.config;
-            const { free, decor, building } = summary().roots;
-            const { lastOptimalCycle, products } = summary().production;
+            const { tiling, production } = summary();
+            const { blank, road, decor, building } = tiling;
             return {
                 title: "Current",
                 config: {
@@ -146,66 +362,26 @@ export function StateProvider(props) {
                     mobCap,
                     useAufheben
                 },
-                roots: {
-                    free,
-                    decor,
-                    building
-                },
-                production: {
-                    lastOptimalCycle,
-                    products
-                }
+                tiling: [
+                    { type: "blank", name: "", roots: blank.roots },
+                    { type: "road", name: "", roots: road.roots },
+                    ...decor.names.map(name => ({
+                        type: "decor",
+                        name,
+                        roots: decor.pairs[name].roots
+                    })),
+                    ...building.names.map(name => ({
+                        type: "building",
+                        name,
+                        roots: building.pairs[name].roots
+                    }))
+                ],
+                production
             };
         }
     });
-
-    const adjustedIndex = (oldIndex, oldOrder, newOrder) => {
-        const oldRow = Math.floor(oldIndex / oldOrder);
-        const oldCol = oldIndex % oldOrder;
-        return oldRow * newOrder + oldCol;
-    };
-    const halfBoundary = (row, column, index, order) => {
-        const boundary = [];
-        if (row > 0 && column > 0) {
-            boundary.push(index - order - 1);
-        }
-        if (row > 0) {
-            boundary.push(index - order);
-        }
-        if (row > 0 && column < order - 1) {
-            boundary.push(index - order + 1);
-        }
-        if (column > 0) {
-            boundary.push(index - 1);
-        }
-        return boundary;
-    }
-    const nextColor = (i, s, l) => `hsl(${i * 180 * (3 - Math.sqrt(5))}, ${s}%, ${l}%)`; // use golden angle
     
     const stateSetters = {
-        initGrid() {
-            const newGrid = [];
-            for (let r = 0; r < state.config.order; ++r) {
-                for (let c = 0; c < state.config.order; ++c) {
-                    const index = r * state.config.order + c;
-                    newGrid.push({
-                        ...state.baseProps,
-                        position: {
-                            row: r,
-                            column: c,
-                            index,
-                            root: index,
-                            interior: [index],
-                            boundary: halfBoundary(r, c, index, state.config.order)
-                        }
-                    });
-                }
-            }
-            setState("grid", newGrid);
-        },
-        setCanvas(canvas) {
-            setState("canvas", canvas);
-        },
         setChart(chart) {
             setState("chart", chart);
         },
@@ -226,21 +402,20 @@ export function StateProvider(props) {
                     stateSetters.setMobCap(newMobCap);
                 }
             });
-            if (oldOrder !== newOrder) {
-                stateSetters.updateChart();
-            }
         },
         setOrder(newOrder) {
             batch(() => {
                 stateSetters.resizeGrid(state.config.order, newOrder);
             });
-            stateSetters.updateChart();
         },
         resizeGrid(oldOrder, newOrder) {
             setState("config", "order", newOrder);
             const { row, column } = state.grid[state.inspect.root].position;
             stateSetters.setInspectRoot((row >= newOrder || column >= newOrder) ? myHouseRoot : row * newOrder + column);
-            setState("grid", state.grid[myHouseRoot].position.interior, "object", state.myHouseProps);
+            setState("grid", state.grid[myHouseRoot].position.interior, ({ position }) => ({
+                data: objects.building.data[myHouseNames[newOrder]],
+                position
+            }));
             const oldRoots = new Set();
             const newGrid = [];
             const minOrder = Math.min(oldOrder, newOrder);
@@ -252,19 +427,19 @@ export function StateProvider(props) {
                         if (oldRoots.has(root)) {
                             continue;
                         }
-                        const { object, position } = state.grid[root];
-                        if (position.row + object.order >= minOrder || position.column + object.order >= minOrder) {
+                        const { data, position } = state.grid[root];
+                        if (position.row + data.order >= minOrder || position.column + data.order >= minOrder) {
                             interior.forEach(index => {
-                                const oldCell = state.grid[index];
-                                const { row, column } = oldCell.position;
+                                const oldTile = state.grid[index];
+                                const { row, column } = oldTile.position;
                                 if (row >= minOrder || column >= minOrder) {
                                     return;
                                 }
                                 const newIndex = adjustedIndex(index, oldOrder, newOrder);
                                 newGrid[newIndex] = {
-                                    ...state.baseProps,
+                                    data: state.baseData,
                                     position: {
-                                        ...oldCell.position,
+                                        ...oldTile.position,
                                         index: newIndex,
                                         root: newIndex,
                                         interior: [newIndex],
@@ -276,11 +451,11 @@ export function StateProvider(props) {
                             const newInterior = interior.map(index => adjustedIndex(index, oldOrder, newOrder));
                             const newBoundary = boundary.map(index => adjustedIndex(index, oldOrder, newOrder));
                             newInterior.forEach((index, i) => {
-                                const oldCell = state.grid[interior[i]];
+                                const oldTile = state.grid[interior[i]];
                                 newGrid[index] = {
-                                    ...oldCell,
+                                    ...oldTile,
                                     position: {
-                                        ...oldCell.position,
+                                        ...oldTile.position,
                                         index,
                                         root: newInterior[0],
                                         interior: newInterior,
@@ -293,7 +468,7 @@ export function StateProvider(props) {
                     } else {
                         const newIndex = r * newOrder + c;
                         newGrid[newIndex] = {
-                            ...state.baseProps,
+                            data: state.baseData,
                             position: {
                                 row: r,
                                 column: c,
@@ -307,17 +482,12 @@ export function StateProvider(props) {
                 }
             }
             setState("grid", newGrid);
-            stateSetters.applyNetwork();
         },
         setMobCap(newMobCap) {
             setState("config", "mobCap", newMobCap);
         },
         toggleAufheben() {
-            batch(() => {
-                setState("config", "useAufheben", !state.config.useAufheben);
-                stateSetters.applyNetwork();
-            });
-            stateSetters.updateChart();
+            setState("config", "useAufheben", !state.config.useAufheben);
         },
         setMode(newMode) {
             setState("mode", newMode);
@@ -333,44 +503,20 @@ export function StateProvider(props) {
         },
         toggleAutofill() {
             setState("config", "useAutofill", !state.config.useAutofill);
-            const targetType = state.config.useAutofill ? "free" : "road";
-            const { object } = state.baseProps;
-            batch(() => {
-                setState("grid", state.summary.roots[targetType], "object", object);
-                stateSetters.applyNetwork();
-            });
-            stateSetters.updateChart();
+            const targetType = state.config.useAutofill ? "blank" : "road";
+            setState("grid", state.summary.tiling[targetType].roots, ({ position }) => ({
+                data: state.baseData,
+                position
+            }));
         },
         loadPreset(index) {
-            const { config, roots } = state.presets[index];
+            const { config, tiling } = state.presets[index];
             batch(() => {
                 setState("config", {
                     ...config,
-                    useAutofill: true
+                    useAutofill: false
                 });
-                stateSetters.initGrid();
-                setState("config", "useAutofill", false);
-                const freeObject = {
-                    type: "free",
-                    name: "",
-                    ...objects.free.data[""]
-                };
-                for (const [type, collection] of Object.entries(roots)) {
-                    if (type === "free") {
-                        setState("grid", collection, "object", freeObject);
-                    } else {
-                        collection.forEach(({ name, list }) => {
-                            list.forEach(root => {
-                                stateSetters.setObject(state.grid[root].position, {
-                                    type,
-                                    name,
-                                    ...objects[type].data[name]
-                                });
-                            });
-                        });
-                    }
-                }
-                stateSetters.applyNetwork();
+                setState("grid", createGrid(config, tiling));
                 stateSetters.setInspectRoot(myHouseRoot);
             });
         },
@@ -388,140 +534,83 @@ export function StateProvider(props) {
         },
         insertObject(position) {
             const { type, name } = state.decorate;
-            const objectData = objects[type].data[name];
-            if (!objectData) {
+            const data = objects[type].data[name];
+            if (!data) {
                 return "No object selected";
             }
-            const { units, limit } = objectData;
-            if (units > 0 && state.summary.count.available < units) {
-                return "Exceeded required number of available cells";
+            if (data.tiles > 0 && state.summary.free < data.tiles) {
+                return "Exceeded required number of free tiles";
             }
-            if (limit > 0) {
-                const entry = state.summary.roots[type].find(entry => entry.name === name);
-                if (entry && entry.list.length + 1 > limit) {
-                    return `"${name}" is limited to a quantity of ${limit}`;
+            if (data.quantity > 0) {
+                const entry = state.summary.tiling[type].pairs[name];
+                if (entry && entry.roots.length + 1 > data.quantity) {
+                    return `"${name}" is limited to a quantity of ${data.quantity}`;
                 }
             }
-            let err;
-            batch(() => {
-                err = stateSetters.setObject(position, {
-                    type,
-                    name,
-                    ...objectData
-                });
-                if (!err) {
-                    stateSetters.applyNetwork();
+            if (data.type === "road") {
+                if (state.grid[position.index].data.tiles > 0) {
+                    return "Tiles are already occupied";
+                }
+                batch(() => {
+                    setState("grid", position.index, ({ position }) => ({
+                        data,
+                        position
+                    }));
                     stateSetters.setInspectRoot(position.index);
-                }
-            });
-            if (!err) {
-                stateSetters.updateChart();
-            }
-            return err;
-        },
-        setObject({ row, column }, objectProps) {
-            const interiorLowerRow = row;
-            const interiorLowerCol = column;
-            const interiorUpperRow = interiorLowerRow + objectProps.order - 1;
-            const interiorUpperCol = interiorLowerCol + objectProps.order - 1;
-            if (interiorUpperRow >= state.config.order || interiorUpperCol >= state.config.order) {
-                return "Out-of-bounds placement";
-            }
-            const boundaryLowerRow = interiorLowerRow - 1;
-            const boundaryLowerCol = interiorLowerCol - 1;
-            const boundaryUpperRow = interiorUpperRow + 1;
-            const boundaryUpperCol = interiorUpperCol + 1;
-            const newCells = new Map();
-            const interior = [], boundary = [];
-            for (let r = boundaryLowerRow; r <= boundaryUpperRow; ++r) {
-                for (let c = boundaryLowerCol; c <= boundaryUpperCol; ++c) {
-                    const index = r * state.config.order + c;
-                    if (r >= interiorLowerRow && r <= interiorUpperRow && c >= interiorLowerCol && c <= interiorUpperCol) {
-                        const { object, position } = state.grid[index];
-                        if (object.units > 0) {
-                            return "Overlapping placement";
-                        }
-                        interior.push(index);
-                        newCells.set(index, {
-                            object: objectProps,
-                            position: {
-                                ...position,
-                                root: interior[0],
-                                interior,
-                                boundary
-                            },
-                            border: {
-                                top: r === interiorLowerRow,
-                                right: c === interiorUpperCol,
-                                bottom: r === interiorUpperRow,
-                                left: c === interiorLowerCol
-                            }
+                });
+                return;
+            } else {
+                const { err, tiles } = createTiles(state.config, state.grid, data, position);
+                batch(() => {
+                    if (!err) {
+                        tiles.forEach(tile => {
+                            setState("grid", tile.position.index, tile);
                         });
-                    } else {
-                        if (r >= 0 && r < state.config.order && c >= 0 && c < state.config.order) {
-                            boundary.push(index);
-                        }
+                        stateSetters.setInspectRoot(position.index);
                     }
-                }
+                });
+                return err;
             }
-            newCells.forEach((cell, index) => {
-                setState("grid", index, cell);
-            });
         },
         removeObject() {
-            const { object, position } = state.grid[state.inspect.root];
-            if (object.type === "free") {
-                return "No object to remove";
+            const tile = state.grid[state.inspect.root];
+            if (tile.data.fixed) {
+                return "Object is fixed to the grid";
             }
-            if (object.fixed) {
-                return "Object is fixed";
-            }
-            batch(() => {
-                setState("grid", position.interior, ({ position }) => {
-                    const { row, column, index } = position;
-                    return {
-                        ...state.baseProps,
-                        position: {
-                            ...position,
-                            root: index,
-                            interior: [index],
-                            boundary: halfBoundary(row, column, index, state.config.order)
-                        }
-                    };
-                });
-                stateSetters.applyNetwork();
+            setState("grid", tile.position.interior, ({ position }) => {
+                const { row, column, index } = position;
+                return {
+                    data: state.baseData,
+                    position: {
+                        ...position,
+                        root: index,
+                        interior: [index],
+                        boundary: halfBoundary(row, column, index, state.config.order)
+                    }
+                };
             });
-            stateSetters.updateChart();
         },
-        resetGrid() {
-            const targetType = state.config.useAutofill ? "free" : "road";
-            batch(() => {
-                setState("grid", ({ object }) => {
-                    return object.type === targetType || !object.fixed;
-                }, ({ position }) => {
-                    const { row, column, index } = position;
-                    return {
-                        ...state.baseProps,
-                        position: {
-                            ...position,
-                            root: index,
-                            interior: [index],
-                            boundary: halfBoundary(row, column, index, state.config.order)
-                        }
-                    };
-                });
-                stateSetters.applyNetwork();
-            });
-            stateSetters.updateChart();
-        },
-        applyNetwork() {
-            state.networkProps.forEach(({ root, props }) => {
-                setState("grid", root, "network", props);
+        clearGrid() {
+            const targetType = state.config.useAutofill ? "blank" : "road";
+            setState("grid", ({ data }) => {
+                return data.type === targetType || !data.fixed;
+            }, ({ position }) => {
+                const { row, column, index } = position;
+                return {
+                    data: state.baseData,
+                    position: {
+                        ...position,
+                        root: index,
+                        interior: [index],
+                        boundary: halfBoundary(row, column, index, state.config.order)
+                    }
+                };
             });
         },
         updateChart() {
             const presets = [...state.presets, state.preset];
             const { minCycle, maxCycle, datasets } = presets.reduce((props, { title, production }, index) => {
+                const color = nextColor(index, 100, 50);
                 const { minCycle, maxCycle } = props;
                 const { lastOptimalCycle, products } = production;
                 props.minCycle = minCycle > 0 ? Math.min(minCycle, lastOptimalCycle) : lastOptimalCycle;
@@ -529,8 +618,9 @@ export function StateProvider(props) {
                 props.datasets.push({
                     label: title,
                     data: products,
-                    backgroundColor: () => nextColor(index, 100, 50),
-                    borderColor: () => nextColor(index, 100, 50)
+                    backgroundColor: color,
+                    borderColor: color,
+                    hidden: index < presets.length - 1
                 });
                 return props;
             }, {
@@ -565,122 +655,45 @@ export function StateProvider(props) {
                 setState("chart", "options", "scales", "y", "min", undefined);
             }
             state.chart.update();
-            state.presets.forEach((_, index) => {
-                state.chart.hide(index);
-            });
         }
     };
 
-    batch(() => {
-        stateSetters.initGrid();
-        stateSetters.setObject(state.grid[myHouseRoot].position, state.myHouseProps);
-        stateSetters.applyNetwork();
+    summary = createMemo(() => {
+        return layoutStats(state.config, state.grid);
     });
 
-    summary = createMemo(() => {
-        const freeRoots = [];
-        const roadRoots = [];
-        const decorRoots = new Map();
-        const buildingRoots = new Map();
-        let totalAvailable = state.config.order ** 2 - state.config.mobCap - 1;
-        let totalConnected = 0;
-        let totalBeauty = 0;
-    
-        state.grid.forEach((cell, index) => {
-            const { object, position, network } = cell;
-            if (position.root !== index) {
-                return;
+    tileData = createMemo(() => {
+        const { data, position } = state.grid[state.inspect.root];
+        const paths = position.boundary.reduce((count, index) => {
+            if (state.grid[index].data.type === "road" && state.summary.network.areConnected(myHouseRoot, index)) {
+                return count + 1;
             }
-            switch (object.type) {
-                case "free":
-                    freeRoots.push(index);
-                    break;
-                case "road":
-                    roadRoots.push(index);
-                    if (network.connected) {
-                        ++totalConnected;
-                    }
-                    break;
-                case "decor":
-                    if (!decorRoots.has(object.name)) {
-                        decorRoots.set(object.name, []);
-                    }
-                    decorRoots.get(object.name).push(index);
-                    totalAvailable -= object.units;
-                    totalBeauty += (object.decor + network.decor);
-                    break;
-                case "building":
-                    if (!buildingRoots.has(object.name)) {
-                        buildingRoots.set(object.name, []);
-                    }
-                    buildingRoots.get(object.name).push(index);
-                    totalAvailable -= object.units;
-                    totalBeauty += object.decor;
-                    break;
+            return count;
+        }, 0);
+        let bonusWaru = 0;
+        let finalWaru = 0;
+        let bonusBanked = 0;
+        let bonusDecor = 0;
+        if (data.waru > 0 && data.banked > 0) {
+            if (paths > 0) {
+                bonusWaru = networkWaru(data.waru, paths);
             }
-        });
-    
-        const finalWaru = state.config.useAufheben ? aufhebenWaru : 0;
-        let lastOptimalCycle = 0;
-        const products = [0];
-        buildingRoots.forEach(list => {
-            list.forEach(root => {
-                const { object, network } = state.grid[root];
-                if (object.waru > 0 && object.banked > 0) {
-                    const totalWaru = object.waru + network.waru + finalWaru;
-                    const totalBanked = object.banked + network.banked;
-                    const cycles = totalBanked / totalWaru;
-                    const remWaru = totalBanked % totalWaru;
-                    const lowerCycles = Math.floor(cycles);
-                    const upperCycles = Math.ceil(cycles);
-                    lastOptimalCycle = lastOptimalCycle > 0 ? Math.min(lastOptimalCycle, lowerCycles) : lowerCycles;
-                    for (let i = 1; i <= lowerCycles; i++) {
-                        products[i] = (products[i] || 0) + totalWaru;
-                    }
-                    if (remWaru > 0) {
-                        products[upperCycles] = (products[upperCycles] || 0) + remWaru;
-                    }
-                }
-            });
-        });
-
+            if (state.config.useAufheben) {
+                finalWaru = aufhebenWaru;
+            }
+            bonusBanked = state.summary.beauty.banked;
+        } else if (data.decor > 0) {
+            if (paths > 0) {
+                bonusDecor = networkDecor(data.decor, paths);
+            }
+        }
         return {
-            legend: [
-                ...Array.from(buildingRoots, ([name], index) => ({
-                    type: "building",
-                    name,
-                    backgroundColor: nextColor(index, 80, 80),
-                })),
-                ...Array.from(decorRoots, ([name], index) => ({
-                    type: "decor",
-                    name,
-                    backgroundColor: nextColor(buildingRoots.size + index, 80, 80),
-                }))
-            ],
-            roots: {
-                free: freeRoots,
-                road: roadRoots,
-                decor: Array.from(decorRoots, ([name, list]) => ({ name, list })),
-                building: Array.from(buildingRoots, ([name, list]) => ({ name, list }))
-            },
-            count: {
-                available: totalAvailable,
-                inNetwork: totalConnected,
-                outNetwork: roadRoots.length - totalConnected
-            },
-            beauty: { ...beautyProps(totalBeauty), total: totalBeauty },
-            production: {
-                lastOptimalCycle,
-                lastOptimalRate: products[lastOptimalCycle],
-                products: products.reduce((total, marginal, index) => {
-                    if (index > 0) {
-                        total.push(total[index - 1] + marginal);
-                    } else {
-                        total.push(marginal);
-                    }
-                    return total;
-                }, [])
-            }
+            ...data,
+            paths,
+            bonusWaru,
+            finalWaru,
+            bonusBanked,
+            bonusDecor
         };
     });
 

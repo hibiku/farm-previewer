@@ -38,7 +38,7 @@ function Order() {
                 value={state.config.order}
                 onChange={onChange}>
                 <For each={orders}>{
-                    order => <option disabled={disabled(order)} value={order}>{`${order} x ${order}`}</option>
+                    order => <option disabled={disabled(order)} value={order}>{`${order}×${order}`}</option>
                 }</For>
             </select>
         </>
@@ -56,7 +56,7 @@ function MobCap() {
     };
     return (
         <>
-            <label for="mob-cap">Monster capacity</label>
+            <label for="mob-cap">Monster slots</label>
             <select
                 id="mob-cap"
                 value={state.config.mobCap}

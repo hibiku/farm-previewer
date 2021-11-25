@@ -1,21 +1,21 @@
 import { Switch, Match } from "solid-js";
 import { useState } from "../StateProvider.jsx";
-import { objects, aufhebenWaru } from "../data.js";
+import { objects } from "../data.js";
 
 function Inspect() {
     const [state] = useState();
     return (
         <table>
-            <caption>Cell properties</caption>
+            <caption>Tile properties</caption>
             <Switch fallback={
                 <tbody>
                     <tr>
                         <th>Type</th>
-                        <td>Free cell</td>
+                        <td>Blank tile</td>
                     </tr>
                 </tbody>
             }>
-                <Match when={state.grid[state.inspect.root].object.type === "road"}>
+                <Match when={state.tileData.type === "road"}>
                     <tbody>
                         <tr>
                             <th>Type</th>
@@ -24,7 +24,7 @@ function Inspect() {
                         <tr>
                             <th>Connected to house</th>
                             <Show
-                                when={state.grid[state.inspect.root].network.connected}
+                                when={state.tileData.paths > 0}
                                 fallback={<td>No</td>}
                             >
                                 <td>Yes</td>
@@ -32,7 +32,7 @@ function Inspect() {
                         </tr>
                     </tbody>
                 </Match>
-                <Match when={state.grid[state.inspect.root].object.type === "decor"}>
+                <Match when={state.tileData.type === "decor"}>
                     <tbody>
                         <tr>
                             <th>Type</th>
@@ -40,19 +40,19 @@ function Inspect() {
                         </tr>
                         <tr>
                             <th>Name</th>
-                            <td>{state.grid[state.inspect.root].object.name}</td>
+                            <td>{state.tileData.name}</td>
                         </tr>
                         <tr>
                             <th>Adjacent roads (in-network)</th>
-                            <td>{state.grid[state.inspect.root].network.paths}</td>
+                            <td>{state.tileData.paths}</td>
                         </tr>
                         <tr>
                             <th>Aesthetic points</th>
-                            <td>{`${state.grid[state.inspect.root].object.decor} (+${state.grid[state.inspect.root].network.decor})`}</td>
+                            <td>{`${state.tileData.decor} (+${state.tileData.bonusDecor})`}</td>
                         </tr>
                     </tbody>
                 </Match>
-                <Match when={state.grid[state.inspect.root].object.type === "building"}>
+                <Match when={state.tileData.type === "building"}>
                     <tbody>
                         <tr>
                             <th>Type</th>
@@ -60,28 +60,23 @@ function Inspect() {
                         </tr>
                         <tr>
                             <th>Name</th>
-                            <td>{state.grid[state.inspect.root].object.name}</td>
+                            <td>{state.tileData.name}</td>
                         </tr>
                         <tr>
                             <th>Adjacent roads (in-network)</th>
-                            <td>{state.grid[state.inspect.root].network.paths}</td>
+                            <td>{state.tileData.paths}</td>
                         </tr>
                         <tr>
                             <th>Production rate (W/10 mins)</th>
-                            <Show
-                                when={state.config.useAufheben}
-                                fallback={<td>{`${state.grid[state.inspect.root].object.waru} (+${state.grid[state.inspect.root].network.waru})`}</td>}
-                            >
-                                <td>{`${state.grid[state.inspect.root].object.waru} (+${state.grid[state.inspect.root].network.waru}) (+${(state.grid[state.inspect.root].object.waru > 0 && state.grid[state.inspect.root].object.banked > 0) ? aufhebenWaru : 0})`}</td>
-                            </Show>
+                            <td>{`${state.tileData.waru} (+${state.tileData.bonusWaru}) (+${state.tileData.finalWaru})`}</td>
                         </tr>
                         <tr>
-                            <th>Max capacity (W)</th>
-                            <td>{`${state.grid[state.inspect.root].object.banked} (+${state.grid[state.inspect.root].network.banked})`}</td>
+                            <th>Storage capacity (W)</th>
+                            <td>{`${state.tileData.banked} (+${state.tileData.bonusBanked})`}</td>
                         </tr>
                         <tr>
                             <th>Aesthetic points</th>
-                            <td>{state.grid[state.inspect.root].object.decor}</td>
+                            <td>{state.tileData.decor}</td>
                         </tr>
                     </tbody>
                 </Match>
@@ -95,9 +90,7 @@ function DecorateType() {
     const onChange = (event) => {
         setDecorateType(event.currentTarget.value);
     };
-    const decorateTypes = Object.keys(objects).filter(type => {
-        return type !== "free";
-    });
+    const decorateTypes = Object.keys(objects).filter(type => type !== "blank");
     return (
         <>
             <label for="decorate-type">Type</label>

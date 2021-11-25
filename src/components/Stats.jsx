@@ -1,4 +1,4 @@
-import { onCleanup, onMount } from "solid-js";
+import { createEffect, onCleanup, onMount } from "solid-js";
 import { useState } from "../StateProvider.jsx";
 import { Chart, LineElement, PointElement, LineController, CategoryScale, LinearScale, Legend, Tooltip } from "chart.js";
 Chart.register(LineElement, PointElement, LineController, CategoryScale, LinearScale, Legend, Tooltip);
@@ -16,39 +16,45 @@ function Objects() {
                 </tr>
             </thead>
             <tbody>
-                <For each={state.summary.roots.building}>
-                    {
-                        ({ name, list }) => <tr>
+                <For each={state.summary.tiling.building.names}>{
+                    name => {
+                        return <tr>
                             <td>Building</td>
                             <td>{name}</td>
-                            <td>{list.length}</td>
-                        </tr>
+                            <td>{state.summary.tiling.building.pairs[name].roots.length}</td>
+                        </tr>;
                     }
-                </For>
-                <For each={state.summary.roots.decor}>
-                    {
-                        ({ name, list }) => <tr>
+                }</For>
+                <For each={state.summary.tiling.decor.names}>{
+                    name => {
+                        return <tr>
                             <td>Decor</td>
                             <td>{name}</td>
-                            <td>{list.length}</td>
-                        </tr>
+                            <td>{state.summary.tiling.decor.pairs[name].roots.length}</td>
+                        </tr>;
                     }
-                </For>
-                <Show when={state.summary.count.inNetwork > 0}>
+                }</For>
+                <Show when={state.summary.tiling.blank.roots.length > 0}>
                     <tr>
-                        <th colspan={2}>Road (in-network)</th>
-                        <td colspan={1}>{state.summary.count.inNetwork}</td>
+                        <th colspan={2}>Blank tiles</th>
+                        <td colspan={1}>{state.summary.tiling.blank.roots.length}</td>
                     </tr>
                 </Show>
-                <Show when={state.summary.count.outNetwork > 0}>
+                <Show when={state.summary.tiling.road.count.inNetwork > 0}>
+                    <tr>
+                        <th colspan={2}>Road (in-network)</th>
+                        <td colspan={1}>{state.summary.tiling.road.count.inNetwork}</td>
+                    </tr>
+                </Show>
+                <Show when={state.summary.tiling.road.count.outNetwork > 0}>
                     <tr>
                         <th colspan={2}>Road (out-network)</th>
-                        <td colspan={1}>{state.summary.count.outNetwork}</td>
+                        <td colspan={1}>{state.summary.tiling.road.count.outNetwork}</td>
                     </tr>
                 </Show>
                 <tr>
-                    <th colspan={2}>Available cells</th>
-                    <td colspan={1}>{state.summary.count.available}</td>
+                    <th colspan={2}>Remaining free tiles</th>
+                    <td colspan={1}>{state.summary.tiling.free.count}</td>
                 </tr>
             </tbody>
         </table>
@@ -59,11 +65,11 @@ function Beauty() {
     const [state] = useState();
     return (
         <table>
-            <caption>Beauty effects</caption>
+            <caption>Beauty details</caption>
             <thead>
                 <tr>
                     <th>Combine Result Choices</th>
-                    <th>Building Max Capacity (W)</th>
+                    <th>Building Storage Capacity (W)</th>
                     <th>Shop Discount</th>
                     <th>Special Merchant Visit</th>
                 </tr>
@@ -91,12 +97,10 @@ function Beauty() {
 }
 
 function Production() {
-    const [state, { setCanvas, setChart, updateChart }] = useState();
-    const setupCanvas = canvas => {
-        setCanvas(canvas);
-    };
+    const [state, { setChart, updateChart }] = useState();
+    let canvas;
     onMount(() => {
-        setChart(new Chart(state.canvas, {
+        setChart(new Chart(canvas, {
             type: "line",
             options: {
                 animation: false,
@@ -136,6 +140,8 @@ function Production() {
                 }
             }
         }));
+    });
+    createEffect(() => {
         updateChart();
     });
     onCleanup(() => {
@@ -153,17 +159,17 @@ function Production() {
                 <tbody>
                     <tr>
                         <td colspan={2} class="canvas-data">
-                            <canvas ref={setupCanvas} />
+                            <canvas ref={canvas} />
                         </td>
                     </tr>
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th>Max total production rate (W/10 mins)</th>
+                        <th>Max marginal product (W)</th>
                         <td>{state.summary.production.lastOptimalRate}</td>
                     </tr>
                     <tr>
-                        <th>Time until diminishing total product (mins)</th>
+                        <th>Time until diminishing marginal product (mins)</th>
                         <td>{10 * state.summary.production.lastOptimalCycle}</td>
                     </tr>
                     <tr>

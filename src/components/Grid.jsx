@@ -1,9 +1,10 @@
 import { batch, createSignal, createEffect } from "solid-js";
 import { createStore } from "solid-js/store";
 import { useState } from "../StateProvider.jsx";
+import { myHouseRoot } from "../data.js";
 
 function Presets({ alert, setAlert }) {
-    const [state, { loadPreset, deletePreset, createPreset, updateChart }] = useState();
+    const [state, { loadPreset, deletePreset, createPreset }] = useState();
     const storePresets = (presets) => {
         try {
             window.localStorage.setItem("presets", presets);
@@ -18,14 +19,12 @@ function Presets({ alert, setAlert }) {
     };
     const onLoadClick = () => {
         loadPreset(presetIndex());
-        updateChart();
         setPresetIndex(-1);
     };
     const onDeleteClick = () => {
         const index = presetIndex();
         const { title } = state.presets[index];
         deletePreset(index);
-        updateChart();
         const err = storePresets(JSON.stringify(state.presets));
         if (err) {
             batch(() => {
@@ -48,8 +47,11 @@ function Presets({ alert, setAlert }) {
     const onCreateClick = () => {
         const title = newTitle();
         createPreset(title);
-        updateChart();
-        const err = storePresets(JSON.stringify(state.presets));
+        const err = storePresets(JSON.stringify(state.presets.map(({ title, config, tiling }) => ({
+            title,
+            config,
+            tiling
+        }))));
         if (err) {
             batch(() => {
                 setAlert("status", "failure");
@@ -118,10 +120,7 @@ function Presets({ alert, setAlert }) {
 
 function Remove({ setAlert }) {
     const [state, { removeObject }] = useState();
-    const disabled = () => {
-        const object = state.grid[state.inspect.root].object;
-        return object.type === "free" || object.fixed;
-    };
+    const disabled = () => state.grid[state.inspect.root].data.fixed;
     const onClick = () => {
         const err = removeObject();
         if (err) {
@@ -136,13 +135,13 @@ function Remove({ setAlert }) {
     );
 }
 
-function Reset() {
-    const [_, { resetGrid }] = useState();
+function Clear() {
+    const [_, { clearGrid }] = useState();
     const onClick = () => {
-        resetGrid();
+        clearGrid();
     };
     return (
-        <button type="button" onClick={onClick}>Reset</button>
+        <button type="button" onClick={onClick}>Clear</button>
     );
 }
 
@@ -162,11 +161,42 @@ function Grid() {
             }, 3000);
         }
     });
-    const onClick = ({ cell }) => {
+    const tileClassList = ({ data, position }) => {
+        const classList = {
+            "grid-tile": true,
+            "grid-tile-inspect": position.root === state.inspect.root
+        };
+        if (data.type === "road") {
+            classList[state.summary.network.areConnected(myHouseRoot, position.index) ? "road-in-network" : "road-out-network"] = true;
+        }
+        return classList;
+    };
+    const tileStyle = ({ data, position }) => {
+        if (data.type === "decor" || data.type === "building") {
+            const style = {
+                ["background-color"]: state.summary.tiling[data.type].pairs[data.name].backgroundColor
+            };
+            const { row, column } = state.grid[position.root].position;
+            if (position.row !== row) {
+                style["border-top-style"] = "none";
+            }
+            if (position.column !== column + data.order - 1) {
+                style["border-right-style"] = "none";
+            }
+            if (position.row !== row + data.order - 1) {
+                style["border-bottom-style"] = "none";
+            }
+            if (position.column !== column) {
+                style["border-left-style"] = "none";
+            }
+            return style;
+        }
+    };
+    const onClick = ({ tile }) => {
         if (state.mode === "inspect") {
-            setInspectRoot(cell.position.root);
+            setInspectRoot(tile.position.root);
         } else if (state.mode === "decorate") {
-            const err = insertObject(cell.position);
+            const err = insertObject(tile.position);
             if (err) {
                 batch(() => {
                     setAlert("status", "failure");
@@ -191,58 +221,51 @@ function Grid() {
                         }}>
                         <For each={state.grid}>
                             {
-                                cell => <div
-                                    classList={{
-                                        "grid-cell": true,
-                                        "road-in-network": cell.object.type === "road" && cell.network.connected,
-                                        "road-out-network": cell.object.type === "road" && !cell.network.connected
-                                    }}
-                                    style={{
-                                        "background-color": (cell.object.type === "decor" || cell.object.type === "building") ?
-                                        state.summary.legend.find(item => {
-                                            return item.type === cell.object.type && item.name === cell.object.name;
-                                        }).backgroundColor : "",
-                                        "border-color": cell.position.root === state.inspect.root ? "red" : "black",
-                                        "border-top-style": cell.border.top ? "solid" : "none",
-                                        "border-right-style": cell.border.right ? "solid" : "none",
-                                        "border-bottom-style": cell.border.bottom ? "solid" : "none",
-                                        "border-left-style": cell.border.left ? "solid" : "none",
-                                    }}
-                                    onClick={[onClick, { cell }]}
-                                ></div>
+                                tile => <div
+                                    classList={tileClassList(tile)}
+                                    style={tileStyle(tile)}
+                                    onClick={[onClick, { tile }]}
+                                />
                             }
                         </For>
                     </div>
                 </div>
                 <div class="grid-legend">
-                    <For each={state.summary.legend}>{
-                        ({ name, backgroundColor }) => <div>
-                            <div class="grid-legend-item" style={{ "background-color": backgroundColor }} />
+                    <For each={state.summary.tiling.building.names}>{
+                        name => <div>
+                            <div class="grid-legend-item" style={{ "background-color": state.summary.tiling.building.pairs[name].backgroundColor }} />
                             <div>{name}</div>
                         </div>
                     }</For>
-                    <Show when={state.summary.count.inNetwork > 0}>
+
+                    <For each={state.summary.tiling.decor.names}>{
+                        name => <div>
+                            <div class="grid-legend-item" style={{ "background-color": state.summary.tiling.decor.pairs[name].backgroundColor }} />
+                            <div>{name}</div>
+                        </div>
+                    }</For>
+                    <Show when={state.summary.tiling.road.count.inNetwork > 0}>
                         <div>
                             <div class="grid-legend-item road-in-network" />
                             <div>Road (in-network)</div>
                         </div>
                     </Show>
-                    <Show when={state.summary.count.outNetwork > 0}>
+                    <Show when={state.summary.tiling.road.count.outNetwork > 0}>
                         <div>
                             <div class="grid-legend-item road-out-network" />
                             <div>Road (out-network)</div>
                         </div>
                     </Show>
-                    <Show when={state.summary.roots.free.length > 0}>
+                    <Show when={state.summary.tiling.blank.roots.length > 0}>
                         <div>
                             <div class="grid-legend-item" />
-                            <div>Free cell</div>
+                            <div>Blank tile</div>
                         </div>
                     </Show>
                 </div>
                 <div class="grid-control">
                     <Remove setAlert={setAlert} />
-                    <Reset />
+                    <Clear />
                 </div>
             </div>
         </fieldset>
