@@ -346,7 +346,7 @@ var mobCapLimits = {
   }
 };
 var objects = {
-  free: {
+  blank: {
     names: [""],
     limits: {
       1: {
@@ -511,14 +511,16 @@ var objects = {
       }
     },
     data: _defineProperty({}, "", {
+      type: "blank",
+      name: "",
       level: 1,
       order: 1,
-      units: 0,
+      tiles: 0,
       waru: 0,
       banked: 0,
       decor: 0,
-      limit: 0,
-      fixed: false
+      quantity: 0,
+      fixed: true
     })
   },
   road: {
@@ -686,13 +688,15 @@ var objects = {
       }
     },
     data: _defineProperty({}, "", {
+      type: "road",
+      name: "",
       level: 1,
       order: 1,
-      units: 0,
+      tiles: 0,
       waru: 0,
       banked: 0,
       decor: 0,
-      limit: 0,
+      quantity: 0,
       fixed: false
     })
   },
@@ -861,967 +865,1182 @@ var objects = {
       }
     },
     data: (_data3 = {}, _defineProperty(_data3, "Lil Pine Tree", {
+      type: "decor",
+      name: "Lil Pine Tree",
       level: 2,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 8,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Pine Tree", {
+      type: "decor",
+      name: "Pine Tree",
       level: 3,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 12,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Orange Mini Mushroom", {
+      type: "decor",
+      name: "Orange Mini Mushroom",
       level: 3,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 9,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Heartfelt Garden", {
+      type: "decor",
+      name: "Heartfelt Garden",
       level: 3,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 1000,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data3, "Floral Archway", {
+      type: "decor",
+      name: "Floral Archway",
       level: 3,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 1500,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data3, "Winged Archway", {
+      type: "decor",
+      name: "Winged Archway",
       level: 3,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 2000,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data3, "Rice Candy Set", {
+      type: "decor",
+      name: "Rice Candy Set",
       level: 3,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 2700,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data3, "Sky-High Flower", {
+      type: "decor",
+      name: "Sky-High Flower",
       level: 3,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 1000,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data3, "Stone Lantern", {
+      type: "decor",
+      name: "Stone Lantern",
       level: 3,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 1500,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data3, "Buddy Bloom", {
+      type: "decor",
+      name: "Buddy Bloom",
       level: 3,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 2000,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data3, "Big Bass", {
+      type: "decor",
+      name: "Big Bass",
       level: 3,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 2700,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data3, "Cannon", {
+      type: "decor",
+      name: "Cannon",
       level: 3,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 3200,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data3, "Nestled Egg", {
+      type: "decor",
+      name: "Nestled Egg",
       level: 3,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 0,
       banked: 0,
       decor: 3500,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data3, "Snowman Mask", {
+      type: "decor",
+      name: "Snowman Mask",
       level: 3,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 0,
       banked: 0,
       decor: 4200,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data3, "Fishin' Pepe", {
+      type: "decor",
+      name: "Fishin' Pepe",
       level: 3,
       order: 3,
-      units: 9,
+      tiles: 9,
       waru: 0,
       banked: 0,
       decor: 4600,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data3, "Christmas Tree", {
+      type: "decor",
+      name: "Christmas Tree",
       level: 3,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 0,
       banked: 0,
       decor: 4800,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data3, "Aran's Legacy", {
+      type: "decor",
+      name: "Aran's Legacy",
       level: 3,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 0,
       banked: 0,
       decor: 6000,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data3, "Mount Monsmore", {
+      type: "decor",
+      name: "Mount Monsmore",
       level: 3,
       order: 4,
-      units: 16,
+      tiles: 16,
       waru: 0,
       banked: 0,
       decor: 13000,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data3, "Elluel Rune Tree", {
+      type: "decor",
+      name: "Elluel Rune Tree",
       level: 3,
       order: 4,
-      units: 16,
+      tiles: 16,
       waru: 0,
       banked: 0,
       decor: 13000,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data3, "White Cube", {
+      type: "decor",
+      name: "White Cube",
       level: 4,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 15,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Red Cube", {
+      type: "decor",
+      name: "Red Cube",
       level: 4,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 15,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Green Cube", {
+      type: "decor",
+      name: "Green Cube",
       level: 4,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 15,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Orange Cube", {
+      type: "decor",
+      name: "Orange Cube",
       level: 4,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 15,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Blue Cube", {
+      type: "decor",
+      name: "Blue Cube",
       level: 4,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 15,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Black Cube", {
+      type: "decor",
+      name: "Black Cube",
       level: 4,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 15,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Big Pine Tree", {
+      type: "decor",
+      name: "Big Pine Tree",
       level: 5,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 23,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Fallen Log", {
+      type: "decor",
+      name: "Fallen Log",
       level: 5,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 21,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Torch", {
+      type: "decor",
+      name: "Torch",
       level: 5,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 27,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Oak Barrel", {
+      type: "decor",
+      name: "Oak Barrel",
       level: 6,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 36,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Tiny Round Tree", {
+      type: "decor",
+      name: "Tiny Round Tree",
       level: 6,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 45,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Haystack", {
+      type: "decor",
+      name: "Haystack",
       level: 6,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 30,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Round Tree", {
+      type: "decor",
+      name: "Round Tree",
       level: 7,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 53,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Trash Box", {
+      type: "decor",
+      name: "Trash Box",
       level: 7,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 53,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Wooden Timepost", {
+      type: "decor",
+      name: "Wooden Timepost",
       level: 7,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 60,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Tiny Sign", {
+      type: "decor",
+      name: "Tiny Sign",
       level: 8,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 68,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Mini Flowerpot", {
+      type: "decor",
+      name: "Mini Flowerpot",
       level: 8,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 72,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Little Scoop Tree", {
+      type: "decor",
+      name: "Little Scoop Tree",
       level: 8,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 69,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Simple Swing", {
+      type: "decor",
+      name: "Simple Swing",
       level: 9,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 75,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Log Bench", {
+      type: "decor",
+      name: "Log Bench",
       level: 9,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 68,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Big Scoop Tree", {
+      type: "decor",
+      name: "Big Scoop Tree",
       level: 9,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 78,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Buncha Barrels", {
+      type: "decor",
+      name: "Buncha Barrels",
       level: 10,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 87,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Plain Sign", {
+      type: "decor",
+      name: "Plain Sign",
       level: 10,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 93,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Lil Evergreen", {
+      type: "decor",
+      name: "Lil Evergreen",
       level: 10,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 105,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Rock", {
+      type: "decor",
+      name: "Rock",
       level: 10,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 75,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Flat Rock", {
+      type: "decor",
+      name: "Flat Rock",
       level: 10,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 75,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Pointy Rock", {
+      type: "decor",
+      name: "Pointy Rock",
       level: 10,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 90,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Craggy Rock", {
+      type: "decor",
+      name: "Craggy Rock",
       level: 10,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 98,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Towering Rock", {
+      type: "decor",
+      name: "Towering Rock",
       level: 10,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 113,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Banana Shake", {
+      type: "decor",
+      name: "Banana Shake",
       level: 10,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 98,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Mythic Monsterland", {
+      type: "decor",
+      name: "Mythic Monsterland",
       level: 10,
       order: 4,
-      units: 16,
+      tiles: 16,
       waru: 0,
       banked: 0,
       decor: 13500,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data3, "Time Twister", {
+      type: "decor",
+      name: "Time Twister",
       level: 10,
       order: 4,
-      units: 16,
+      tiles: 16,
       waru: 0,
       banked: 0,
       decor: 9400,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data3, "Yeti's Hideout", {
+      type: "decor",
+      name: "Yeti's Hideout",
       level: 10,
       order: 4,
-      units: 16,
+      tiles: 16,
       waru: 0,
       banked: 0,
       decor: 11000,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data3, "Green Nature", {
+      type: "decor",
+      name: "Green Nature",
       level: 10,
       order: 4,
-      units: 16,
+      tiles: 16,
       waru: 0,
       banked: 0,
       decor: 10200,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data3, "Flying Whale", {
+      type: "decor",
+      name: "Flying Whale",
       level: 10,
       order: 4,
-      units: 16,
+      tiles: 16,
       waru: 0,
       banked: 0,
       decor: 17000,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data3, "Stone Trash Can", {
+      type: "decor",
+      name: "Stone Trash Can",
       level: 11,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 75,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Triple Mushroom", {
+      type: "decor",
+      name: "Triple Mushroom",
       level: 11,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 90,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Round Topiary Tree", {
+      type: "decor",
+      name: "Round Topiary Tree",
       level: 11,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 98,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Fresh Milk", {
+      type: "decor",
+      name: "Fresh Milk",
       level: 11,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 98,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Big Evergreen", {
+      type: "decor",
+      name: "Big Evergreen",
       level: 12,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 113,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Haycart", {
+      type: "decor",
+      name: "Haycart",
       level: 12,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 120,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Aged Cheese", {
+      type: "decor",
+      name: "Aged Cheese",
       level: 12,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 0,
       banked: 0,
       decor: 480,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Broad Sign", {
+      type: "decor",
+      name: "Broad Sign",
       level: 13,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 143,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Streetlight", {
+      type: "decor",
+      name: "Streetlight",
       level: 13,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 143,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Grape Vat", {
+      type: "decor",
+      name: "Grape Vat",
       level: 13,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 0,
       banked: 0,
       decor: 600,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Itty Bitty Puddle", {
+      type: "decor",
+      name: "Itty Bitty Puddle",
       level: 14,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 0,
       banked: 0,
       decor: 180,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Orange Bin", {
+      type: "decor",
+      name: "Orange Bin",
       level: 14,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 135,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Green Bin", {
+      type: "decor",
+      name: "Green Bin",
       level: 14,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 135,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Purple Bin", {
+      type: "decor",
+      name: "Purple Bin",
       level: 14,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 135,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Purple Mini Mushroom", {
+      type: "decor",
+      name: "Purple Mini Mushroom",
       level: 15,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 165,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Classic Wooden Horse", {
+      type: "decor",
+      name: "Classic Wooden Horse",
       level: 15,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 165,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Fine Grape Juice", {
+      type: "decor",
+      name: "Fine Grape Juice",
       level: 15,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 0,
       banked: 0,
       decor: 750,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Big Round Topiary", {
+      type: "decor",
+      name: "Big Round Topiary",
       level: 16,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 180,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "White Bench", {
+      type: "decor",
+      name: "White Bench",
       level: 16,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 180,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Double Cubist Tree", {
+      type: "decor",
+      name: "Double Cubist Tree",
       level: 17,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 195,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "White Signpost", {
+      type: "decor",
+      name: "White Signpost",
       level: 17,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 210,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Blooming Shrub", {
+      type: "decor",
+      name: "Blooming Shrub",
       level: 18,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 225,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Round Flowerpot", {
+      type: "decor",
+      name: "Round Flowerpot",
       level: 18,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 248,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Big Mushroom Family", {
+      type: "decor",
+      name: "Big Mushroom Family",
       level: 19,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 240,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Trash Can", {
+      type: "decor",
+      name: "Trash Can",
       level: 19,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 270,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Rickety Clocktower", {
+      type: "decor",
+      name: "Rickety Clocktower",
       level: 20,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 300,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Triple Cubist Tree", {
+      type: "decor",
+      name: "Triple Cubist Tree",
       level: 20,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 285,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Bushy Gazebo", {
+      type: "decor",
+      name: "Bushy Gazebo",
       level: 20,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 315,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Rustic Slide", {
+      type: "decor",
+      name: "Rustic Slide",
       level: 20,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 270,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Maple Tree", {
+      type: "decor",
+      name: "Maple Tree",
       level: 21,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 330,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Willow Tree", {
+      type: "decor",
+      name: "Willow Tree",
       level: 21,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 330,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Little Flower Garden", {
+      type: "decor",
+      name: "Little Flower Garden",
       level: 22,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 345,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Woodsy Well", {
+      type: "decor",
+      name: "Woodsy Well",
       level: 22,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 353,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Lil Star Tree", {
+      type: "decor",
+      name: "Lil Star Tree",
       level: 23,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 338,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "White Signboard", {
+      type: "decor",
+      name: "White Signboard",
       level: 23,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 360,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Station Timepiece", {
+      type: "decor",
+      name: "Station Timepiece",
       level: 24,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 375,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Floral Gazebo", {
+      type: "decor",
+      name: "Floral Gazebo",
       level: 24,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 368,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Cannonball Heap", {
+      type: "decor",
+      name: "Cannonball Heap",
       level: 25,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 390,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Gardener's Wheelbarrow", {
+      type: "decor",
+      name: "Gardener's Wheelbarrow",
       level: 25,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 405,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Merry-Go-Round", {
+      type: "decor",
+      name: "Merry-Go-Round",
       level: 25,
       order: 3,
-      units: 9,
+      tiles: 9,
       waru: 0,
       banked: 0,
       decor: 2500,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Star Tree", {
+      type: "decor",
+      name: "Star Tree",
       level: 26,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 420,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Fancy Bench", {
+      type: "decor",
+      name: "Fancy Bench",
       level: 26,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 413,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Lil Heart Tree", {
+      type: "decor",
+      name: "Lil Heart Tree",
       level: 27,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 435,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Heart Tree", {
+      type: "decor",
+      name: "Heart Tree",
       level: 27,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 465,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Rapunzel's Tower", {
+      type: "decor",
+      name: "Rapunzel's Tower",
       level: 27,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 0,
       banked: 0,
       decor: 2000,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Rustic Archway", {
+      type: "decor",
+      name: "Rustic Archway",
       level: 28,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 473,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Shady Table", {
+      type: "decor",
+      name: "Shady Table",
       level: 28,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 480,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Pretty Pond", {
+      type: "decor",
+      name: "Pretty Pond",
       level: 29,
       order: 3,
-      units: 9,
+      tiles: 9,
       waru: 0,
       banked: 0,
       decor: 600,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Rockin' Wooden Horse", {
+      type: "decor",
+      name: "Rockin' Wooden Horse",
       level: 29,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 510,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Fine Fountain", {
+      type: "decor",
+      name: "Fine Fountain",
       level: 30,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 525,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Floral Swing", {
+      type: "decor",
+      name: "Floral Swing",
       level: 30,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 540,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Snack Shack", {
+      type: "decor",
+      name: "Snack Shack",
       level: 30,
       order: 1,
-      units: 1,
+      tiles: 1,
       waru: 0,
       banked: 0,
       decor: 750,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data3, "Snow Crystal Core", {
+      type: "decor",
+      name: "Snow Crystal Core",
       level: 32,
       order: 3,
-      units: 9,
+      tiles: 9,
       waru: 0,
       banked: 0,
       decor: 3000,
-      limit: 99
+      quantity: 99,
+      fixed: false
     }), _data3)
   },
   building: {
@@ -1989,876 +2208,987 @@ var objects = {
       }
     },
     data: (_data4 = {}, _defineProperty(_data4, "My House", {
+      type: "building",
+      name: "My House",
       level: 1,
       order: 5,
-      units: 25,
+      tiles: 25,
       waru: 0,
       banked: 0,
       decor: 0,
-      limit: 1,
+      quantity: 1,
       fixed: true
     }), _defineProperty(_data4, "Green Mushroom Hut", {
+      type: "building",
+      name: "Green Mushroom Hut",
       level: 1,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 2,
       banked: 50,
       decor: 5,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Henesys Homestead", {
+      type: "building",
+      name: "Henesys Homestead",
       level: 2,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 7,
       banked: 80,
       decor: 30,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Orange Mushroom House", {
+      type: "building",
+      name: "Orange Mushroom House",
       level: 2,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 3,
       banked: 60,
       decor: 5,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Monster Barn", {
+      type: "building",
+      name: "Monster Barn",
       level: 3,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 0,
       banked: 0,
       decor: 0,
-      limit: 1,
+      quantity: 1,
       fixed: false
     }), _defineProperty(_data4, "Sturdy Straw House", {
+      type: "building",
+      name: "Sturdy Straw House",
       level: 3,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 5,
       banked: 50,
       decor: 10,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Red Mushroom Manor", {
+      type: "building",
+      name: "Red Mushroom Manor",
       level: 3,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 6,
       banked: 100,
       decor: 10,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Rien Hot Springs", {
+      type: "building",
+      name: "Rien Hot Springs",
       level: 3,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 25,
       banked: 2200,
       decor: 200,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data4, "Mu Lung Barber Shop", {
+      type: "building",
+      name: "Mu Lung Barber Shop",
       level: 3,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 27,
       banked: 1800,
       decor: 200,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data4, "Tip-Top Balloon Shop", {
+      type: "building",
+      name: "Tip-Top Balloon Shop",
       level: 3,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 35,
       banked: 3000,
       decor: 400,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data4, "Floatland Manor", {
+      type: "building",
+      name: "Floatland Manor",
       level: 3,
       order: 3,
-      units: 9,
+      tiles: 9,
       waru: 23,
       banked: 2000,
       decor: 150,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data4, "Healthy Hospital", {
+      type: "building",
+      name: "Healthy Hospital",
       level: 3,
       order: 3,
-      units: 9,
+      tiles: 9,
       waru: 44,
       banked: 3500,
       decor: 250,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data4, "Monster Manor", {
+      type: "building",
+      name: "Monster Manor",
       level: 3,
       order: 3,
-      units: 9,
+      tiles: 9,
       waru: 42,
       banked: 5000,
       decor: 400,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data4, "Mr. Teddy X", {
+      type: "building",
+      name: "Mr. Teddy X",
       level: 3,
       order: 3,
-      units: 9,
+      tiles: 9,
       waru: 48,
       banked: 4500,
       decor: 500,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data4, "Ms. Teddy X", {
+      type: "building",
+      name: "Ms. Teddy X",
       level: 3,
       order: 3,
-      units: 9,
+      tiles: 9,
       waru: 52,
       banked: 3500,
       decor: 500,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data4, "Yellow Submarine", {
+      type: "building",
+      name: "Yellow Submarine",
       level: 3,
       order: 4,
-      units: 16,
+      tiles: 16,
       waru: 72,
       banked: 7000,
       decor: 900,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data4, "Refreshing Oasis", {
+      type: "building",
+      name: "Refreshing Oasis",
       level: 3,
       order: 4,
-      units: 16,
+      tiles: 16,
       waru: 76,
       banked: 6000,
       decor: 1000,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data4, "Yeti Super Stage", {
+      type: "building",
+      name: "Yeti Super Stage",
       level: 3,
       order: 4,
-      units: 16,
+      tiles: 16,
       waru: 82,
       banked: 5000,
       decor: 700,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data4, "Nautilus Harbor", {
+      type: "building",
+      name: "Nautilus Harbor",
       level: 3,
       order: 4,
-      units: 16,
+      tiles: 16,
       waru: 91,
       banked: 5000,
       decor: 1500,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data4, "Shinsoo's Nest", {
+      type: "building",
+      name: "Shinsoo's Nest",
       level: 3,
       order: 4,
-      units: 16,
+      tiles: 16,
       waru: 87,
       banked: 7000,
       decor: 2000,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data4, "Ludibrium Toy House", {
+      type: "building",
+      name: "Ludibrium Toy House",
       level: 3,
       order: 4,
-      units: 16,
+      tiles: 16,
       waru: 183,
       banked: 2000,
       decor: 4000,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data4, "Orbis Flying Garden", {
+      type: "building",
+      name: "Orbis Flying Garden",
       level: 3,
       order: 4,
-      units: 16,
+      tiles: 16,
       waru: 105,
       banked: 5000,
       decor: 1500,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data4, "Ereve Fountain Garden", {
+      type: "building",
+      name: "Ereve Fountain Garden",
       level: 3,
       order: 4,
-      units: 16,
+      tiles: 16,
       waru: 70,
       banked: 4500,
       decor: 500,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data4, "Aqua Road Castle", {
+      type: "building",
+      name: "Aqua Road Castle",
       level: 3,
       order: 4,
-      units: 16,
+      tiles: 16,
       waru: 91,
       banked: 4000,
       decor: 1200,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data4, "Zakum's Cave", {
+      type: "building",
+      name: "Zakum's Cave",
       level: 3,
       order: 4,
-      units: 16,
+      tiles: 16,
       waru: 60,
       banked: 12000,
       decor: 500,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data4, "Windmill", {
+      type: "building",
+      name: "Windmill",
       level: 4,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 10,
       banked: 70,
       decor: 20,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Chopper Chalet", {
+      type: "building",
+      name: "Chopper Chalet",
       level: 5,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 8,
       banked: 120,
       decor: 10,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Drip Brew Coffee House", {
+      type: "building",
+      name: "Drip Brew Coffee House",
       level: 5,
       order: 3,
-      units: 9,
+      tiles: 9,
       waru: 10,
       banked: 170,
       decor: 10,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Red Brick Abode", {
+      type: "building",
+      name: "Red Brick Abode",
       level: 6,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 10,
       banked: 100,
       decor: 15,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "My House (Homestead)", {
+      type: "building",
+      name: "My House (Homestead)",
       level: 7,
       order: 5,
-      units: 25,
+      tiles: 25,
       waru: 0,
       banked: 0,
       decor: 0,
-      limit: 1,
+      quantity: 1,
       fixed: true
     }), _defineProperty(_data4, "Lofty Brick House", {
+      type: "building",
+      name: "Lofty Brick House",
       level: 7,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 8,
       banked: 110,
       decor: 30,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Purple Bathhouse", {
+      type: "building",
+      name: "Purple Bathhouse",
       level: 8,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 9,
       banked: 110,
       decor: 20,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Blue Bathhouse", {
+      type: "building",
+      name: "Blue Bathhouse",
       level: 9,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 12,
       banked: 100,
       decor: 15,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Big Apple Fruit Shop", {
+      type: "building",
+      name: "Big Apple Fruit Shop",
       level: 10,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 10,
       banked: 160,
       decor: 30,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Octo-Pot Seafood", {
+      type: "building",
+      name: "Octo-Pot Seafood",
       level: 10,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 13,
       banked: 140,
       decor: 5,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Henesys Bowman Guild", {
+      type: "building",
+      name: "Henesys Bowman Guild",
       level: 10,
       order: 3,
-      units: 9,
+      tiles: 9,
       waru: 15,
       banked: 350,
       decor: 5,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Rudi Beauty Salon", {
+      type: "building",
+      name: "Rudi Beauty Salon",
       level: 10,
       order: 3,
-      units: 9,
+      tiles: 9,
       waru: 14,
       banked: 250,
       decor: 70,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Santa's Gift Shop", {
+      type: "building",
+      name: "Santa's Gift Shop",
       level: 10,
       order: 3,
-      units: 9,
+      tiles: 9,
       waru: 16,
       banked: 200,
       decor: 30,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Ghastly Ghost Gables", {
+      type: "building",
+      name: "Ghastly Ghost Gables",
       level: 10,
       order: 4,
-      units: 16,
+      tiles: 16,
       waru: 45,
       banked: 3000,
       decor: 500,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data4, "Grand Gourd Gables", {
+      type: "building",
+      name: "Grand Gourd Gables",
       level: 10,
       order: 4,
-      units: 16,
+      tiles: 16,
       waru: 43,
       banked: 5000,
       decor: 350,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data4, "Blossom House", {
+      type: "building",
+      name: "Blossom House",
       level: 11,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 12,
       banked: 180,
       decor: 25,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Tip Top Chop Shop", {
+      type: "building",
+      name: "Tip Top Chop Shop",
       level: 11,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 11,
       banked: 190,
       decor: 25,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Pink Angel Place", {
+      type: "building",
+      name: "Pink Angel Place",
       level: 12,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 10,
       banked: 210,
       decor: 30,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Full Moon Song Pyun Shop", {
+      type: "building",
+      name: "Full Moon Song Pyun Shop",
       level: 12,
       order: 3,
-      units: 9,
+      tiles: 9,
       waru: 12,
       banked: 250,
       decor: 30,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Gingerbread Gables", {
+      type: "building",
+      name: "Gingerbread Gables",
       level: 13,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 14,
       banked: 200,
       decor: 20,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Rien's Tonic Shop", {
+      type: "building",
+      name: "Rien's Tonic Shop",
       level: 13,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 15,
       banked: 210,
       decor: 20,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "My House (Manor)", {
+      type: "building",
+      name: "My House (Manor)",
       level: 14,
       order: 5,
-      units: 25,
+      tiles: 25,
       waru: 0,
       banked: 0,
       decor: 0,
-      limit: 1,
+      quantity: 1,
       fixed: true
     }), _defineProperty(_data4, "Blue Mushroom Mansion", {
+      type: "building",
+      name: "Blue Mushroom Mansion",
       level: 14,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 12,
       banked: 240,
       decor: 10,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Mushroom Tower", {
+      type: "building",
+      name: "Mushroom Tower",
       level: 14,
       order: 4,
-      units: 16,
+      tiles: 16,
       waru: 12,
       banked: 300,
       decor: 10,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Ariant Fabrics (I)", {
+      type: "building",
+      name: "Ariant Fabrics (I)",
       level: 15,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 12,
       banked: 360,
       decor: 5,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Hanok House", {
+      type: "building",
+      name: "Hanok House",
       level: 15,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 17,
       banked: 300,
       decor: 50,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Fantasy Park Viking", {
+      type: "building",
+      name: "Fantasy Park Viking",
       level: 15,
       order: 3,
-      units: 9,
+      tiles: 9,
       waru: 18,
       banked: 600,
       decor: 10,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Alchemist's Abode", {
+      type: "building",
+      name: "Alchemist's Abode",
       level: 15,
       order: 3,
-      units: 9,
+      tiles: 9,
       waru: 20,
       banked: 300,
       decor: 15,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Five-Slime Hotel", {
+      type: "building",
+      name: "Five-Slime Hotel",
       level: 15,
       order: 3,
-      units: 9,
+      tiles: 9,
       waru: 18,
       banked: 400,
       decor: 25,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Creamy Cake Chateau", {
+      type: "building",
+      name: "Creamy Cake Chateau",
       level: 15,
       order: 3,
-      units: 9,
+      tiles: 9,
       waru: 20,
       banked: 360,
       decor: 35,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Florina Lighthouse", {
+      type: "building",
+      name: "Florina Lighthouse",
       level: 15,
       order: 3,
-      units: 9,
+      tiles: 9,
       waru: 15,
       banked: 250,
       decor: 15,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Leafre Airship", {
+      type: "building",
+      name: "Leafre Airship",
       level: 15,
       order: 4,
-      units: 16,
+      tiles: 16,
       waru: 50,
       banked: 4000,
       decor: 500,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data4, "Fish Shop", {
+      type: "building",
+      name: "Fish Shop",
       level: 16,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 15,
       banked: 550,
       decor: 10,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Mushking Empire Outpost", {
+      type: "building",
+      name: "Mushking Empire Outpost",
       level: 16,
       order: 3,
-      units: 9,
+      tiles: 9,
       waru: 16,
       banked: 700,
       decor: 10,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Nova Safehouse", {
+      type: "building",
+      name: "Nova Safehouse",
       level: 17,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 18,
       banked: 300,
       decor: 20,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Elluel House", {
+      type: "building",
+      name: "Elluel House",
       level: 18,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 15,
       banked: 330,
       decor: 40,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Ariant Fabrics (II)", {
+      type: "building",
+      name: "Ariant Fabrics (II)",
       level: 18,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 16,
       banked: 300,
       decor: 40,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Happy Homestead", {
+      type: "building",
+      name: "Happy Homestead",
       level: 19,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 20,
       banked: 340,
       decor: 20,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Melody Manor", {
+      type: "building",
+      name: "Melody Manor",
       level: 20,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 17,
       banked: 300,
       decor: 50,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Aqua Roadhouse", {
+      type: "building",
+      name: "Aqua Roadhouse",
       level: 20,
       order: 3,
-      units: 9,
+      tiles: 9,
       waru: 25,
       banked: 550,
       decor: 50,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Fun Factory", {
+      type: "building",
+      name: "Fun Factory",
       level: 20,
       order: 3,
-      units: 9,
+      tiles: 9,
       waru: 20,
       banked: 400,
       decor: 40,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Ariant Castle", {
+      type: "building",
+      name: "Ariant Castle",
       level: 20,
       order: 4,
-      units: 16,
+      tiles: 16,
       waru: 28,
       banked: 500,
       decor: 50,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Shaved Ice Chateau", {
+      type: "building",
+      name: "Shaved Ice Chateau",
       level: 20,
       order: 4,
-      units: 16,
+      tiles: 16,
       waru: 25,
       banked: 500,
       decor: 45,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Magatia Workshop", {
+      type: "building",
+      name: "Magatia Workshop",
       level: 20,
       order: 4,
-      units: 16,
+      tiles: 16,
       waru: 70,
       banked: 2000,
       decor: 100,
-      limit: 198,
+      quantity: 198,
       fixed: false
     }), _defineProperty(_data4, "My House (Mighty Manor)", {
+      type: "building",
+      name: "My House (Mighty Manor)",
       level: 21,
       order: 5,
-      units: 25,
+      tiles: 25,
       waru: 0,
       banked: 0,
       decor: 0,
-      limit: 1,
+      quantity: 1,
       fixed: true
     }), _defineProperty(_data4, "Santa's Special Shop", {
+      type: "building",
+      name: "Santa's Special Shop",
       level: 21,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 22,
       banked: 450,
       decor: 40,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Farmer's House", {
+      type: "building",
+      name: "Farmer's House",
       level: 21,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 21,
       banked: 460,
       decor: 40,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Tick Tock Townhouse", {
+      type: "building",
+      name: "Tick Tock Townhouse",
       level: 22,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 25,
       banked: 400,
       decor: 35,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Mu Lung Dojo", {
+      type: "building",
+      name: "Mu Lung Dojo",
       level: 23,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 23,
       banked: 450,
       decor: 35,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Icy Treat Retreat (I)", {
+      type: "building",
+      name: "Icy Treat Retreat (I)",
       level: 24,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 20,
       banked: 500,
       decor: 40,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Beatdown Shop", {
+      type: "building",
+      name: "Beatdown Shop",
       level: 25,
       order: 3,
-      units: 9,
+      tiles: 9,
       waru: 30,
       banked: 750,
       decor: 30,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Very Berry Vineyard", {
+      type: "building",
+      name: "Very Berry Vineyard",
       level: 25,
       order: 3,
-      units: 9,
+      tiles: 9,
       waru: 25,
       banked: 600,
       decor: 40,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Chryse Coliseum", {
+      type: "building",
+      name: "Chryse Coliseum",
       level: 25,
       order: 3,
-      units: 9,
+      tiles: 9,
       waru: 30,
       banked: 750,
       decor: 55,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Omega Sector", {
+      type: "building",
+      name: "Omega Sector",
       level: 25,
       order: 4,
-      units: 16,
+      tiles: 16,
       waru: 45,
       banked: 900,
       decor: 60,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Tip-Top Toy Shop", {
+      type: "building",
+      name: "Tip-Top Toy Shop",
       level: 26,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 22,
       banked: 500,
       decor: 50,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Edelstein Air Field", {
+      type: "building",
+      name: "Edelstein Air Field",
       level: 27,
       order: 3,
-      units: 9,
+      tiles: 9,
       waru: 33,
       banked: 800,
       decor: 20,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Big Top Tenement", {
+      type: "building",
+      name: "Big Top Tenement",
       level: 28,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 28,
       banked: 500,
       decor: 30,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Big Bowl Noodles", {
+      type: "building",
+      name: "Big Bowl Noodles",
       level: 29,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 30,
       banked: 450,
       decor: 40,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "My House (Country Mansion)", {
+      type: "building",
+      name: "My House (Country Mansion)",
       level: 30,
       order: 5,
-      units: 25,
+      tiles: 25,
       waru: 0,
       banked: 0,
       decor: 0,
-      limit: 1,
+      quantity: 1,
       fixed: true
     }), _defineProperty(_data4, "Lumiere", {
+      type: "building",
+      name: "Lumiere",
       level: 30,
       order: 3,
-      units: 9,
+      tiles: 9,
       waru: 35,
       banked: 900,
       decor: 30,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Icy Treat Retreat (II)", {
+      type: "building",
+      name: "Icy Treat Retreat (II)",
       level: 30,
       order: 3,
-      units: 9,
+      tiles: 9,
       waru: 32,
       banked: 700,
       decor: 40,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "Wholesome Milk Farm", {
+      type: "building",
+      name: "Wholesome Milk Farm",
       level: 35,
       order: 2,
-      units: 4,
+      tiles: 4,
       waru: 40,
       banked: 700,
       decor: 50,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _defineProperty(_data4, "The Secret Garden", {
+      type: "building",
+      name: "The Secret Garden",
       level: 35,
       order: 4,
-      units: 16,
+      tiles: 16,
       waru: 82,
       banked: 6000,
       decor: 1500,
-      limit: 99,
+      quantity: 99,
       fixed: false
     }), _data4)
   }
 };
-var myHouses = {
+var myHouseNames = {
   15: "My House",
   17: "My House (Homestead)",
   19: "My House (Manor)",
   22: "My House (Mighty Manor)",
   25: "My House (Country Mansion)"
 };
-var beautyLevels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64];
-var beautyThresholds = {
-  1: 100,
-  2: 200,
-  3: 500,
-  4: 1000,
-  5: 1700,
-  6: 2600,
-  7: 3700,
-  8: 5000,
-  9: 6500,
-  10: 8200,
-  11: 10100,
-  12: 12200,
-  13: 14500,
-  14: 17000,
-  15: 19700,
-  16: 22600,
-  17: 25700,
-  18: 29100,
-  19: 32800,
-  20: 36800,
-  21: 41100,
-  22: 45700,
-  23: 50600,
-  24: 55800,
-  25: 61400,
-  26: 67400,
-  27: 73800,
-  28: 80600,
-  29: 87900,
-  30: 95700,
-  31: 104000,
-  32: 112800,
-  33: 122200,
-  34: 132200,
-  35: 142800,
-  36: 154100,
-  37: 166100,
-  38: 178900,
-  39: 192500,
-  40: 207000,
-  41: 222400,
-  42: 238800,
-  43: 256200,
-  44: 274700,
-  45: 294400,
-  46: 315300,
-  47: 337500,
-  48: 361100,
-  49: 386200,
-  50: 412900,
-  51: 441300,
-  52: 471500,
-  53: 503600,
-  54: 537700,
-  55: 574000,
-  56: 612600,
-  57: 653600,
-  58: 697200,
-  59: 743500,
-  60: 792700,
-  61: 845000,
-  62: 900600,
-  63: 959700,
-  64: 959700
-};
+var myHouseRoot = 0;
+var beautyThresholds = [0, 100, 200, 500, 1000, 1700, 2600, 3700, 5000, 6500, 8200, 10100, 12200, 14500, 17000, 19700, 22600, 25700, 29100, 32800, 36800, 41100, 45700, 50600, 55800, 61400, 67400, 73800, 80600, 87900, 95700, 104000, 112800, 122200, 132200, 142800, 154100, 166100, 178900, 192500, 207000, 222400, 238800, 256200, 274700, 294400, 315300, 337500, 361100, 386200, 412900, 441300, 471500, 503600, 537700, 574000, 612600, 653600, 697200, 743500, 792700, 845000, 900600, 959700, 959700];
 
-function beautyLevel(beauty) {
+function beautyTier(beauty) {
   if (beauty >= 959700) {
     return 64;
   } else if (beauty >= 900600) {
@@ -2990,14 +3320,15 @@ function beautyLevel(beauty) {
   }
 }
 
-function beautyProps(beauty) {
-  var level = beautyLevel(beauty);
+function beautyDetails(totalBeauty) {
+  var tier = beautyTier(totalBeauty);
   return {
-    next: beautyThresholds[Math.min(level + 1, beautyLevels.length)] - beauty,
-    choices: Math.ceil(level / 2),
-    banked: 2 * level,
-    discount: Math.ceil(level / 8),
-    visit: level
+    total: totalBeauty,
+    next: Math.max(0, beautyThresholds[Math.min(tier + 1, beautyThresholds.length - 1)] - totalBeauty),
+    choices: Math.ceil(tier / 2),
+    banked: 2 * tier,
+    discount: Math.ceil(tier / 8),
+    visit: tier
   };
 }
 function networkDecor(decor, paths) {
@@ -3010,6 +3341,12 @@ var aufhebenWaru = 1;
 ;// CONCATENATED MODULE: ./src/StateProvider.jsx
 
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { StateProvider_defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function StateProvider_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -3017,12 +3354,6 @@ function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread n
 function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { StateProvider_defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function StateProvider_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
@@ -3041,10 +3372,393 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 var StateContext = (0,solid/* createContext */.kr)();
+
+function adjustedIndex(oldIndex, oldOrder, newOrder) {
+  var oldRow = Math.floor(oldIndex / oldOrder);
+  var oldCol = oldIndex % oldOrder;
+  return oldRow * newOrder + oldCol;
+}
+
+;
+
+function halfBoundary(row, column, index, order) {
+  var boundary = [];
+
+  if (row > 0 && column > 0) {
+    boundary.push(index - order - 1);
+  }
+
+  if (row > 0) {
+    boundary.push(index - order);
+  }
+
+  if (row > 0 && column < order - 1) {
+    boundary.push(index - order + 1);
+  }
+
+  if (column > 0) {
+    boundary.push(index - 1);
+  }
+
+  return boundary;
+}
+
+;
+
+function nextColor(i, s, l) {
+  return "hsl(".concat(i * 180 * (3 - Math.sqrt(5)), ", ").concat(s, "%, ").concat(l, "%)"); // use golden angle
+}
+
+function layoutStats(config, grid) {
+  var network = new dsforest.DisjointSet();
+  var blankRoots = [];
+  var roadRoots = [];
+  var decorRoots = new Map();
+  var buildingRoots = new Map();
+  var totalBeauty = 0;
+  grid.forEach(function (tile, index) {
+    var data = tile.data,
+        position = tile.position;
+
+    switch (data.type) {
+      case "blank":
+        blankRoots.push(index);
+        break;
+
+      case "road":
+        network.makeSet(index);
+        position.boundary.forEach(function (idx) {
+          if (grid[idx].data.type === "road" || grid[idx].position.root === myHouseRoot) {
+            network.union(idx, index);
+          }
+        });
+        roadRoots.push(index);
+        break;
+
+      case "decor":
+        if (position.root !== index) {
+          return;
+        }
+
+        if (!decorRoots.has(data.name)) {
+          decorRoots.set(data.name, []);
+        }
+
+        decorRoots.get(data.name).push(index);
+        break;
+
+      case "building":
+        if (position.root === myHouseRoot) {
+          network.makeSet(index);
+          network.union(myHouseRoot, index);
+        }
+
+        if (position.root !== index) {
+          return;
+        }
+
+        if (!buildingRoots.has(data.name)) {
+          buildingRoots.set(data.name, []);
+        }
+
+        buildingRoots.get(data.name).push(index);
+        break;
+    }
+  });
+  var decorNames = [];
+  decorRoots.forEach(function (roots, name) {
+    decorNames.push(name);
+    var decor = objects.decor.data[name].decor;
+    totalBeauty += decor * roots.length + roots.reduce(function (bonusDecor, root) {
+      var position = grid[root].position;
+      var paths = position.boundary.reduce(function (count, index) {
+        if (grid[index].data.type === "road" && network.areConnected(myHouseRoot, index)) {
+          return count + 1;
+        }
+
+        return count;
+      }, 0);
+
+      if (paths > 0) {
+        bonusDecor += networkDecor(decor, paths);
+      }
+
+      return bonusDecor;
+    }, 0);
+  });
+  var buildingNames = [];
+  buildingRoots.forEach(function (roots, name) {
+    buildingNames.push(name);
+    totalBeauty += objects.building.data[name].decor * roots.length;
+  });
+  var finalWaru = config.useAufheben ? aufhebenWaru : 0;
+  var beauty = beautyDetails(totalBeauty);
+  var bonusBanked = beauty.banked;
+  var lastOptimalCycle = 0;
+  var products = [0];
+  buildingRoots.forEach(function (roots) {
+    roots.forEach(function (root) {
+      var _grid$root = grid[root],
+          data = _grid$root.data,
+          position = _grid$root.position;
+
+      if (data.waru > 0 && data.banked > 0) {
+        var paths = position.boundary.reduce(function (count, index) {
+          if (grid[index].data.type === "road" && network.areConnected(myHouseRoot, index)) {
+            return count + 1;
+          }
+
+          return count;
+        }, 0);
+        var totalWaru = data.waru + (paths > 0 ? networkWaru(data.waru, paths) : 0) + finalWaru;
+        var totalBanked = data.banked + bonusBanked;
+        var cycles = totalBanked / totalWaru;
+        var remWaru = totalBanked % totalWaru;
+        var lowerCycles = Math.floor(cycles);
+        var upperCycles = Math.ceil(cycles);
+        lastOptimalCycle = lastOptimalCycle > 0 ? Math.min(lastOptimalCycle, lowerCycles) : lowerCycles;
+
+        for (var i = 1; i <= lowerCycles; i++) {
+          products[i] = (products[i] || 0) + totalWaru;
+        }
+
+        if (remWaru > 0) {
+          products[upperCycles] = (products[upperCycles] || 0) + remWaru;
+        }
+      }
+    });
+  });
+  var totalInNetwork = roadRoots.reduce(function (count, root) {
+    if (network.areConnected(myHouseRoot, root)) {
+      ++count;
+    }
+
+    return count;
+  }, 0);
+  return {
+    network: network,
+    tiling: {
+      free: {
+        count: blankRoots.length + roadRoots.length - config.mobCap - 1
+      },
+      blank: {
+        roots: blankRoots
+      },
+      road: {
+        count: {
+          inNetwork: totalInNetwork,
+          outNetwork: roadRoots.length - totalInNetwork
+        },
+        roots: roadRoots
+      },
+      decor: {
+        names: decorNames,
+        pairs: Object.fromEntries(Array.from(decorRoots, function (_ref, index) {
+          var _ref2 = _slicedToArray(_ref, 2),
+              name = _ref2[0],
+              roots = _ref2[1];
+
+          return [name, {
+            backgroundColor: nextColor(index + buildingRoots.size, 80, 80),
+            roots: roots
+          }];
+        }))
+      },
+      building: {
+        names: buildingNames,
+        pairs: Object.fromEntries(Array.from(buildingRoots, function (_ref3, index) {
+          var _ref4 = _slicedToArray(_ref3, 2),
+              name = _ref4[0],
+              roots = _ref4[1];
+
+          return [name, {
+            backgroundColor: nextColor(index, 80, 80),
+            roots: roots
+          }];
+        }))
+      }
+    },
+    beauty: beauty,
+    production: {
+      lastOptimalCycle: lastOptimalCycle,
+      lastOptimalRate: products[lastOptimalCycle],
+      products: products.reduce(function (total, marginal, index) {
+        if (index > 0) {
+          total.push(total[index - 1] + marginal);
+        } else {
+          total.push(marginal);
+        }
+
+        return total;
+      }, [])
+    }
+  };
+}
+
+;
+
+function createTiles(config, grid, data, _ref5) {
+  var row = _ref5.row,
+      column = _ref5.column;
+  var interiorLowerRow = row;
+  var interiorLowerCol = column;
+  var interiorUpperRow = interiorLowerRow + data.order - 1;
+  var interiorUpperCol = interiorLowerCol + data.order - 1;
+
+  if (interiorUpperRow >= config.order || interiorUpperCol >= config.order) {
+    return {
+      err: "Out-of-bounds positioning",
+      tiles: undefined
+    };
+  }
+
+  var boundaryLowerRow = interiorLowerRow - 1;
+  var boundaryLowerCol = interiorLowerCol - 1;
+  var boundaryUpperRow = interiorUpperRow + 1;
+  var boundaryUpperCol = interiorUpperCol + 1;
+  var tiles = [];
+  var interior = [],
+      boundary = [];
+
+  for (var r = boundaryLowerRow; r <= boundaryUpperRow; ++r) {
+    for (var c = boundaryLowerCol; c <= boundaryUpperCol; ++c) {
+      var index = r * config.order + c;
+
+      if (r >= interiorLowerRow && r <= interiorUpperRow && c >= interiorLowerCol && c <= interiorUpperCol) {
+        var tile = grid[index];
+
+        if (tile && tile.data.tiles > 0) {
+          return {
+            err: "Tiles are already occupied",
+            tiles: undefined
+          };
+        }
+
+        interior.push(index);
+        tiles.push({
+          data: data,
+          position: {
+            row: r,
+            column: c,
+            index: index,
+            root: interior[0],
+            interior: interior,
+            boundary: boundary
+          }
+        });
+      } else {
+        if (r >= 0 && r < config.order && c >= 0 && c < config.order) {
+          boundary.push(index);
+        }
+      }
+    }
+  }
+
+  return {
+    err: undefined,
+    tiles: tiles
+  };
+}
+
+;
+
+function createGrid(config, tiling) {
+  var grid = [];
+
+  if (tiling) {
+    tiling.forEach(function (_ref6) {
+      var type = _ref6.type,
+          name = _ref6.name,
+          roots = _ref6.roots;
+      var data = objects[type].data[name];
+
+      if (type === "blank" || type === "road") {
+        roots.forEach(function (root) {
+          var row = Math.floor(root / config.order);
+          var column = root % config.order;
+          grid[root] = {
+            data: data,
+            position: {
+              row: row,
+              column: column,
+              index: root,
+              root: root,
+              interior: [root],
+              boundary: halfBoundary(row, column, root, config.order)
+            }
+          };
+        });
+      } else if (type === "decor" || type === "building") {
+        roots.forEach(function (root) {
+          var _createTiles = createTiles(config, grid, data, {
+            row: Math.floor(root / config.order),
+            column: root % config.order
+          }),
+              tiles = _createTiles.tiles;
+
+          tiles.forEach(function (tile) {
+            grid[tile.position.index] = tile;
+          });
+        });
+      }
+    });
+  } else {
+    var baseData = objects[config.useAutofill ? "road" : "blank"].data[""];
+    var myHouseData = objects.building.data[myHouseNames[config.order]];
+    var myHouseInterior = [];
+    var myHouseBoundary = [];
+
+    for (var r = 0; r < config.order; ++r) {
+      for (var c = 0; c < config.order; ++c) {
+        var index = r * config.order + c;
+
+        if (r < myHouseData.order && c < myHouseData.order) {
+          myHouseInterior.push(index);
+          grid.push({
+            data: myHouseData,
+            position: {
+              row: r,
+              column: c,
+              index: index,
+              root: myHouseRoot,
+              interior: myHouseInterior,
+              boundary: myHouseBoundary
+            }
+          });
+        } else {
+          if (r >= 0 && r <= myHouseData.order && c >= 0 && c <= myHouseData.order) {
+            myHouseBoundary.push(index);
+          }
+
+          grid.push({
+            data: baseData,
+            position: {
+              row: r,
+              column: c,
+              index: index,
+              root: index,
+              interior: [index],
+              boundary: halfBoundary(r, c, index, config.order)
+            }
+          });
+        }
+      }
+    }
+  }
+
+  return grid;
+}
+
 function StateProvider(props) {
-  var summary;
+  var summary, tileData;
   var baseLevel = levels[0];
-  var myHouseRoot = 0;
+  var baseConfig = {
+    level: baseLevel,
+    order: orderLimits[baseLevel].min,
+    mobCap: mobCapLimits[baseLevel].min,
+    useAufheben: false,
+    useAutofill: false
+  };
 
   var _createStore = (0,dist_store/* createStore */.MT)({
     mode: "inspect",
@@ -3055,148 +3769,31 @@ function StateProvider(props) {
       type: "building",
       name: objects.building.limits[baseLevel].min
     },
-    config: {
-      level: baseLevel,
-      order: orderLimits[baseLevel].min,
-      mobCap: mobCapLimits[baseLevel].min,
-      useAufheben: false,
-      useAutofill: false
-    },
-    grid: undefined,
-    presets: JSON.parse(window.localStorage.getItem("presets")) || [],
-    canvas: undefined,
+    config: baseConfig,
+    grid: createGrid(baseConfig),
+    presets: (JSON.parse(window.localStorage.getItem("presets")) || []).map(function (_ref7) {
+      var title = _ref7.title,
+          config = _ref7.config,
+          tiling = _ref7.tiling;
+      return {
+        title: title,
+        config: config,
+        tiling: tiling,
+        production: layoutStats(config, createGrid(config, tiling)).production
+      };
+    }),
     chart: undefined,
 
-    get baseProps() {
-      var type = this.config.useAutofill ? "road" : "free";
-      return {
-        object: _objectSpread({
-          type: type,
-          name: ""
-        }, objects[type].data[""]),
-        border: {
-          top: true,
-          right: true,
-          bottom: true,
-          left: true
-        }
-      };
-    },
-
-    get myHouseProps() {
-      var name = myHouses[this.config.order];
-      return _objectSpread({
-        type: "building",
-        name: name
-      }, objects.building.data[name]);
-    },
-
-    get networkProps() {
-      var _this = this;
-
-      var network = new dsforest.DisjointSet();
-      var roots = new Map();
-      var totalBeauty = 0;
-      this.grid.forEach(function (cell, index) {
-        var object = cell.object,
-            position = cell.position;
-
-        switch (object.type) {
-          case "road":
-            network.makeSet(index);
-            position.boundary.forEach(function (idx) {
-              if (_this.grid[idx].object.type === "road" || _this.grid[idx].position.root === myHouseRoot) {
-                network.union(idx, index);
-              }
-            });
-            roots.set(index, {
-              connected: false
-            });
-            break;
-
-          case "decor":
-            if (position.root === index) {
-              roots.set(index, {
-                paths: 0,
-                decor: 0
-              });
-            }
-
-            break;
-
-          case "building":
-            if (position.root === myHouseRoot) {
-              network.makeSet(index);
-              network.union(myHouseRoot, index);
-            }
-
-            if (position.root === index) {
-              roots.set(index, {
-                paths: 0,
-                waru: 0,
-                banked: 0
-              });
-            }
-
-            break;
-
-          default:
-            break;
-        }
-      });
-      roots.forEach(function (props, root) {
-        var _this$grid$root = _this.grid[root],
-            object = _this$grid$root.object,
-            position = _this$grid$root.position;
-
-        if (object.type === "road") {
-          if (network.areConnected(myHouseRoot, root)) {
-            props.connected = true;
-          }
-        } else {
-          var paths = position.boundary.reduce(function (count, index) {
-            if (_this.grid[index].object.type === "road" && network.areConnected(myHouseRoot, index)) {
-              return count + 1;
-            }
-
-            return count;
-          }, 0);
-
-          if (paths > 0) {
-            props.paths = paths;
-
-            if (object.type === "decor") {
-              props.decor = networkDecor(object.decor, paths);
-              totalBeauty += props.decor;
-            } else if (object.type === "building") {
-              props.waru = networkWaru(object.waru, paths);
-            }
-          }
-
-          totalBeauty += object.decor;
-        }
-      });
-      var networkBanked = beautyProps(totalBeauty).banked;
-      return Array.from(roots, function (_ref) {
-        var _ref2 = _slicedToArray(_ref, 2),
-            root = _ref2[0],
-            props = _ref2[1];
-
-        var object = _this.grid[root].object;
-
-        if (object.waru > 0 && object.banked > 0) {
-          props.banked = networkBanked;
-        }
-
-        return {
-          root: root,
-          props: props
-        };
-      });
+    get baseData() {
+      return objects[this.config.useAutofill ? "road" : "blank"].data[""];
     },
 
     get summary() {
       return summary();
+    },
+
+    get tileData() {
+      return tileData();
     },
 
     get preset() {
@@ -3205,13 +3802,15 @@ function StateProvider(props) {
           order = _this$config.order,
           mobCap = _this$config.mobCap,
           useAufheben = _this$config.useAufheben;
-      var _summary$roots = summary().roots,
-          free = _summary$roots.free,
-          decor = _summary$roots.decor,
-          building = _summary$roots.building;
-      var _summary$production = summary().production,
-          lastOptimalCycle = _summary$production.lastOptimalCycle,
-          products = _summary$production.products;
+
+      var _summary = summary(),
+          tiling = _summary.tiling,
+          production = _summary.production;
+
+      var blank = tiling.blank,
+          road = tiling.road,
+          decor = tiling.decor,
+          building = tiling.building;
       return {
         title: "Current",
         config: {
@@ -3220,15 +3819,28 @@ function StateProvider(props) {
           mobCap: mobCap,
           useAufheben: useAufheben
         },
-        roots: {
-          free: free,
-          decor: decor,
-          building: building
-        },
-        production: {
-          lastOptimalCycle: lastOptimalCycle,
-          products: products
-        }
+        tiling: [{
+          type: "blank",
+          name: "",
+          roots: blank.roots
+        }, {
+          type: "road",
+          name: "",
+          roots: road.roots
+        }].concat(_toConsumableArray(decor.names.map(function (name) {
+          return {
+            type: "decor",
+            name: name,
+            roots: decor.pairs[name].roots
+          };
+        })), _toConsumableArray(building.names.map(function (name) {
+          return {
+            type: "building",
+            name: name,
+            roots: building.pairs[name].roots
+          };
+        }))),
+        production: production
       };
     }
 
@@ -3237,64 +3849,7 @@ function StateProvider(props) {
       state = _createStore2[0],
       setState = _createStore2[1];
 
-  var adjustedIndex = function adjustedIndex(oldIndex, oldOrder, newOrder) {
-    var oldRow = Math.floor(oldIndex / oldOrder);
-    var oldCol = oldIndex % oldOrder;
-    return oldRow * newOrder + oldCol;
-  };
-
-  var halfBoundary = function halfBoundary(row, column, index, order) {
-    var boundary = [];
-
-    if (row > 0 && column > 0) {
-      boundary.push(index - order - 1);
-    }
-
-    if (row > 0) {
-      boundary.push(index - order);
-    }
-
-    if (row > 0 && column < order - 1) {
-      boundary.push(index - order + 1);
-    }
-
-    if (column > 0) {
-      boundary.push(index - 1);
-    }
-
-    return boundary;
-  };
-
-  var nextColor = function nextColor(i, s, l) {
-    return "hsl(".concat(i * 180 * (3 - Math.sqrt(5)), ", ").concat(s, "%, ").concat(l, "%)");
-  }; // use golden angle
-
-
   var stateSetters = {
-    initGrid: function initGrid() {
-      var newGrid = [];
-
-      for (var r = 0; r < state.config.order; ++r) {
-        for (var c = 0; c < state.config.order; ++c) {
-          var index = r * state.config.order + c;
-          newGrid.push(_objectSpread(_objectSpread({}, state.baseProps), {}, {
-            position: {
-              row: r,
-              column: c,
-              index: index,
-              root: index,
-              interior: [index],
-              boundary: halfBoundary(r, c, index, state.config.order)
-            }
-          }));
-        }
-      }
-
-      setState("grid", newGrid);
-    },
-    setCanvas: function setCanvas(canvas) {
-      setState("canvas", canvas);
-    },
     setChart: function setChart(chart) {
       setState("chart", chart);
     },
@@ -3318,16 +3873,11 @@ function StateProvider(props) {
           stateSetters.setMobCap(newMobCap);
         }
       });
-
-      if (oldOrder !== newOrder) {
-        stateSetters.updateChart();
-      }
     },
     setOrder: function setOrder(newOrder) {
       (0,solid/* batch */.dC)(function () {
         stateSetters.resizeGrid(state.config.order, newOrder);
       });
-      stateSetters.updateChart();
     },
     resizeGrid: function resizeGrid(oldOrder, newOrder) {
       setState("config", "order", newOrder);
@@ -3335,7 +3885,13 @@ function StateProvider(props) {
           row = _state$grid$state$ins.row,
           column = _state$grid$state$ins.column;
       stateSetters.setInspectRoot(row >= newOrder || column >= newOrder ? myHouseRoot : row * newOrder + column);
-      setState("grid", state.grid[myHouseRoot].position.interior, "object", state.myHouseProps);
+      setState("grid", state.grid[myHouseRoot].position.interior, function (_ref8) {
+        var position = _ref8.position;
+        return {
+          data: objects.building.data[myHouseNames[newOrder]],
+          position: position
+        };
+      });
       var oldRoots = new Set();
       var newGrid = [];
       var minOrder = Math.min(oldOrder, newOrder);
@@ -3355,29 +3911,30 @@ function StateProvider(props) {
               }
 
               var _state$grid$root = state.grid[root],
-                  object = _state$grid$root.object,
+                  data = _state$grid$root.data,
                   position = _state$grid$root.position;
 
-              if (position.row + object.order >= minOrder || position.column + object.order >= minOrder) {
+              if (position.row + data.order >= minOrder || position.column + data.order >= minOrder) {
                 interior.forEach(function (index) {
-                  var oldCell = state.grid[index];
-                  var _oldCell$position = oldCell.position,
-                      row = _oldCell$position.row,
-                      column = _oldCell$position.column;
+                  var oldTile = state.grid[index];
+                  var _oldTile$position = oldTile.position,
+                      row = _oldTile$position.row,
+                      column = _oldTile$position.column;
 
                   if (row >= minOrder || column >= minOrder) {
                     return;
                   }
 
                   var newIndex = adjustedIndex(index, oldOrder, newOrder);
-                  newGrid[newIndex] = _objectSpread(_objectSpread({}, state.baseProps), {}, {
-                    position: _objectSpread(_objectSpread({}, oldCell.position), {}, {
+                  newGrid[newIndex] = {
+                    data: state.baseData,
+                    position: _objectSpread(_objectSpread({}, oldTile.position), {}, {
                       index: newIndex,
                       root: newIndex,
                       interior: [newIndex],
                       boundary: halfBoundary(row, column, newIndex, newOrder)
                     })
-                  });
+                  };
                 });
               } else {
                 var newInterior = interior.map(function (index) {
@@ -3387,9 +3944,9 @@ function StateProvider(props) {
                   return adjustedIndex(index, oldOrder, newOrder);
                 });
                 newInterior.forEach(function (index, i) {
-                  var oldCell = state.grid[interior[i]];
-                  newGrid[index] = _objectSpread(_objectSpread({}, oldCell), {}, {
-                    position: _objectSpread(_objectSpread({}, oldCell.position), {}, {
+                  var oldTile = state.grid[interior[i]];
+                  newGrid[index] = _objectSpread(_objectSpread({}, oldTile), {}, {
+                    position: _objectSpread(_objectSpread({}, oldTile.position), {}, {
                       index: index,
                       root: newInterior[0],
                       interior: newInterior,
@@ -3405,7 +3962,8 @@ function StateProvider(props) {
             if (_ret === "continue") continue;
           } else {
             var newIndex = r * newOrder + c;
-            newGrid[newIndex] = _objectSpread(_objectSpread({}, state.baseProps), {}, {
+            newGrid[newIndex] = {
+              data: state.baseData,
               position: {
                 row: r,
                 column: c,
@@ -3414,23 +3972,18 @@ function StateProvider(props) {
                 interior: [newIndex],
                 boundary: halfBoundary(r, c, newIndex, newOrder)
               }
-            });
+            };
           }
         }
       }
 
       setState("grid", newGrid);
-      stateSetters.applyNetwork();
     },
     setMobCap: function setMobCap(newMobCap) {
       setState("config", "mobCap", newMobCap);
     },
     toggleAufheben: function toggleAufheben() {
-      (0,solid/* batch */.dC)(function () {
-        setState("config", "useAufheben", !state.config.useAufheben);
-        stateSetters.applyNetwork();
-      });
-      stateSetters.updateChart();
+      setState("config", "useAufheben", !state.config.useAufheben);
     },
     setMode: function setMode(newMode) {
       setState("mode", newMode);
@@ -3446,56 +3999,24 @@ function StateProvider(props) {
     },
     toggleAutofill: function toggleAutofill() {
       setState("config", "useAutofill", !state.config.useAutofill);
-      var targetType = state.config.useAutofill ? "free" : "road";
-      var object = state.baseProps.object;
-      (0,solid/* batch */.dC)(function () {
-        setState("grid", state.summary.roots[targetType], "object", object);
-        stateSetters.applyNetwork();
+      var targetType = state.config.useAutofill ? "blank" : "road";
+      setState("grid", state.summary.tiling[targetType].roots, function (_ref9) {
+        var position = _ref9.position;
+        return {
+          data: state.baseData,
+          position: position
+        };
       });
-      stateSetters.updateChart();
     },
     loadPreset: function loadPreset(index) {
       var _state$presets$index = state.presets[index],
           config = _state$presets$index.config,
-          roots = _state$presets$index.roots;
+          tiling = _state$presets$index.tiling;
       (0,solid/* batch */.dC)(function () {
         setState("config", _objectSpread(_objectSpread({}, config), {}, {
-          useAutofill: true
+          useAutofill: false
         }));
-        stateSetters.initGrid();
-        setState("config", "useAutofill", false);
-
-        var freeObject = _objectSpread({
-          type: "free",
-          name: ""
-        }, objects.free.data[""]);
-
-        var _loop = function _loop() {
-          var _Object$entries$_i = _slicedToArray(_Object$entries[_i2], 2),
-              type = _Object$entries$_i[0],
-              collection = _Object$entries$_i[1];
-
-          if (type === "free") {
-            setState("grid", collection, "object", freeObject);
-          } else {
-            collection.forEach(function (_ref3) {
-              var name = _ref3.name,
-                  list = _ref3.list;
-              list.forEach(function (root) {
-                stateSetters.setObject(state.grid[root].position, _objectSpread({
-                  type: type,
-                  name: name
-                }, objects[type].data[name]));
-              });
-            });
-          }
-        };
-
-        for (var _i2 = 0, _Object$entries = Object.entries(roots); _i2 < _Object$entries.length; _i2++) {
-          _loop();
-        }
-
-        stateSetters.applyNetwork();
+        setState("grid", createGrid(config, tiling));
         stateSetters.setInspectRoot(myHouseRoot);
       });
     },
@@ -3516,175 +4037,105 @@ function StateProvider(props) {
       var _state$decorate = state.decorate,
           type = _state$decorate.type,
           name = _state$decorate.name;
-      var objectData = objects[type].data[name];
+      var data = objects[type].data[name];
 
-      if (!objectData) {
+      if (!data) {
         return "No object selected";
       }
 
-      var units = objectData.units,
-          limit = objectData.limit;
-
-      if (units > 0 && state.summary.count.available < units) {
-        return "Exceeded required number of available cells";
+      if (data.tiles > 0 && state.summary.free < data.tiles) {
+        return "Exceeded required number of free tiles";
       }
 
-      if (limit > 0) {
-        var entry = state.summary.roots[type].find(function (entry) {
-          return entry.name === name;
-        });
+      if (data.quantity > 0) {
+        var entry = state.summary.tiling[type].pairs[name];
 
-        if (entry && entry.list.length + 1 > limit) {
-          return "\"".concat(name, "\" is limited to a quantity of ").concat(limit);
+        if (entry && entry.roots.length + 1 > data.quantity) {
+          return "\"".concat(name, "\" is limited to a quantity of ").concat(data.quantity);
         }
       }
 
-      var err;
-      (0,solid/* batch */.dC)(function () {
-        err = stateSetters.setObject(position, _objectSpread({
-          type: type,
-          name: name
-        }, objectData));
+      if (data.type === "road") {
+        if (state.grid[position.index].data.tiles > 0) {
+          return "Tiles are already occupied";
+        }
 
-        if (!err) {
-          stateSetters.applyNetwork();
+        (0,solid/* batch */.dC)(function () {
+          setState("grid", position.index, function (_ref10) {
+            var position = _ref10.position;
+            return {
+              data: data,
+              position: position
+            };
+          });
           stateSetters.setInspectRoot(position.index);
-        }
-      });
+        });
+        return;
+      } else {
+        var _createTiles2 = createTiles(state.config, state.grid, data, position),
+            err = _createTiles2.err,
+            tiles = _createTiles2.tiles;
 
-      if (!err) {
-        stateSetters.updateChart();
-      }
-
-      return err;
-    },
-    setObject: function setObject(_ref4, objectProps) {
-      var row = _ref4.row,
-          column = _ref4.column;
-      var interiorLowerRow = row;
-      var interiorLowerCol = column;
-      var interiorUpperRow = interiorLowerRow + objectProps.order - 1;
-      var interiorUpperCol = interiorLowerCol + objectProps.order - 1;
-
-      if (interiorUpperRow >= state.config.order || interiorUpperCol >= state.config.order) {
-        return "Out-of-bounds placement";
-      }
-
-      var boundaryLowerRow = interiorLowerRow - 1;
-      var boundaryLowerCol = interiorLowerCol - 1;
-      var boundaryUpperRow = interiorUpperRow + 1;
-      var boundaryUpperCol = interiorUpperCol + 1;
-      var newCells = new Map();
-      var interior = [],
-          boundary = [];
-
-      for (var r = boundaryLowerRow; r <= boundaryUpperRow; ++r) {
-        for (var c = boundaryLowerCol; c <= boundaryUpperCol; ++c) {
-          var index = r * state.config.order + c;
-
-          if (r >= interiorLowerRow && r <= interiorUpperRow && c >= interiorLowerCol && c <= interiorUpperCol) {
-            var _state$grid$index = state.grid[index],
-                object = _state$grid$index.object,
-                position = _state$grid$index.position;
-
-            if (object.units > 0) {
-              return "Overlapping placement";
-            }
-
-            interior.push(index);
-            newCells.set(index, {
-              object: objectProps,
-              position: _objectSpread(_objectSpread({}, position), {}, {
-                root: interior[0],
-                interior: interior,
-                boundary: boundary
-              }),
-              border: {
-                top: r === interiorLowerRow,
-                right: c === interiorUpperCol,
-                bottom: r === interiorUpperRow,
-                left: c === interiorLowerCol
-              }
+        (0,solid/* batch */.dC)(function () {
+          if (!err) {
+            tiles.forEach(function (tile) {
+              setState("grid", tile.position.index, tile);
             });
-          } else {
-            if (r >= 0 && r < state.config.order && c >= 0 && c < state.config.order) {
-              boundary.push(index);
-            }
+            stateSetters.setInspectRoot(position.index);
           }
-        }
+        });
+        return err;
       }
-
-      newCells.forEach(function (cell, index) {
-        setState("grid", index, cell);
-      });
     },
     removeObject: function removeObject() {
-      var _state$grid$state$ins2 = state.grid[state.inspect.root],
-          object = _state$grid$state$ins2.object,
-          position = _state$grid$state$ins2.position;
+      var tile = state.grid[state.inspect.root];
 
-      if (object.type === "free") {
-        return "No object to remove";
+      if (tile.data.fixed) {
+        return "Object is fixed to the grid";
       }
 
-      if (object.fixed) {
-        return "Object is fixed";
-      }
-
-      (0,solid/* batch */.dC)(function () {
-        setState("grid", position.interior, function (_ref5) {
-          var position = _ref5.position;
-          var row = position.row,
-              column = position.column,
-              index = position.index;
-          return _objectSpread(_objectSpread({}, state.baseProps), {}, {
-            position: _objectSpread(_objectSpread({}, position), {}, {
-              root: index,
-              interior: [index],
-              boundary: halfBoundary(row, column, index, state.config.order)
-            })
-          });
-        });
-        stateSetters.applyNetwork();
+      setState("grid", tile.position.interior, function (_ref11) {
+        var position = _ref11.position;
+        var row = position.row,
+            column = position.column,
+            index = position.index;
+        return {
+          data: state.baseData,
+          position: _objectSpread(_objectSpread({}, position), {}, {
+            root: index,
+            interior: [index],
+            boundary: halfBoundary(row, column, index, state.config.order)
+          })
+        };
       });
-      stateSetters.updateChart();
     },
-    resetGrid: function resetGrid() {
-      var targetType = state.config.useAutofill ? "free" : "road";
-      (0,solid/* batch */.dC)(function () {
-        setState("grid", function (_ref6) {
-          var object = _ref6.object;
-          return object.type === targetType || !object.fixed;
-        }, function (_ref7) {
-          var position = _ref7.position;
-          var row = position.row,
-              column = position.column,
-              index = position.index;
-          return _objectSpread(_objectSpread({}, state.baseProps), {}, {
-            position: _objectSpread(_objectSpread({}, position), {}, {
-              root: index,
-              interior: [index],
-              boundary: halfBoundary(row, column, index, state.config.order)
-            })
-          });
-        });
-        stateSetters.applyNetwork();
-      });
-      stateSetters.updateChart();
-    },
-    applyNetwork: function applyNetwork() {
-      state.networkProps.forEach(function (_ref8) {
-        var root = _ref8.root,
-            props = _ref8.props;
-        setState("grid", root, "network", props);
+    clearGrid: function clearGrid() {
+      var targetType = state.config.useAutofill ? "blank" : "road";
+      setState("grid", function (_ref12) {
+        var data = _ref12.data;
+        return data.type === targetType || !data.fixed;
+      }, function (_ref13) {
+        var position = _ref13.position;
+        var row = position.row,
+            column = position.column,
+            index = position.index;
+        return {
+          data: state.baseData,
+          position: _objectSpread(_objectSpread({}, position), {}, {
+            root: index,
+            interior: [index],
+            boundary: halfBoundary(row, column, index, state.config.order)
+          })
+        };
       });
     },
     updateChart: function updateChart() {
       var presets = [].concat(_toConsumableArray(state.presets), [state.preset]);
 
-      var _presets$reduce = presets.reduce(function (props, _ref9, index) {
-        var title = _ref9.title,
-            production = _ref9.production;
+      var _presets$reduce = presets.reduce(function (props, _ref14, index) {
+        var title = _ref14.title,
+            production = _ref14.production;
+        var color = nextColor(index, 100, 50);
         var minCycle = props.minCycle,
             maxCycle = props.maxCycle;
         var lastOptimalCycle = production.lastOptimalCycle,
@@ -3694,12 +4145,9 @@ function StateProvider(props) {
         props.datasets.push({
           label: title,
           data: products,
-          backgroundColor: function backgroundColor() {
-            return nextColor(index, 100, 50);
-          },
-          borderColor: function borderColor() {
-            return nextColor(index, 100, 50);
-          }
+          backgroundColor: color,
+          borderColor: color,
+          hidden: index < presets.length - 1
         });
         return props;
       }, {
@@ -3711,8 +4159,8 @@ function StateProvider(props) {
           maxCycle = _presets$reduce.maxCycle,
           datasets = _presets$reduce.datasets;
 
-      var _presets$reduce2 = presets.reduce(function (props, _ref10) {
-        var production = _ref10.production;
+      var _presets$reduce2 = presets.reduce(function (props, _ref15) {
+        var production = _ref15.production;
         var minProduct = props.minProduct,
             maxProduct = props.maxProduct;
         var products = production.products;
@@ -3749,162 +4197,50 @@ function StateProvider(props) {
       }
 
       state.chart.update();
-      state.presets.forEach(function (_, index) {
-        state.chart.hide(index);
-      });
     }
   };
-  (0,solid/* batch */.dC)(function () {
-    stateSetters.initGrid();
-    stateSetters.setObject(state.grid[myHouseRoot].position, state.myHouseProps);
-    stateSetters.applyNetwork();
-  });
   summary = (0,solid/* createMemo */.Py)(function () {
-    var freeRoots = [];
-    var roadRoots = [];
-    var decorRoots = new Map();
-    var buildingRoots = new Map();
-    var totalAvailable = Math.pow(state.config.order, 2) - state.config.mobCap - 1;
-    var totalConnected = 0;
-    var totalBeauty = 0;
-    state.grid.forEach(function (cell, index) {
-      var object = cell.object,
-          position = cell.position,
-          network = cell.network;
-
-      if (position.root !== index) {
-        return;
+    return layoutStats(state.config, state.grid);
+  });
+  tileData = (0,solid/* createMemo */.Py)(function () {
+    var _state$grid$state$ins2 = state.grid[state.inspect.root],
+        data = _state$grid$state$ins2.data,
+        position = _state$grid$state$ins2.position;
+    var paths = position.boundary.reduce(function (count, index) {
+      if (state.grid[index].data.type === "road" && state.summary.network.areConnected(myHouseRoot, index)) {
+        return count + 1;
       }
 
-      switch (object.type) {
-        case "free":
-          freeRoots.push(index);
-          break;
+      return count;
+    }, 0);
+    var bonusWaru = 0;
+    var finalWaru = 0;
+    var bonusBanked = 0;
+    var bonusDecor = 0;
 
-        case "road":
-          roadRoots.push(index);
-
-          if (network.connected) {
-            ++totalConnected;
-          }
-
-          break;
-
-        case "decor":
-          if (!decorRoots.has(object.name)) {
-            decorRoots.set(object.name, []);
-          }
-
-          decorRoots.get(object.name).push(index);
-          totalAvailable -= object.units;
-          totalBeauty += object.decor + network.decor;
-          break;
-
-        case "building":
-          if (!buildingRoots.has(object.name)) {
-            buildingRoots.set(object.name, []);
-          }
-
-          buildingRoots.get(object.name).push(index);
-          totalAvailable -= object.units;
-          totalBeauty += object.decor;
-          break;
+    if (data.waru > 0 && data.banked > 0) {
+      if (paths > 0) {
+        bonusWaru = networkWaru(data.waru, paths);
       }
+
+      if (state.config.useAufheben) {
+        finalWaru = aufhebenWaru;
+      }
+
+      bonusBanked = state.summary.beauty.banked;
+    } else if (data.decor > 0) {
+      if (paths > 0) {
+        bonusDecor = networkDecor(data.decor, paths);
+      }
+    }
+
+    return _objectSpread(_objectSpread({}, data), {}, {
+      paths: paths,
+      bonusWaru: bonusWaru,
+      finalWaru: finalWaru,
+      bonusBanked: bonusBanked,
+      bonusDecor: bonusDecor
     });
-    var finalWaru = state.config.useAufheben ? aufhebenWaru : 0;
-    var lastOptimalCycle = 0;
-    var products = [0];
-    buildingRoots.forEach(function (list) {
-      list.forEach(function (root) {
-        var _state$grid$root2 = state.grid[root],
-            object = _state$grid$root2.object,
-            network = _state$grid$root2.network;
-
-        if (object.waru > 0 && object.banked > 0) {
-          var totalWaru = object.waru + network.waru + finalWaru;
-          var totalBanked = object.banked + network.banked;
-          var cycles = totalBanked / totalWaru;
-          var remWaru = totalBanked % totalWaru;
-          var lowerCycles = Math.floor(cycles);
-          var upperCycles = Math.ceil(cycles);
-          lastOptimalCycle = lastOptimalCycle > 0 ? Math.min(lastOptimalCycle, lowerCycles) : lowerCycles;
-
-          for (var i = 1; i <= lowerCycles; i++) {
-            products[i] = (products[i] || 0) + totalWaru;
-          }
-
-          if (remWaru > 0) {
-            products[upperCycles] = (products[upperCycles] || 0) + remWaru;
-          }
-        }
-      });
-    });
-    return {
-      legend: [].concat(_toConsumableArray(Array.from(buildingRoots, function (_ref11, index) {
-        var _ref12 = _slicedToArray(_ref11, 1),
-            name = _ref12[0];
-
-        return {
-          type: "building",
-          name: name,
-          backgroundColor: nextColor(index, 80, 80)
-        };
-      })), _toConsumableArray(Array.from(decorRoots, function (_ref13, index) {
-        var _ref14 = _slicedToArray(_ref13, 1),
-            name = _ref14[0];
-
-        return {
-          type: "decor",
-          name: name,
-          backgroundColor: nextColor(buildingRoots.size + index, 80, 80)
-        };
-      }))),
-      roots: {
-        free: freeRoots,
-        road: roadRoots,
-        decor: Array.from(decorRoots, function (_ref15) {
-          var _ref16 = _slicedToArray(_ref15, 2),
-              name = _ref16[0],
-              list = _ref16[1];
-
-          return {
-            name: name,
-            list: list
-          };
-        }),
-        building: Array.from(buildingRoots, function (_ref17) {
-          var _ref18 = _slicedToArray(_ref17, 2),
-              name = _ref18[0],
-              list = _ref18[1];
-
-          return {
-            name: name,
-            list: list
-          };
-        })
-      },
-      count: {
-        available: totalAvailable,
-        inNetwork: totalConnected,
-        outNetwork: roadRoots.length - totalConnected
-      },
-      beauty: _objectSpread(_objectSpread({}, beautyProps(totalBeauty)), {}, {
-        total: totalBeauty
-      }),
-      production: {
-        lastOptimalCycle: lastOptimalCycle,
-        lastOptimalRate: products[lastOptimalCycle],
-        products: products.reduce(function (total, marginal, index) {
-          if (index > 0) {
-            total.push(total[index - 1] + marginal);
-          } else {
-            total.push(marginal);
-          }
-
-          return total;
-        }, [])
-      }
-    };
   });
   var store = [state, stateSetters];
   return (0,solid/* createComponent */.LM)(StateContext.Provider, {
@@ -3931,7 +4267,7 @@ const _tmpl$ = (0,web/* template */.XK)(`<label for="level">Level</label>`, 2),
       _tmpl$3 = (0,web/* template */.XK)(`<option></option>`, 2),
       _tmpl$4 = (0,web/* template */.XK)(`<label for="order">Dimensions</label>`, 2),
       _tmpl$5 = (0,web/* template */.XK)(`<select id="order"></select>`, 2),
-      _tmpl$6 = (0,web/* template */.XK)(`<label for="mob-cap">Monster capacity</label>`, 2),
+      _tmpl$6 = (0,web/* template */.XK)(`<label for="mob-cap">Monster slots</label>`, 2),
       _tmpl$7 = (0,web/* template */.XK)(`<select id="mob-cap"></select>`, 2),
       _tmpl$8 = (0,web/* template */.XK)(`<div><input type="checkbox" id="aufheben"><label for="aufheben">Use Aufheben effect</label></div>`, 5),
       _tmpl$9 = (0,web/* template */.XK)(`<fieldset><legend>Config</legend><div class="config"></div></fieldset>`, 6);
@@ -4019,7 +4355,7 @@ function Order() {
 
           _el$6.value = order;
 
-          (0,web/* insert */.$T)(_el$6, "".concat(order, " x ").concat(order));
+          (0,web/* insert */.$T)(_el$6, "".concat(order, "\xD7").concat(order));
 
           (0,solid/* createRenderEffect */.F3)(function () {
             return _el$6.disabled = disabled(order);
@@ -4143,20 +4479,19 @@ function Config() {
 const Mode_tmpl$ = (0,web/* template */.XK)(`<td>Yes</td>`, 2),
       Mode_tmpl$2 = (0,web/* template */.XK)(`<tbody><tr><th>Type</th><td>Road</td></tr><tr><th>Connected to house</th></tr></tbody>`, 12),
       Mode_tmpl$3 = (0,web/* template */.XK)(`<tbody><tr><th>Type</th><td>Decor</td></tr><tr><th>Name</th><td></td></tr><tr><th>Adjacent roads (in-network)</th><td></td></tr><tr><th>Aesthetic points</th><td></td></tr></tbody>`, 26),
-      Mode_tmpl$4 = (0,web/* template */.XK)(`<td></td>`, 2),
-      Mode_tmpl$5 = (0,web/* template */.XK)(`<tbody><tr><th>Type</th><td>Building</td></tr><tr><th>Name</th><td></td></tr><tr><th>Adjacent roads (in-network)</th><td></td></tr><tr><th>Production rate (W/10 mins)</th></tr><tr><th>Max capacity (W)</th><td></td></tr><tr><th>Aesthetic points</th><td></td></tr></tbody>`, 36),
-      Mode_tmpl$6 = (0,web/* template */.XK)(`<table><caption>Cell properties</caption></table>`, 4),
-      Mode_tmpl$7 = (0,web/* template */.XK)(`<tbody><tr><th>Type</th><td>Free cell</td></tr></tbody>`, 8),
-      Mode_tmpl$8 = (0,web/* template */.XK)(`<td>No</td>`, 2),
-      Mode_tmpl$9 = (0,web/* template */.XK)(`<label for="decorate-type">Type</label>`, 2),
-      _tmpl$10 = (0,web/* template */.XK)(`<select id="decorate-type"></select>`, 2),
-      _tmpl$11 = (0,web/* template */.XK)(`<option></option>`, 2),
-      _tmpl$12 = (0,web/* template */.XK)(`<label for="decorate-name">Name</label>`, 2),
-      _tmpl$13 = (0,web/* template */.XK)(`<select id="decorate-name"></select>`, 2),
-      _tmpl$14 = (0,web/* template */.XK)(`<div><input type="checkbox" id="autofill"><label for="autofill">Autofill roads</label></div>`, 5),
-      _tmpl$15 = (0,web/* template */.XK)(`<button type="button">Switch to Decorate mode</button>`, 2),
-      _tmpl$16 = (0,web/* template */.XK)(`<fieldset><legend></legend><div></div></fieldset>`, 6),
-      _tmpl$17 = (0,web/* template */.XK)(`<button type="button">Switch to Inspect mode</button>`, 2);
+      Mode_tmpl$4 = (0,web/* template */.XK)(`<tbody><tr><th>Type</th><td>Building</td></tr><tr><th>Name</th><td></td></tr><tr><th>Adjacent roads (in-network)</th><td></td></tr><tr><th>Production rate (W/10 mins)</th><td></td></tr><tr><th>Storage capacity (W)</th><td></td></tr><tr><th>Aesthetic points</th><td></td></tr></tbody>`, 38),
+      Mode_tmpl$5 = (0,web/* template */.XK)(`<table><caption>Tile properties</caption></table>`, 4),
+      Mode_tmpl$6 = (0,web/* template */.XK)(`<tbody><tr><th>Type</th><td>Blank tile</td></tr></tbody>`, 8),
+      Mode_tmpl$7 = (0,web/* template */.XK)(`<td>No</td>`, 2),
+      Mode_tmpl$8 = (0,web/* template */.XK)(`<label for="decorate-type">Type</label>`, 2),
+      Mode_tmpl$9 = (0,web/* template */.XK)(`<select id="decorate-type"></select>`, 2),
+      _tmpl$10 = (0,web/* template */.XK)(`<option></option>`, 2),
+      _tmpl$11 = (0,web/* template */.XK)(`<label for="decorate-name">Name</label>`, 2),
+      _tmpl$12 = (0,web/* template */.XK)(`<select id="decorate-name"></select>`, 2),
+      _tmpl$13 = (0,web/* template */.XK)(`<div><input type="checkbox" id="autofill"><label for="autofill">Autofill roads</label></div>`, 5),
+      _tmpl$14 = (0,web/* template */.XK)(`<button type="button">Switch to Decorate mode</button>`, 2),
+      _tmpl$15 = (0,web/* template */.XK)(`<fieldset><legend></legend><div></div></fieldset>`, 6),
+      _tmpl$16 = (0,web/* template */.XK)(`<button type="button">Switch to Inspect mode</button>`, 2);
 
 function Mode_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -4182,18 +4517,18 @@ function Inspect() {
       state = _useState2[0];
 
   return function () {
-    var _el$ = Mode_tmpl$6.cloneNode(true),
+    var _el$ = Mode_tmpl$5.cloneNode(true),
         _el$2 = _el$.firstChild;
 
     (0,web/* insert */.$T)(_el$, (0,solid/* createComponent */.LM)(solid/* Switch */.rs, {
       get fallback() {
-        return Mode_tmpl$7.cloneNode(true);
+        return Mode_tmpl$6.cloneNode(true);
       },
 
       get children() {
         return [(0,solid/* createComponent */.LM)(solid/* Match */.qE, {
           get when() {
-            return state.grid[state.inspect.root].object.type === "road";
+            return state.tileData.type === "road";
           },
 
           get children() {
@@ -4204,11 +4539,11 @@ function Inspect() {
 
             (0,web/* insert */.$T)(_el$5, (0,solid/* createComponent */.LM)(solid/* Show */.di, {
               get when() {
-                return state.grid[state.inspect.root].network.connected;
+                return state.tileData.paths > 0;
               },
 
               get fallback() {
-                return Mode_tmpl$8.cloneNode(true);
+                return Mode_tmpl$7.cloneNode(true);
               },
 
               get children() {
@@ -4222,7 +4557,7 @@ function Inspect() {
 
         }), (0,solid/* createComponent */.LM)(solid/* Match */.qE, {
           get when() {
-            return state.grid[state.inspect.root].object.type === "decor";
+            return state.tileData.type === "decor";
           },
 
           get children() {
@@ -4239,15 +4574,15 @@ function Inspect() {
                 _el$18 = _el$17.nextSibling;
 
             (0,web/* insert */.$T)(_el$12, function () {
-              return state.grid[state.inspect.root].object.name;
+              return state.tileData.name;
             });
 
             (0,web/* insert */.$T)(_el$15, function () {
-              return state.grid[state.inspect.root].network.paths;
+              return state.tileData.paths;
             });
 
             (0,web/* insert */.$T)(_el$18, function () {
-              return "".concat(state.grid[state.inspect.root].object.decor, " (+").concat(state.grid[state.inspect.root].network.decor, ")");
+              return "".concat(state.tileData.decor, " (+").concat(state.tileData.bonusDecor, ")");
             });
 
             return _el$8;
@@ -4255,11 +4590,11 @@ function Inspect() {
 
         }), (0,solid/* createComponent */.LM)(solid/* Match */.qE, {
           get when() {
-            return state.grid[state.inspect.root].object.type === "building";
+            return state.tileData.type === "building";
           },
 
           get children() {
-            var _el$19 = Mode_tmpl$5.cloneNode(true),
+            var _el$19 = Mode_tmpl$4.cloneNode(true),
                 _el$20 = _el$19.firstChild,
                 _el$21 = _el$20.nextSibling,
                 _el$22 = _el$21.firstChild,
@@ -4269,6 +4604,7 @@ function Inspect() {
                 _el$26 = _el$25.nextSibling,
                 _el$27 = _el$24.nextSibling,
                 _el$28 = _el$27.firstChild,
+                _el$29 = _el$28.nextSibling,
                 _el$30 = _el$27.nextSibling,
                 _el$31 = _el$30.firstChild,
                 _el$32 = _el$31.nextSibling,
@@ -4277,48 +4613,23 @@ function Inspect() {
                 _el$35 = _el$34.nextSibling;
 
             (0,web/* insert */.$T)(_el$23, function () {
-              return state.grid[state.inspect.root].object.name;
+              return state.tileData.name;
             });
 
             (0,web/* insert */.$T)(_el$26, function () {
-              return state.grid[state.inspect.root].network.paths;
+              return state.tileData.paths;
             });
 
-            (0,web/* insert */.$T)(_el$27, (0,solid/* createComponent */.LM)(solid/* Show */.di, {
-              get when() {
-                return state.config.useAufheben;
-              },
-
-              get fallback() {
-                return function () {
-                  var _el$38 = Mode_tmpl$4.cloneNode(true);
-
-                  (0,web/* insert */.$T)(_el$38, function () {
-                    return "".concat(state.grid[state.inspect.root].object.waru, " (+").concat(state.grid[state.inspect.root].network.waru, ")");
-                  });
-
-                  return _el$38;
-                }();
-              },
-
-              get children() {
-                var _el$29 = Mode_tmpl$4.cloneNode(true);
-
-                (0,web/* insert */.$T)(_el$29, function () {
-                  return "".concat(state.grid[state.inspect.root].object.waru, " (+").concat(state.grid[state.inspect.root].network.waru, ") (+").concat(state.grid[state.inspect.root].object.waru > 0 && state.grid[state.inspect.root].object.banked > 0 ? aufhebenWaru : 0, ")");
-                });
-
-                return _el$29;
-              }
-
-            }), null);
+            (0,web/* insert */.$T)(_el$29, function () {
+              return "".concat(state.tileData.waru, " (+").concat(state.tileData.bonusWaru, ") (+").concat(state.tileData.finalWaru, ")");
+            });
 
             (0,web/* insert */.$T)(_el$32, function () {
-              return "".concat(state.grid[state.inspect.root].object.banked, " (+").concat(state.grid[state.inspect.root].network.banked, ")");
+              return "".concat(state.tileData.banked, " (+").concat(state.tileData.bonusBanked, ")");
             });
 
             (0,web/* insert */.$T)(_el$35, function () {
-              return state.grid[state.inspect.root].object.decor;
+              return state.tileData.decor;
             });
 
             return _el$19;
@@ -4344,35 +4655,35 @@ function DecorateType() {
   };
 
   var decorateTypes = Object.keys(objects).filter(function (type) {
-    return type !== "free";
+    return type !== "blank";
   });
-  return [Mode_tmpl$9.cloneNode(true), function () {
-    var _el$40 = _tmpl$10.cloneNode(true);
+  return [Mode_tmpl$8.cloneNode(true), function () {
+    var _el$39 = Mode_tmpl$9.cloneNode(true);
 
-    _el$40.addEventListener("change", onChange);
+    _el$39.addEventListener("change", onChange);
 
-    (0,web/* insert */.$T)(_el$40, (0,solid/* createComponent */.LM)(solid/* For */.U2, {
+    (0,web/* insert */.$T)(_el$39, (0,solid/* createComponent */.LM)(solid/* For */.U2, {
       each: decorateTypes,
       children: function children(type) {
         return function () {
-          var _el$41 = _tmpl$11.cloneNode(true);
+          var _el$40 = _tmpl$10.cloneNode(true);
 
-          _el$41.value = type;
+          _el$40.value = type;
 
-          (0,web/* insert */.$T)(_el$41, function () {
+          (0,web/* insert */.$T)(_el$40, function () {
             return type.charAt(0).toUpperCase() + type.slice(1);
           });
 
-          return _el$41;
+          return _el$40;
         }();
       }
     }));
 
     (0,solid/* createRenderEffect */.F3)(function () {
-      return _el$40.value = state.decorate.type;
+      return _el$39.value = state.decorate.type;
     });
 
-    return _el$40;
+    return _el$39;
   }()];
 }
 
@@ -4405,29 +4716,29 @@ function DecorateName() {
     },
 
     get children() {
-      return [_tmpl$12.cloneNode(true), function () {
-        var _el$43 = _tmpl$13.cloneNode(true);
+      return [_tmpl$11.cloneNode(true), function () {
+        var _el$42 = _tmpl$12.cloneNode(true);
 
-        _el$43.addEventListener("change", onChange);
+        _el$42.addEventListener("change", onChange);
 
-        (0,web/* insert */.$T)(_el$43, (0,solid/* createComponent */.LM)(solid/* For */.U2, {
+        (0,web/* insert */.$T)(_el$42, (0,solid/* createComponent */.LM)(solid/* For */.U2, {
           get each() {
             return names();
           },
 
           children: function children(name) {
             return function () {
-              var _el$44 = _tmpl$11.cloneNode(true);
+              var _el$43 = _tmpl$10.cloneNode(true);
 
-              _el$44.value = name;
+              _el$43.value = name;
 
-              (0,web/* insert */.$T)(_el$44, name);
+              (0,web/* insert */.$T)(_el$43, name);
 
               (0,solid/* createRenderEffect */.F3)(function () {
-                return _el$44.disabled = disabled(name);
+                return _el$43.disabled = disabled(name);
               });
 
-              return _el$44;
+              return _el$43;
             }();
           }
         }));
@@ -4436,15 +4747,15 @@ function DecorateName() {
           var _v$ = !state.decorate.name,
               _v$2 = state.decorate.name;
 
-          _v$ !== _p$._v$ && (_el$43.disabled = _p$._v$ = _v$);
-          _v$2 !== _p$._v$2 && (_el$43.value = _p$._v$2 = _v$2);
+          _v$ !== _p$._v$ && (_el$42.disabled = _p$._v$ = _v$);
+          _v$2 !== _p$._v$2 && (_el$42.value = _p$._v$2 = _v$2);
           return _p$;
         }, {
           _v$: undefined,
           _v$2: undefined
         });
 
-        return _el$43;
+        return _el$42;
       }()];
     }
 
@@ -4462,16 +4773,16 @@ function Autofill() {
   };
 
   return function () {
-    var _el$45 = _tmpl$14.cloneNode(true),
-        _el$46 = _el$45.firstChild;
+    var _el$44 = _tmpl$13.cloneNode(true),
+        _el$45 = _el$44.firstChild;
 
-    _el$46.addEventListener("change", onChange);
+    _el$45.addEventListener("change", onChange);
 
     (0,solid/* createRenderEffect */.F3)(function () {
-      return _el$46.checked = state.config.useAutofill;
+      return _el$45.checked = state.config.useAutofill;
     });
 
-    return _el$45;
+    return _el$44;
   }();
 }
 
@@ -4486,50 +4797,50 @@ function Mode() {
   };
 
   return function () {
-    var _el$47 = _tmpl$16.cloneNode(true),
-        _el$48 = _el$47.firstChild,
-        _el$49 = _el$48.nextSibling;
+    var _el$46 = _tmpl$15.cloneNode(true),
+        _el$47 = _el$46.firstChild,
+        _el$48 = _el$47.nextSibling;
 
-    (0,web/* insert */.$T)(_el$48, function () {
+    (0,web/* insert */.$T)(_el$47, function () {
       return "Mode: ".concat(state.mode);
     });
 
-    (0,web/* insert */.$T)(_el$49, (0,solid/* createComponent */.LM)(solid/* Show */.di, {
+    (0,web/* insert */.$T)(_el$48, (0,solid/* createComponent */.LM)(solid/* Show */.di, {
       get when() {
         return state.mode === "inspect";
       },
 
       get fallback() {
         return [(0,solid/* createComponent */.LM)(DecorateType, {}), (0,solid/* createComponent */.LM)(DecorateName, {}), (0,solid/* createComponent */.LM)(Autofill, {}), function () {
-          var _el$51 = _tmpl$17.cloneNode(true);
+          var _el$50 = _tmpl$16.cloneNode(true);
 
-          _el$51.$$click = onClick;
-          _el$51.$$clickData = {
+          _el$50.$$click = onClick;
+          _el$50.$$clickData = {
             mode: "inspect"
           };
-          return _el$51;
+          return _el$50;
         }()];
       },
 
       get children() {
         return [(0,solid/* createComponent */.LM)(Inspect, {}), function () {
-          var _el$50 = _tmpl$15.cloneNode(true);
+          var _el$49 = _tmpl$14.cloneNode(true);
 
-          _el$50.$$click = onClick;
-          _el$50.$$clickData = {
+          _el$49.$$click = onClick;
+          _el$49.$$clickData = {
             mode: "decorate"
           };
-          return _el$50;
+          return _el$49;
         }()];
       }
 
     }));
 
     (0,solid/* createRenderEffect */.F3)(function (_$p) {
-      return (0,web/* classList */.s1)(_el$49, Mode_defineProperty({}, state.mode, true), _$p);
+      return (0,web/* classList */.s1)(_el$48, Mode_defineProperty({}, state.mode, true), _$p);
     });
 
-    return _el$47;
+    return _el$46;
   }();
 }
 
@@ -4547,17 +4858,18 @@ function Mode() {
 
 
 
+
 const Grid_tmpl$ = (0,web/* template */.XK)(`<div><select><option disabled hidden>Choose...</option></select><button type="button">Load</button><button type="button">Delete</button></div>`, 10),
       Grid_tmpl$2 = (0,web/* template */.XK)(`<div><input type="text" required placeholder="Enter a title..."><button type="button">Create</button></div>`, 5),
       Grid_tmpl$3 = (0,web/* template */.XK)(`<div><strong></strong></div>`, 4),
       Grid_tmpl$4 = (0,web/* template */.XK)(`<option></option>`, 2),
       Grid_tmpl$5 = (0,web/* template */.XK)(`<button type="button">Remove</button>`, 2),
-      Grid_tmpl$6 = (0,web/* template */.XK)(`<button type="button">Reset</button>`, 2),
+      Grid_tmpl$6 = (0,web/* template */.XK)(`<button type="button">Clear</button>`, 2),
       Grid_tmpl$7 = (0,web/* template */.XK)(`<div><div class="grid-legend-item road-in-network"></div><div>Road (in-network)</div></div>`, 6),
       Grid_tmpl$8 = (0,web/* template */.XK)(`<div><div class="grid-legend-item road-out-network"></div><div>Road (out-network)</div></div>`, 6),
-      Grid_tmpl$9 = (0,web/* template */.XK)(`<div><div class="grid-legend-item"></div><div>Free cell</div></div>`, 6),
+      Grid_tmpl$9 = (0,web/* template */.XK)(`<div><div class="grid-legend-item"></div><div>Blank tile</div></div>`, 6),
       Grid_tmpl$10 = (0,web/* template */.XK)(`<fieldset><legend>Grid</legend><div class="grid"><div class="grid-presets"></div><div class="grid-outer"><div class="grid-inner"></div></div><div class="grid-legend"></div><div class="grid-control"></div></div></fieldset>`, 16),
-      Grid_tmpl$11 = (0,web/* template */.XK)(`<div class="grid-cell"></div>`, 2),
+      Grid_tmpl$11 = (0,web/* template */.XK)(`<div></div>`, 2),
       Grid_tmpl$12 = (0,web/* template */.XK)(`<div><div class="grid-legend-item"></div><div></div></div>`, 6);
 
 function Grid_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -4578,6 +4890,7 @@ function Grid_arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
+
 function Presets(_ref) {
   var alert = _ref.alert,
       setAlert = _ref.setAlert;
@@ -4588,8 +4901,7 @@ function Presets(_ref) {
       _useState2$ = _useState2[1],
       loadPreset = _useState2$.loadPreset,
       deletePreset = _useState2$.deletePreset,
-      createPreset = _useState2$.createPreset,
-      updateChart = _useState2$.updateChart;
+      createPreset = _useState2$.createPreset;
 
   var storePresets = function storePresets(presets) {
     try {
@@ -4610,7 +4922,6 @@ function Presets(_ref) {
 
   var onLoadClick = function onLoadClick() {
     loadPreset(presetIndex());
-    updateChart();
     setPresetIndex(-1);
   };
 
@@ -4618,7 +4929,6 @@ function Presets(_ref) {
     var index = presetIndex();
     var title = state.presets[index].title;
     deletePreset(index);
-    updateChart();
     var err = storePresets(JSON.stringify(state.presets));
 
     if (err) {
@@ -4648,8 +4958,16 @@ function Presets(_ref) {
   var onCreateClick = function onCreateClick() {
     var title = newTitle();
     createPreset(title);
-    updateChart();
-    var err = storePresets(JSON.stringify(state.presets));
+    var err = storePresets(JSON.stringify(state.presets.map(function (_ref2) {
+      var title = _ref2.title,
+          config = _ref2.config,
+          tiling = _ref2.tiling;
+      return {
+        title: title,
+        config: config,
+        tiling: tiling
+      };
+    })));
 
     if (err) {
       (0,solid/* batch */.dC)(function () {
@@ -4770,8 +5088,8 @@ function Presets(_ref) {
   })];
 }
 
-function Remove(_ref2) {
-  var setAlert = _ref2.setAlert;
+function Remove(_ref3) {
+  var setAlert = _ref3.setAlert;
 
   var _useState3 = useState(),
       _useState4 = Grid_slicedToArray(_useState3, 2),
@@ -4779,8 +5097,7 @@ function Remove(_ref2) {
       removeObject = _useState4[1].removeObject;
 
   var disabled = function disabled() {
-    var object = state.grid[state.inspect.root].object;
-    return object.type === "free" || object.fixed;
+    return state.grid[state.inspect.root].data.fixed;
   };
 
   var onClick = function onClick() {
@@ -4807,14 +5124,14 @@ function Remove(_ref2) {
   }();
 }
 
-function Reset() {
+function Clear() {
   var _useState5 = useState(),
       _useState6 = Grid_slicedToArray(_useState5, 2),
       _ = _useState6[0],
-      resetGrid = _useState6[1].resetGrid;
+      clearGrid = _useState6[1].clearGrid;
 
   var onClick = function onClick() {
-    resetGrid();
+    clearGrid();
   };
 
   return function () {
@@ -4852,13 +5169,59 @@ function Grid() {
     }
   });
 
-  var onClick = function onClick(_ref3) {
-    var cell = _ref3.cell;
+  var tileClassList = function tileClassList(_ref4) {
+    var data = _ref4.data,
+        position = _ref4.position;
+    var classList = {
+      "grid-tile": true,
+      "grid-tile-inspect": position.root === state.inspect.root
+    };
+
+    if (data.type === "road") {
+      classList[state.summary.network.areConnected(myHouseRoot, position.index) ? "road-in-network" : "road-out-network"] = true;
+    }
+
+    return classList;
+  };
+
+  var tileStyle = function tileStyle(_ref5) {
+    var data = _ref5.data,
+        position = _ref5.position;
+
+    if (data.type === "decor" || data.type === "building") {
+      var style = Grid_defineProperty({}, "background-color", state.summary.tiling[data.type].pairs[data.name].backgroundColor);
+
+      var _state$grid$position$ = state.grid[position.root].position,
+          row = _state$grid$position$.row,
+          column = _state$grid$position$.column;
+
+      if (position.row !== row) {
+        style["border-top-style"] = "none";
+      }
+
+      if (position.column !== column + data.order - 1) {
+        style["border-right-style"] = "none";
+      }
+
+      if (position.row !== row + data.order - 1) {
+        style["border-bottom-style"] = "none";
+      }
+
+      if (position.column !== column) {
+        style["border-left-style"] = "none";
+      }
+
+      return style;
+    }
+  };
+
+  var onClick = function onClick(_ref6) {
+    var tile = _ref6.tile;
 
     if (state.mode === "inspect") {
-      setInspectRoot(cell.position.root);
+      setInspectRoot(tile.position.root);
     } else if (state.mode === "decorate") {
-      var err = insertObject(cell.position);
+      var err = insertObject(tile.position);
 
       if (err) {
         (0,solid/* batch */.dC)(function () {
@@ -4889,45 +5252,25 @@ function Grid() {
         return state.grid;
       },
 
-      children: function children(cell) {
+      children: function children(tile) {
         return function () {
           var _el$25 = Grid_tmpl$11.cloneNode(true);
 
           _el$25.$$click = onClick;
           _el$25.$$clickData = {
-            cell: cell
+            tile: tile
           };
 
           (0,solid/* createRenderEffect */.F3)(function (_p$) {
-            var _v$9 = cell.object.type === "road" && cell.network.connected,
-                _v$10 = cell.object.type === "road" && !cell.network.connected,
-                _v$11 = cell.object.type === "decor" || cell.object.type === "building" ? state.summary.legend.find(function (item) {
-              return item.type === cell.object.type && item.name === cell.object.name;
-            }).backgroundColor : "",
-                _v$12 = cell.position.root === state.inspect.root ? "red" : "black",
-                _v$13 = cell.border.top ? "solid" : "none",
-                _v$14 = cell.border.right ? "solid" : "none",
-                _v$15 = cell.border.bottom ? "solid" : "none",
-                _v$16 = cell.border.left ? "solid" : "none";
+            var _v$9 = tileClassList(tile),
+                _v$10 = tileStyle(tile);
 
-            _v$9 !== _p$._v$9 && _el$25.classList.toggle("road-in-network", _p$._v$9 = _v$9);
-            _v$10 !== _p$._v$10 && _el$25.classList.toggle("road-out-network", _p$._v$10 = _v$10);
-            _v$11 !== _p$._v$11 && _el$25.style.setProperty("background-color", _p$._v$11 = _v$11);
-            _v$12 !== _p$._v$12 && _el$25.style.setProperty("border-color", _p$._v$12 = _v$12);
-            _v$13 !== _p$._v$13 && _el$25.style.setProperty("border-top-style", _p$._v$13 = _v$13);
-            _v$14 !== _p$._v$14 && _el$25.style.setProperty("border-right-style", _p$._v$14 = _v$14);
-            _v$15 !== _p$._v$15 && _el$25.style.setProperty("border-bottom-style", _p$._v$15 = _v$15);
-            _v$16 !== _p$._v$16 && _el$25.style.setProperty("border-left-style", _p$._v$16 = _v$16);
+            _p$._v$9 = (0,web/* classList */.s1)(_el$25, _v$9, _p$._v$9);
+            _p$._v$10 = (0,web/* style */.oB)(_el$25, _v$10, _p$._v$10);
             return _p$;
           }, {
             _v$9: undefined,
-            _v$10: undefined,
-            _v$11: undefined,
-            _v$12: undefined,
-            _v$13: undefined,
-            _v$14: undefined,
-            _v$15: undefined,
-            _v$16: undefined
+            _v$10: undefined
           });
 
           return _el$25;
@@ -4937,29 +5280,51 @@ function Grid() {
 
     (0,web/* insert */.$T)(_el$20, (0,solid/* createComponent */.LM)(solid/* For */.U2, {
       get each() {
-        return state.summary.legend;
+        return state.summary.tiling.building.names;
       },
 
-      children: function children(_ref4) {
-        var name = _ref4.name,
-            backgroundColor = _ref4.backgroundColor;
+      children: function children(name) {
         return function () {
           var _el$26 = Grid_tmpl$12.cloneNode(true),
               _el$27 = _el$26.firstChild,
               _el$28 = _el$27.nextSibling;
 
-          _el$27.style.setProperty("background-color", backgroundColor);
-
           (0,web/* insert */.$T)(_el$28, name);
+
+          (0,solid/* createRenderEffect */.F3)(function () {
+            return _el$27.style.setProperty("background-color", state.summary.tiling.building.pairs[name].backgroundColor);
+          });
 
           return _el$26;
         }();
       }
     }), null);
 
+    (0,web/* insert */.$T)(_el$20, (0,solid/* createComponent */.LM)(solid/* For */.U2, {
+      get each() {
+        return state.summary.tiling.decor.names;
+      },
+
+      children: function children(name) {
+        return function () {
+          var _el$29 = Grid_tmpl$12.cloneNode(true),
+              _el$30 = _el$29.firstChild,
+              _el$31 = _el$30.nextSibling;
+
+          (0,web/* insert */.$T)(_el$31, name);
+
+          (0,solid/* createRenderEffect */.F3)(function () {
+            return _el$30.style.setProperty("background-color", state.summary.tiling.decor.pairs[name].backgroundColor);
+          });
+
+          return _el$29;
+        }();
+      }
+    }), null);
+
     (0,web/* insert */.$T)(_el$20, (0,solid/* createComponent */.LM)(solid/* Show */.di, {
       get when() {
-        return state.summary.count.inNetwork > 0;
+        return state.summary.tiling.road.count.inNetwork > 0;
       },
 
       get children() {
@@ -4970,7 +5335,7 @@ function Grid() {
 
     (0,web/* insert */.$T)(_el$20, (0,solid/* createComponent */.LM)(solid/* Show */.di, {
       get when() {
-        return state.summary.count.outNetwork > 0;
+        return state.summary.tiling.road.count.outNetwork > 0;
       },
 
       get children() {
@@ -4981,7 +5346,7 @@ function Grid() {
 
     (0,web/* insert */.$T)(_el$20, (0,solid/* createComponent */.LM)(solid/* Show */.di, {
       get when() {
-        return state.summary.roots.free.length > 0;
+        return state.summary.tiling.blank.roots.length > 0;
       },
 
       get children() {
@@ -4994,7 +5359,7 @@ function Grid() {
       setAlert: setAlert
     }), null);
 
-    (0,web/* insert */.$T)(_el$24, (0,solid/* createComponent */.LM)(Reset, {}), null);
+    (0,web/* insert */.$T)(_el$24, (0,solid/* createComponent */.LM)(Clear, {}), null);
 
     (0,solid/* createRenderEffect */.F3)(function (_p$) {
       var _v$7 = "repeat(".concat(state.config.order, ", auto)"),
@@ -5024,14 +5389,15 @@ var chart_esm = __webpack_require__(181);
 
 
 
-const Stats_tmpl$ = (0,web/* template */.XK)(`<tr><th colspan="2">Road (in-network)</th><td colspan="1"></td></tr>`, 6),
-      Stats_tmpl$2 = (0,web/* template */.XK)(`<tr><th colspan="2">Road (out-network)</th><td colspan="1"></td></tr>`, 6),
-      Stats_tmpl$3 = (0,web/* template */.XK)(`<table><caption>Object count</caption><thead><tr><th>Type</th><th>Name</th><th>Quantity</th></tr></thead><tbody><tr><th colspan="2">Available cells</th><td colspan="1"></td></tr></tbody></table>`, 22),
-      Stats_tmpl$4 = (0,web/* template */.XK)(`<tr><td>Building</td><td></td><td></td></tr>`, 8),
-      Stats_tmpl$5 = (0,web/* template */.XK)(`<tr><td>Decor</td><td></td><td></td></tr>`, 8),
-      Stats_tmpl$6 = (0,web/* template */.XK)(`<table><caption>Beauty effects</caption><thead><tr><th>Combine Result Choices</th><th>Building Max Capacity (W)</th><th>Shop Discount</th><th>Special Merchant Visit</th></tr></thead><tbody><tr><td></td><td></td><td></td><td></td></tr></tbody><tfoot><tr><th colspan="2">Total aesthetic points</th><td colspan="2"></td></tr><tr><th colspan="2">Points to next threshold</th><td colspan="2"></td></tr></tfoot></table>`, 42),
-      Stats_tmpl$7 = (0,web/* template */.XK)(`<table><caption>Waru production</caption><thead><tr><th colspan="2" class="canvas-header">Production timeline</th></tr></thead><tbody><tr><td colspan="2" class="canvas-data"><canvas></canvas></td></tr></tbody><tfoot><tr><th>Max total production rate (W/10 mins)</th><td></td></tr><tr><th>Time until diminishing total product (mins)</th><td></td></tr><tr><th>Total product (W)</th><td></td></tr><tr><th>Total production time (mins)</th><td></td></tr></tfoot></table>`, 44),
-      Stats_tmpl$8 = (0,web/* template */.XK)(`<fieldset><legend>Stats</legend><div class="stats"></div></fieldset>`, 6);
+const Stats_tmpl$ = (0,web/* template */.XK)(`<tr><th colspan="2">Blank tiles</th><td colspan="1"></td></tr>`, 6),
+      Stats_tmpl$2 = (0,web/* template */.XK)(`<tr><th colspan="2">Road (in-network)</th><td colspan="1"></td></tr>`, 6),
+      Stats_tmpl$3 = (0,web/* template */.XK)(`<tr><th colspan="2">Road (out-network)</th><td colspan="1"></td></tr>`, 6),
+      Stats_tmpl$4 = (0,web/* template */.XK)(`<table><caption>Object count</caption><thead><tr><th>Type</th><th>Name</th><th>Quantity</th></tr></thead><tbody><tr><th colspan="2">Remaining free tiles</th><td colspan="1"></td></tr></tbody></table>`, 22),
+      Stats_tmpl$5 = (0,web/* template */.XK)(`<tr><td>Building</td><td></td><td></td></tr>`, 8),
+      Stats_tmpl$6 = (0,web/* template */.XK)(`<tr><td>Decor</td><td></td><td></td></tr>`, 8),
+      Stats_tmpl$7 = (0,web/* template */.XK)(`<table><caption>Beauty details</caption><thead><tr><th>Combine Result Choices</th><th>Building Storage Capacity (W)</th><th>Shop Discount</th><th>Special Merchant Visit</th></tr></thead><tbody><tr><td></td><td></td><td></td><td></td></tr></tbody><tfoot><tr><th colspan="2">Total aesthetic points</th><td colspan="2"></td></tr><tr><th colspan="2">Points to next threshold</th><td colspan="2"></td></tr></tfoot></table>`, 42),
+      Stats_tmpl$8 = (0,web/* template */.XK)(`<table><caption>Waru production</caption><thead><tr><th colspan="2" class="canvas-header">Production timeline</th></tr></thead><tbody><tr><td colspan="2" class="canvas-data"><canvas></canvas></td></tr></tbody><tfoot><tr><th>Max marginal product (W)</th><td></td></tr><tr><th>Time until diminishing marginal product (mins)</th><td></td></tr><tr><th>Total product (W)</th><td></td></tr><tr><th>Total production time (mins)</th><td></td></tr></tfoot></table>`, 44),
+      Stats_tmpl$9 = (0,web/* template */.XK)(`<fieldset><legend>Stats</legend><div class="stats"></div></fieldset>`, 6);
 
 function Stats_slicedToArray(arr, i) { return Stats_arrayWithHoles(arr) || Stats_iterableToArrayLimit(arr, i) || Stats_unsupportedIterableToArray(arr, i) || Stats_nonIterableRest(); }
 
@@ -5056,67 +5422,63 @@ function Objects() {
       state = _useState2[0];
 
   return function () {
-    var _el$ = Stats_tmpl$3.cloneNode(true),
+    var _el$ = Stats_tmpl$4.cloneNode(true),
         _el$2 = _el$.firstChild,
         _el$3 = _el$2.nextSibling,
         _el$4 = _el$3.nextSibling,
-        _el$11 = _el$4.firstChild,
-        _el$12 = _el$11.firstChild,
-        _el$13 = _el$12.nextSibling;
+        _el$14 = _el$4.firstChild,
+        _el$15 = _el$14.firstChild,
+        _el$16 = _el$15.nextSibling;
 
     (0,web/* insert */.$T)(_el$4, (0,solid/* createComponent */.LM)(solid/* For */.U2, {
       get each() {
-        return state.summary.roots.building;
+        return state.summary.tiling.building.names;
       },
 
-      children: function children(_ref) {
-        var name = _ref.name,
-            list = _ref.list;
+      children: function children(name) {
         return function () {
-          var _el$14 = Stats_tmpl$4.cloneNode(true),
-              _el$15 = _el$14.firstChild,
-              _el$16 = _el$15.nextSibling,
-              _el$17 = _el$16.nextSibling;
+          var _el$17 = Stats_tmpl$5.cloneNode(true),
+              _el$18 = _el$17.firstChild,
+              _el$19 = _el$18.nextSibling,
+              _el$20 = _el$19.nextSibling;
 
-          (0,web/* insert */.$T)(_el$16, name);
+          (0,web/* insert */.$T)(_el$19, name);
 
-          (0,web/* insert */.$T)(_el$17, function () {
-            return list.length;
+          (0,web/* insert */.$T)(_el$20, function () {
+            return state.summary.tiling.building.pairs[name].roots.length;
           });
 
-          return _el$14;
+          return _el$17;
         }();
       }
-    }), _el$11);
+    }), _el$14);
 
     (0,web/* insert */.$T)(_el$4, (0,solid/* createComponent */.LM)(solid/* For */.U2, {
       get each() {
-        return state.summary.roots.decor;
+        return state.summary.tiling.decor.names;
       },
 
-      children: function children(_ref2) {
-        var name = _ref2.name,
-            list = _ref2.list;
+      children: function children(name) {
         return function () {
-          var _el$18 = Stats_tmpl$5.cloneNode(true),
-              _el$19 = _el$18.firstChild,
-              _el$20 = _el$19.nextSibling,
-              _el$21 = _el$20.nextSibling;
+          var _el$21 = Stats_tmpl$6.cloneNode(true),
+              _el$22 = _el$21.firstChild,
+              _el$23 = _el$22.nextSibling,
+              _el$24 = _el$23.nextSibling;
 
-          (0,web/* insert */.$T)(_el$20, name);
+          (0,web/* insert */.$T)(_el$23, name);
 
-          (0,web/* insert */.$T)(_el$21, function () {
-            return list.length;
+          (0,web/* insert */.$T)(_el$24, function () {
+            return state.summary.tiling.decor.pairs[name].roots.length;
           });
 
-          return _el$18;
+          return _el$21;
         }();
       }
-    }), _el$11);
+    }), _el$14);
 
     (0,web/* insert */.$T)(_el$4, (0,solid/* createComponent */.LM)(solid/* Show */.di, {
       get when() {
-        return state.summary.count.inNetwork > 0;
+        return state.summary.tiling.blank.roots.length > 0;
       },
 
       get children() {
@@ -5125,17 +5487,17 @@ function Objects() {
             _el$7 = _el$6.nextSibling;
 
         (0,web/* insert */.$T)(_el$7, function () {
-          return state.summary.count.inNetwork;
+          return state.summary.tiling.blank.roots.length;
         });
 
         return _el$5;
       }
 
-    }), _el$11);
+    }), _el$14);
 
     (0,web/* insert */.$T)(_el$4, (0,solid/* createComponent */.LM)(solid/* Show */.di, {
       get when() {
-        return state.summary.count.outNetwork > 0;
+        return state.summary.tiling.road.count.inNetwork > 0;
       },
 
       get children() {
@@ -5144,16 +5506,35 @@ function Objects() {
             _el$10 = _el$9.nextSibling;
 
         (0,web/* insert */.$T)(_el$10, function () {
-          return state.summary.count.outNetwork;
+          return state.summary.tiling.road.count.inNetwork;
         });
 
         return _el$8;
       }
 
-    }), _el$11);
+    }), _el$14);
 
-    (0,web/* insert */.$T)(_el$13, function () {
-      return state.summary.count.available;
+    (0,web/* insert */.$T)(_el$4, (0,solid/* createComponent */.LM)(solid/* Show */.di, {
+      get when() {
+        return state.summary.tiling.road.count.outNetwork > 0;
+      },
+
+      get children() {
+        var _el$11 = Stats_tmpl$3.cloneNode(true),
+            _el$12 = _el$11.firstChild,
+            _el$13 = _el$12.nextSibling;
+
+        (0,web/* insert */.$T)(_el$13, function () {
+          return state.summary.tiling.road.count.outNetwork;
+        });
+
+        return _el$11;
+      }
+
+    }), _el$14);
+
+    (0,web/* insert */.$T)(_el$16, function () {
+      return state.summary.tiling.free.count;
     });
 
     return _el$;
@@ -5166,48 +5547,48 @@ function Beauty() {
       state = _useState4[0];
 
   return function () {
-    var _el$22 = Stats_tmpl$6.cloneNode(true),
-        _el$23 = _el$22.firstChild,
-        _el$24 = _el$23.nextSibling,
-        _el$25 = _el$24.nextSibling,
+    var _el$25 = Stats_tmpl$7.cloneNode(true),
         _el$26 = _el$25.firstChild,
-        _el$27 = _el$26.firstChild,
+        _el$27 = _el$26.nextSibling,
         _el$28 = _el$27.nextSibling,
-        _el$29 = _el$28.nextSibling,
-        _el$30 = _el$29.nextSibling,
-        _el$31 = _el$25.nextSibling,
-        _el$32 = _el$31.firstChild,
-        _el$33 = _el$32.firstChild,
-        _el$34 = _el$33.nextSibling,
-        _el$35 = _el$32.nextSibling,
+        _el$29 = _el$28.firstChild,
+        _el$30 = _el$29.firstChild,
+        _el$31 = _el$30.nextSibling,
+        _el$32 = _el$31.nextSibling,
+        _el$33 = _el$32.nextSibling,
+        _el$34 = _el$28.nextSibling,
+        _el$35 = _el$34.firstChild,
         _el$36 = _el$35.firstChild,
-        _el$37 = _el$36.nextSibling;
+        _el$37 = _el$36.nextSibling,
+        _el$38 = _el$35.nextSibling,
+        _el$39 = _el$38.firstChild,
+        _el$40 = _el$39.nextSibling;
 
-    (0,web/* insert */.$T)(_el$27, function () {
+    (0,web/* insert */.$T)(_el$30, function () {
       return "+".concat(state.summary.beauty.choices, "%");
     });
 
-    (0,web/* insert */.$T)(_el$28, function () {
+    (0,web/* insert */.$T)(_el$31, function () {
       return "+".concat(state.summary.beauty.banked);
     });
 
-    (0,web/* insert */.$T)(_el$29, function () {
+    (0,web/* insert */.$T)(_el$32, function () {
       return "".concat(state.summary.beauty.discount, "%");
     });
 
-    (0,web/* insert */.$T)(_el$30, function () {
+    (0,web/* insert */.$T)(_el$33, function () {
       return "+".concat(state.summary.beauty.visit, "%");
     });
 
-    (0,web/* insert */.$T)(_el$34, function () {
+    (0,web/* insert */.$T)(_el$37, function () {
       return state.summary.beauty.total;
     });
 
-    (0,web/* insert */.$T)(_el$37, function () {
+    (0,web/* insert */.$T)(_el$40, function () {
       return state.summary.beauty.next;
     });
 
-    return _el$22;
+    return _el$25;
   }();
 }
 
@@ -5216,16 +5597,12 @@ function Production() {
       _useState6 = Stats_slicedToArray(_useState5, 2),
       state = _useState6[0],
       _useState6$ = _useState6[1],
-      setCanvas = _useState6$.setCanvas,
       setChart = _useState6$.setChart,
       updateChart = _useState6$.updateChart;
 
-  var setupCanvas = function setupCanvas(canvas) {
-    setCanvas(canvas);
-  };
-
+  var canvas;
   (0,solid/* onMount */.H3)(function () {
-    setChart(new chart_esm/* Chart */.kL(state.canvas, {
+    setChart(new chart_esm/* Chart */.kL(canvas, {
       type: "line",
       options: {
         animation: false,
@@ -5265,24 +5642,23 @@ function Production() {
         }
       }
     }));
+  });
+  (0,solid/* createEffect */.GW)(function () {
     updateChart();
   });
   (0,solid/* onCleanup */.$W)(function () {
     state.chart.destroy();
   });
   return function () {
-    var _el$38 = Stats_tmpl$7.cloneNode(true),
-        _el$39 = _el$38.firstChild,
-        _el$40 = _el$39.nextSibling,
-        _el$41 = _el$40.nextSibling,
+    var _el$41 = Stats_tmpl$8.cloneNode(true),
         _el$42 = _el$41.firstChild,
-        _el$43 = _el$42.firstChild,
-        _el$44 = _el$43.firstChild,
-        _el$45 = _el$41.nextSibling,
+        _el$43 = _el$42.nextSibling,
+        _el$44 = _el$43.nextSibling,
+        _el$45 = _el$44.firstChild,
         _el$46 = _el$45.firstChild,
         _el$47 = _el$46.firstChild,
-        _el$48 = _el$47.nextSibling,
-        _el$49 = _el$46.nextSibling,
+        _el$48 = _el$44.nextSibling,
+        _el$49 = _el$48.firstChild,
         _el$50 = _el$49.firstChild,
         _el$51 = _el$50.nextSibling,
         _el$52 = _el$49.nextSibling,
@@ -5290,44 +5666,47 @@ function Production() {
         _el$54 = _el$53.nextSibling,
         _el$55 = _el$52.nextSibling,
         _el$56 = _el$55.firstChild,
-        _el$57 = _el$56.nextSibling;
+        _el$57 = _el$56.nextSibling,
+        _el$58 = _el$55.nextSibling,
+        _el$59 = _el$58.firstChild,
+        _el$60 = _el$59.nextSibling;
 
-    var _ref$ = setupCanvas;
-    typeof _ref$ === "function" ? _ref$(_el$44) : setupCanvas = _el$44;
+    var _ref$ = canvas;
+    typeof _ref$ === "function" ? _ref$(_el$47) : canvas = _el$47;
 
-    (0,web/* insert */.$T)(_el$48, function () {
+    (0,web/* insert */.$T)(_el$51, function () {
       return state.summary.production.lastOptimalRate;
     });
 
-    (0,web/* insert */.$T)(_el$51, function () {
+    (0,web/* insert */.$T)(_el$54, function () {
       return 10 * state.summary.production.lastOptimalCycle;
     });
 
-    (0,web/* insert */.$T)(_el$54, function () {
+    (0,web/* insert */.$T)(_el$57, function () {
       return state.summary.production.products[state.summary.production.products.length - 1];
     });
 
-    (0,web/* insert */.$T)(_el$57, function () {
+    (0,web/* insert */.$T)(_el$60, function () {
       return 10 * (state.summary.production.products.length - 1);
     });
 
-    return _el$38;
+    return _el$41;
   }();
 }
 
 function Stats() {
   return function () {
-    var _el$58 = Stats_tmpl$8.cloneNode(true),
-        _el$59 = _el$58.firstChild,
-        _el$60 = _el$59.nextSibling;
+    var _el$61 = Stats_tmpl$9.cloneNode(true),
+        _el$62 = _el$61.firstChild,
+        _el$63 = _el$62.nextSibling;
 
-    (0,web/* insert */.$T)(_el$60, (0,solid/* createComponent */.LM)(Objects, {}), null);
+    (0,web/* insert */.$T)(_el$63, (0,solid/* createComponent */.LM)(Objects, {}), null);
 
-    (0,web/* insert */.$T)(_el$60, (0,solid/* createComponent */.LM)(Beauty, {}), null);
+    (0,web/* insert */.$T)(_el$63, (0,solid/* createComponent */.LM)(Beauty, {}), null);
 
-    (0,web/* insert */.$T)(_el$60, (0,solid/* createComponent */.LM)(Production, {}), null);
+    (0,web/* insert */.$T)(_el$63, (0,solid/* createComponent */.LM)(Production, {}), null);
 
-    return _el$58;
+    return _el$61;
   }();
 }
 
@@ -5354,7 +5733,7 @@ function App() {
 
 
 
-(0,web/* render */.sY)(src_App, document.getElementById("root"));
+(0,web/* render */.sY)(src_App, document.getElementById("app"));
 
 /***/ })
 

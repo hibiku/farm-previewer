@@ -14890,9 +14890,10 @@ function produce(fn) {
 /* harmony export */   "Qj": () => (/* binding */ delegateEvents),
 /* harmony export */   "$T": () => (/* binding */ insert),
 /* harmony export */   "sY": () => (/* binding */ render),
+/* harmony export */   "oB": () => (/* binding */ style),
 /* harmony export */   "XK": () => (/* binding */ template)
 /* harmony export */ });
-/* unused harmony exports Aliases, Assets, ChildProperties, DelegatedEvents, Dynamic, HydrationScript, NoHydration, Portal, PropAliases, Properties, SVGElements, SVGNamespace, addEventListener, assign, clearDelegatedEvents, dynamicProperty, escape, gatherHydratable, generateHydrationScript, getHydrationKey, getNextElement, getNextMarker, getNextMatch, hydrate, isServer, memo, pipeToNodeWritable, pipeToWritable, renderToString, renderToStringAsync, resolveSSRNode, runHydrationEvents, setAttribute, setAttributeNS, spread, ssr, ssrBoolean, ssrClassList, ssrHydrationKey, ssrSpread, ssrStyle, style */
+/* unused harmony exports Aliases, Assets, ChildProperties, DelegatedEvents, Dynamic, HydrationScript, NoHydration, Portal, PropAliases, Properties, SVGElements, SVGNamespace, addEventListener, assign, clearDelegatedEvents, dynamicProperty, escape, gatherHydratable, generateHydrationScript, getHydrationKey, getNextElement, getNextMarker, getNextMatch, hydrate, isServer, memo, pipeToNodeWritable, pipeToWritable, renderToString, renderToStringAsync, resolveSSRNode, runHydrationEvents, setAttribute, setAttributeNS, spread, ssr, ssrBoolean, ssrClassList, ssrHydrationKey, ssrSpread, ssrStyle */
 /* harmony import */ var solid_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(77);
 
 
